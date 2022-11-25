@@ -21,7 +21,7 @@
           type="submit"
           name="login"
           id="login"
-          class="w-full flex justify-center bg-yellow-600 hover:bg-yellow-500 text-gray-100 p-3 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500"
+          class="w-full flex justify-center bg-yellow-600 hover:bg-yellow-500 text-gray-100 p-3 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-200"
         >
           로그인
         </button>
@@ -30,10 +30,10 @@
             >비밀번호를 잊으셨나요?</a
           >
         </div>
-        <div class="h-px bg-gray-100"></div>
+        <div class="h-px bg-gray-200"></div>
         <button
           type="button"
-          class="w-full flex justify-center bg-yellow-600 hover:bg-yellow-500 text-gray-100 p-3 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500"
+          class="w-full flex justify-center bg-yellow-600 hover:bg-yellow-500 text-gray-100 p-3 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-200"
         >
           회원 가입
         </button>
