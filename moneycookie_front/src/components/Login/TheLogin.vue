@@ -2,20 +2,20 @@
   <div
     class="relative min-h-screen sm:flex sm:flex-row justify-center bg-transparent rounded-3xl shadow-xl"
   >
-    <the-logo
+    <BasicLogo
       class="flex-col flex self-center items-center mx-auto sm:mx-0 z-10 w-96"
-    ></the-logo>
-    <login-form></login-form>
+    />
+    <LoginForm />
   </div>
 </template>
 
 <script>
 import LoginForm from "./LoginForm.vue";
-import TheLogo from "./TheLogo.vue";
+import BasicLogo from "@/components/Basic/BasicLogo.vue";
 
 export default {
   components: {
-    TheLogo,
+    BasicLogo,
     LoginForm,
   },
 };
