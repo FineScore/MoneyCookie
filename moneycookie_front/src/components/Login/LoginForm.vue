@@ -17,14 +17,18 @@
           placeholder="비밀번호"
           class="text-sm px-4 py-3 rounded-lg w-full bg-gray-200 focus:bg-gray-100 border border-gray-200 focus:outline-none focus:border-yellow-400 transition ease-in duration-200"
         />
-        <button
-          type="submit"
-          name="login"
-          id="login"
-          class="w-full flex justify-center bg-yellow-600 hover:bg-yellow-500 text-gray-100 p-3 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-200"
-        >
-          로그인
-        </button>
+        <div>
+          <router-link to="/select">
+            <button
+              type="submit"
+              name="login"
+              id="login"
+              class="w-full flex justify-center bg-yellow-600 hover:bg-yellow-500 text-gray-100 p-3 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-200"
+            >
+              로그인
+            </button>
+          </router-link>
+        </div>
         <div>
           <div class="flex items-center">
             <input
@@ -44,12 +48,16 @@
           </div>
         </div>
         <div class="h-px bg-gray-200"></div>
-        <button
-          type="button"
-          class="w-full flex justify-center bg-yellow-600 hover:bg-yellow-500 text-gray-100 p-3 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-200"
-        >
-          회원 가입
-        </button>
+        <div>
+          <router-link to="/signup">
+            <button
+              type="button"
+              class="w-full flex justify-center bg-yellow-600 hover:bg-yellow-500 text-gray-100 p-3 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-200"
+            >
+              회원 가입
+            </button>
+          </router-link>
+        </div>
         <div class="flex justify-center items-center">
           <button type="button">
             <img
