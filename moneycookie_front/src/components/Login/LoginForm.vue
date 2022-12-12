@@ -18,7 +18,7 @@
           class="text-sm px-4 py-3 rounded-lg w-full bg-gray-200 focus:bg-gray-100 border border-gray-200 focus:outline-none focus:border-yellow-400 transition ease-in duration-200"
         />
         <div>
-          <router-link to="/select">
+          <router-link to="/portfolio">
             <button
               type="submit"
               name="login"

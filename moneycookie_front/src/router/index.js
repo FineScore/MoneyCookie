@@ -4,6 +4,7 @@ import SignUpPage from "@/components/signup/SignUpPage.vue";
 import BasicPage from "@/components/basic/BasicPage.vue";
 import SelectPage from "@/components/select_portfolio/SelectPage.vue";
 import ViewPortfolioPage from "@/components/view_portfolio/ViewPortfolioPage";
+import AddPage from "@/components/add_portfolio/AddPage.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -17,7 +18,7 @@ const router = createRouter({
       component: SignUpPage,
     },
     {
-      path: "/select",
+      path: "/portfolio",
       component: BasicPage,
       children: [
         {
@@ -27,6 +28,10 @@ const router = createRouter({
         {
           path: ":id",
           component: ViewPortfolioPage,
+        },
+        {
+          path: "add",
+          component: AddPage,
         },
       ],
     },
