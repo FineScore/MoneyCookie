@@ -14,18 +14,18 @@
     <div class="space-y-2">
       <label for="hold-stocks">나의 보유 종목</label>
       <div class="bg-gray-300 py-6 px-6 rounded-lg">
-        <div class="relative">
-          <div class="sm:flex items-center justify-between">
+        <div class="">
+          <div class="relative sm:flex items-center justify-between">
             <input
               type="text"
               name="p-name"
               id="p-name"
               placeholder="종목코드 또는 종목명을 입력하세요."
               autocomplete="off"
-              class="w-2/4 text-sm px-4 py-3 bg-gray-100 focus:bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-yellow-400 transition ease-in duration-200"
+              class="w-1/4 peer text-sm px-4 py-3 focus:bg-white bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-yellow-400 transition ease-in duration-200"
             />
             <div
-              class="absolute rounded drop-shadow bg-white overflow-hidden peer-checked:flex flex-col w-2/4 mt-24 border border-gray-200"
+              class="absolute hidden peer-focus:block top-11 rounded-lg drop-shadow bg-white overflow-hidden w-1/4 mt-1 border border-gray-200"
             >
               <div class="cursor-pointer group">
                 <div
@@ -70,17 +70,47 @@
                 </td>
                 <td class="pl-4">
                   <div class="flex items-center">
-                    <p class="text-base font-medium leading-none mr-2">
-                      매수수량
-                    </p>
+                    <input
+                      type="number"
+                      min="0"
+                      name="amount"
+                      id="amount"
+                      placeholder="보유수량"
+                      class="w-32 text-sm px-4 py-3 focus:bg-white bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-yellow-400 transition ease-in duration-200"
+                    />
+                  </div>
+                </td>
+                <td class="pl-4">
+                  <div class="flex items-center">
+                    <input
+                      type="text"
+                      name="avg-buy"
+                      id="avg-buy"
+                      placeholder="매수평균가"
+                      class="w-40 text-sm px-4 py-3 focus:bg-white bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-yellow-400 transition ease-in duration-200"
+                    />
                   </div>
                 </td>
                 <td>
                   <div class="flex items-center">
-                    <p class="text-base font-medium leading-none mr-2">
-                      매수일자
-                    </p>
+                    <Datepicker
+                      v-model="date"
+                      :enable-time-picker="false"
+                      auto-apply
+                      locale="ko"
+                      format="yyyy/MM/dd"
+                      placeholder="매수일자"
+                      class="w-44"
+                    />
                   </div>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    class="w-20 text-red-500 active:text-white border border-red-500 active:bg-red-500 p-3 rounded-lg tracking-wide font-semibold cursor-pointer"
+                  >
+                    삭제
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -90,7 +120,7 @@
     </div>
     <div class="h-px bg-gray-200"></div>
     <div>
-      <router-link to="/">
+      <router-link to="/portfolio/1">
         <button
           type="submit"
           class="w-full flex justify-center bg-yellow-600 text-gray-100 p-3 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-200 disabled:bg-opacity-50"
@@ -101,3 +131,17 @@
     </div>
   </form>
 </template>
+
+<script>
+import Datepicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+
+export default {
+  components: { Datepicker },
+  data() {
+    return {
+      date: null,
+    };
+  },
+};
+</script>
