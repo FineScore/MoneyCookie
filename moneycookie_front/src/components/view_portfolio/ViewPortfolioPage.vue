@@ -1,82 +1,89 @@
 <template>
-  <div>
-    <h1 class="text-4xl font-bold underline">나의 포트폴리오</h1>
-    <div>
-      <h3>총 보유자산</h3>
-      <p>&#92;1,000,000</p>
+  <div class="w-3/4 mx-auto my-0">
+    <div class="flex justify-between mt-14 mx-10">
+      <div colspan="3" class="text-4xl font-bold underline">
+        나의 포트폴리오
+      </div>
+      <div class="flex items-center">
+        <h3 class="font-bold">총 보유자산</h3>
+        <p class="text-end w-32 ml-5">&#92;1,000,000</p>
+      </div>
     </div>
-    <div>
-      <h3>총 평가손익</h3>
-      <p>+&#92;1,000,000</p>
+    <div class="flex justify-end mb-10 mx-10">
+      <div class="flex items-center">
+        <h3 class="font-bold">총 평가수익률</h3>
+        <p class="ml-5 w-10 text-end">+20%</p>
+      </div>
+      <div class="flex items-center">
+        <h3 class="font-bold ml-8">총 평가손익</h3>
+        <p class="ml-5 w-32 text-end">+&#92;1,000,000</p>
+      </div>
     </div>
-    <div>
-      <h3>총 평가수익률</h3>
-      <p>+20%</p>
-    </div>
-    <div>
-      <h3>월별 예상 배당금</h3>
-      <Highcharts :constructorType="'chart'" :options="chartOptionsColumn" />
-    </div>
-    <div>
-      <Highcharts :constructorType="'chart'" :options="chartOptionsPie" />
+    <div class="flex justify-around mb-10">
+      <div>
+        <Highcharts :constructorType="'chart'" :options="chartOptionsPie" />
+      </div>
+      <div>
+        <Highcharts :constructorType="'chart'" :options="chartOptionsColumn" />
+      </div>
     </div>
     <div>
       <div class="space-y-2">
-        <label for="hold-stocks">나의 보유 종목</label>
+        <label for="hold-stocks" class="font-bold">나의 보유 종목</label>
 
         <div class="mt-7 overflow-x-auto bg-white rounded-lg">
           <table class="w-full whitespace-nowrap">
             <tbody>
-              <tr class="h-16 border border-gray-100 rounded-lg">
-                <td>
+              <tr class="h-16 border border-gray-200 bg-gray-200 rounded-lg">
+                <th>
                   <div class="flex items-center pl-5">
                     <p class="text-base font-medium leading-none mr-2">
                       종목코드
                     </p>
                   </div>
-                </td>
-                <td class="pl-4">
+                </th>
+                <th class="pl-4">
                   <div class="flex items-center">
                     <p class="text-base font-medium leading-none mr-2">
                       종목명
                     </p>
                   </div>
-                </td>
-                <td class="pl-4">
+                </th>
+                <th class="pl-4">
                   <div class="flex items-center">
                     <p class="text-base font-medium leading-none mr-2">
                       보유수량
                     </p>
                   </div>
-                </td>
-                <td class="pl-4">
+                </th>
+                <th class="pl-4">
                   <div class="flex items-center">
                     <p class="text-base font-medium leading-none mr-2">
                       매수평균가
                     </p>
                   </div>
-                </td>
-                <td class="pl-4">
+                </th>
+                <th class="pl-4">
                   <div class="flex items-center">
                     <p class="text-base font-medium leading-none mr-2">
                       매수금액
                     </p>
                   </div>
-                </td>
-                <td class="pl-4">
+                </th>
+                <th class="pl-4">
                   <div class="flex items-center">
                     <p class="text-base font-medium leading-none mr-2">
                       평가금액
                     </p>
                   </div>
-                </td>
-                <td class="pl-4">
+                </th>
+                <th class="pl-4">
                   <div class="flex items-center">
                     <p class="text-base font-medium leading-none mr-2">
                       평가손익
                     </p>
                   </div>
-                </td>
+                </th>
               </tr>
             </tbody>
           </table>
@@ -97,10 +104,13 @@ export default {
     return {
       chartOptionsColumn: {
         title: {
-          text: "",
+          text: "<b>월별 예상 배당금</b>",
         },
         chart: {
           type: "column",
+        },
+        credits: {
+          enabled: false,
         },
         xAxis: {
           categories: [
@@ -197,6 +207,9 @@ export default {
         },
         tooltip: {
           pointFormat: "{point.percentage:.1f}%",
+        },
+        credits: {
+          enabled: false,
         },
         plotOptions: {
           pie: {
