@@ -1,4 +1,16 @@
 <template>
+  <router-link to="/portfolio">
+    <div
+      class="absolute flex items-center cursor-pointer m-10 opacity-40 hover:opacity-100 transition-all ease-in"
+    >
+      <img
+        src="@/assets/images/right-arrow.png"
+        alt="목록으로"
+        class="w-14 h-14 rotate-180"
+      />
+      <p class="text-2xl font-bold text-yellow-600">목록으로</p>
+    </div>
+  </router-link>
   <div class="w-3/4 mx-auto my-0">
     <div class="flex justify-between mt-14 mx-10">
       <div colspan="3" class="text-4xl font-bold underline">
@@ -29,61 +41,84 @@
     </div>
     <div>
       <div class="space-y-2">
-        <label for="hold-stocks" class="font-bold">나의 보유 종목</label>
+        <div class="flex items-center justify-between mx-4 mb-3">
+          <label for="hold-stocks" class="font-bold">나의 보유 종목</label>
+          <router-link to="edit/1">
+            <button
+              type="button"
+              class="w-28 flex justify-center bg-yellow-600 text-black text-opacity-70 p-3 rounded-full tracking-wide font-semibold cursor-pointer"
+            >
+              수정
+            </button>
+          </router-link>
+        </div>
 
         <div class="mt-7 overflow-x-auto bg-white rounded-lg">
           <table class="w-full whitespace-nowrap">
             <tbody>
               <tr class="h-16 border border-gray-200 bg-gray-200 rounded-lg">
-                <th>
-                  <div class="flex items-center pl-5">
-                    <p class="text-base font-medium leading-none mr-2">
-                      종목코드
-                    </p>
+                <th class="pl-4">
+                  <div class="flex items-center justify-center">
+                    <p class="text-base font-bold leading-none">종목명</p>
                   </div>
                 </th>
                 <th class="pl-4">
-                  <div class="flex items-center">
-                    <p class="text-base font-medium leading-none mr-2">
-                      종목명
-                    </p>
+                  <div class="flex items-center justify-center">
+                    <p class="text-base font-bold leading-none">보유수량</p>
                   </div>
                 </th>
                 <th class="pl-4">
-                  <div class="flex items-center">
-                    <p class="text-base font-medium leading-none mr-2">
-                      보유수량
-                    </p>
+                  <div class="flex items-center justify-center">
+                    <p class="text-base font-bold leading-none">매수평균가</p>
                   </div>
                 </th>
                 <th class="pl-4">
-                  <div class="flex items-center">
-                    <p class="text-base font-medium leading-none mr-2">
-                      매수평균가
-                    </p>
+                  <div class="flex items-center justify-center">
+                    <p class="text-base font-bold leading-none">매수금액</p>
                   </div>
                 </th>
                 <th class="pl-4">
-                  <div class="flex items-center">
-                    <p class="text-base font-medium leading-none mr-2">
-                      매수금액
-                    </p>
+                  <div class="flex items-center justify-center">
+                    <p class="text-base font-bold leading-none">수익률</p>
                   </div>
                 </th>
                 <th class="pl-4">
-                  <div class="flex items-center">
-                    <p class="text-base font-medium leading-none mr-2">
-                      평가금액
-                    </p>
+                  <div class="flex items-center justify-center">
+                    <p class="text-base font-bold leading-none">평가손익</p>
                   </div>
                 </th>
-                <th class="pl-4">
-                  <div class="flex items-center">
-                    <p class="text-base font-medium leading-none mr-2">
-                      평가손익
-                    </p>
+              </tr>
+              <tr class="h-16 border border-gray-200 rounded-lg">
+                <td class="pl-4">
+                  <div class="flex items-center justify-center">
+                    <p class="text-base leading-none">삼성전자</p>
                   </div>
-                </th>
+                </td>
+                <td class="pl-4">
+                  <div class="flex items-center justify-center">
+                    <p class="text-base leading-none">10</p>
+                  </div>
+                </td>
+                <td class="pl-4">
+                  <div class="flex items-center justify-center">
+                    <p class="text-base leading-none">매수평균가</p>
+                  </div>
+                </td>
+                <td class="pl-4">
+                  <div class="flex items-center justify-center">
+                    <p class="text-base leading-none">매수금액</p>
+                  </div>
+                </td>
+                <td class="pl-4">
+                  <div class="flex items-center justify-center">
+                    <p class="text-base leading-none">수익률</p>
+                  </div>
+                </td>
+                <td class="pl-4">
+                  <div class="flex items-center justify-center">
+                    <p class="text-base leading-none">평가손익</p>
+                  </div>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -223,52 +258,12 @@ export default {
           {
             data: [
               {
-                name: "1월",
-                y: 1,
+                name: "삼성전자",
+                y: 300,
               },
               {
-                name: "2월",
-                y: 2,
-              },
-              {
-                name: "3월",
-                y: 4,
-              },
-              {
-                name: "4월",
-                y: 2,
-              },
-              {
-                name: "5월",
-                y: 6,
-              },
-              {
-                name: "6월",
-                y: 6,
-              },
-              {
-                name: "7월",
-                y: 3,
-              },
-              {
-                name: "8월",
-                y: 3,
-              },
-              {
-                name: "9월",
-                y: 3,
-              },
-              {
-                name: "10월",
-                y: 3,
-              },
-              {
-                name: "11월",
-                y: 3,
-              },
-              {
-                name: "12월",
-                y: 4,
+                name: "삼성SDS",
+                y: 100,
               },
             ],
           },

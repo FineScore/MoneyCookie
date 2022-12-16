@@ -44,16 +44,16 @@
             </div>
             <button
               type="button"
-              class="w-[10%] ml-6 flex justify-center bg-yellow-600 text-black text-opacity-70 p-3 rounded-full tracking-wide font-semibold cursor-pointer"
+              class="w-[10%] flex justify-center bg-yellow-600 text-black text-opacity-70 ml-6 p-3 rounded-full tracking-wide font-semibold cursor-pointer"
             >
               종목 추가
             </button>
           </div>
         </div>
-        <div class="mt-7 overflow-x-auto bg-white rounded-lg">
+        <div class="mt-7 overflow-x-auto bg-white rounded">
           <table class="w-full whitespace-nowrap">
             <tbody>
-              <tr class="h-16 border border-gray-100 rounded-lg">
+              <tr class="h-16 border border-gray-100 rounded">
                 <td>
                   <div class="flex items-center pl-5">
                     <p class="text-base font-medium leading-none mr-2">
@@ -107,7 +107,7 @@
                 <td>
                   <button
                     type="button"
-                    class="w-20 text-red-500 active:text-white border border-red-500 active:bg-red-500 p-3 rounded-full tracking-wide font-semibold cursor-pointer"
+                    class="w-20 text-red-500 active:text-black active:text-opacity-80 border border-red-500 active:bg-red-500 p-3 rounded-full tracking-wide font-semibold cursor-pointer"
                   >
                     삭제
                   </button>
@@ -125,7 +125,7 @@
           type="submit"
           class="w-full flex justify-center bg-yellow-600 text-black text-opacity-70 p-3 rounded-full tracking-wide font-semibold cursor-pointer transition ease-in duration-200 disabled:bg-opacity-50"
         >
-          포트폴리오 추가
+          포트폴리오 수정
         </button>
       </router-link>
     </div>

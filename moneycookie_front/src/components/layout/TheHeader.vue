@@ -9,17 +9,14 @@
       <div class="px-32">
         <ul class="flex space-x-10">
           <li>
-            <img src="@/assets/images/sun.png" alt="basic-mode" class="w-10" />
-          </li>
-          <li>
-            <img
-              src="@/assets/images/notification.png"
-              alt="basic-mode"
-              class="w-10"
-            />
-          </li>
-          <li>
-            <img src="@/assets/images/user.png" alt="user" class="w-10" />
+            <router-link to="/">
+              <button
+                type="button"
+                class="w-32 flex justify-center border-yellow-600 active:bg-yellow-600 border-2 text-black text-opacity-70 p-3 rounded-full tracking-wide font-semibold cursor-pointer"
+              >
+                로그아웃
+              </button>
+            </router-link>
           </li>
         </ul>
       </div>
