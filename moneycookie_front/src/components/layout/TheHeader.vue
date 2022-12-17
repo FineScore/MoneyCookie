@@ -1,13 +1,37 @@
 <template>
   <header
-    class="sticky h-20 top-0 z-40 w-full flex items-center border-b bg-yellow-400"
+    class="sticky h-20 top-0 z-40 w-full flex items-center border-b bg-yellow-400 px-14"
   >
     <nav class="max-w-8xl mx-auto w-full flex items-center justify-between">
-      <div class="px-32">
+      <div>
         <img src="@/assets/images/logo.png" alt="MoneyCookie" class="w-60" />
       </div>
-      <div class="px-32">
-        <ul class="flex space-x-10">
+      <div class="ml-32">
+        <ul class="flex items-center space-x-8">
+          <li class="items-center hidden xl:flex">
+            <div class="w-7 h-7">
+              <img src="@/assets/images/calendar.png" alt="오늘날짜" />
+            </div>
+            <p class="text-lg font-semibold text-black ml-3">
+              {{ nowDate }}
+            </p>
+          </li>
+          <li class="flex items-center">
+            <div
+              class="w-7 h-7 bg-red-600 border-2 border-gray-800 rounded-full"
+            ></div>
+            <p class="text-lg font-semibold text-black ml-3 hidden xl:block">
+              휴장일
+            </p>
+          </li>
+          <li class="flex items-center">
+            <div class="w-7 h-7">
+              <img src="@/assets/images/clock.png" alt="현재시간" />
+            </div>
+            <p class="text-lg font-semibold text-black ml-3">
+              {{ time }}
+            </p>
+          </li>
           <li>
             <router-link to="/">
               <button
@@ -23,3 +47,39 @@
     </nav>
   </header>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      time: "",
+      date: new Date(),
+    };
+  },
+  computed: {
+    nowDate() {
+      const options = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        weekday: "long",
+      };
+      return new Intl.DateTimeFormat("ko-KR", options).format(this.date);
+    },
+  },
+  mounted() {
+    window.setTimeout(this.updateTime, 1000);
+  },
+  methods: {
+    updateTime() {
+      const now = new Date();
+      const hour = String(now.getHours()).padStart(2, "0");
+      const minute = String(now.getMinutes()).padStart(2, "0");
+      const second = String(now.getSeconds()).padStart(2, "0");
+
+      this.time = `${hour}:${minute}:${second}`;
+      this.$options = window.setTimeout(this.updateTime, 1000);
+    },
+  },
+};
+</script>
