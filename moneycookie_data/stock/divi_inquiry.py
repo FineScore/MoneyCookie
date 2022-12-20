@@ -1,5 +1,6 @@
 import yfinance
 
-stock = yfinance.Ticker("005930.KS")
 
-print(stock.dividends[stock.dividends.index.year == 2021])
+def dividend(ticker, year):
+    stock = yfinance.Ticker(f"{ticker}.KS")
+    return stock.dividends[stock.dividends.index.year == year]
