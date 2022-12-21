@@ -2,8 +2,8 @@ import asyncio
 import websockets
 import datetime
 import schedule
-from stock.stock_inquiry import price
-from stock.divi_inquiry import dividend
+from stock_inquiry import price
+from divi_inquiry import dividend
 
 
 async def stock(websocket):
@@ -11,11 +11,11 @@ async def stock(websocket):
     ticker = await websocket.recv()
     now_price = price(ticker, now_date)
 
-    await websocket.send(now_price)
+    await websocket.send(str(now_price[0]))
 
 
 async def main():
-    async with websockets.serve(stock, "localhost", 8080):
+    async with websockets.serve(stock, "localhost", 8081):
         await asyncio.Future()
 
 if __name__ == "__main__":

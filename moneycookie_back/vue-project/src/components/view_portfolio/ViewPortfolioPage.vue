@@ -116,7 +116,9 @@
                 </td>
                 <td class="pl-4">
                   <div class="flex items-center justify-center">
-                    <p class="text-base leading-none">평가손익</p>
+                    <p class="text-base leading-none">
+                      {{ currentAmountFormatted }}
+                    </p>
                   </div>
                 </td>
               </tr>
@@ -135,8 +137,23 @@ export default {
   components: {
     Highcharts: Chart,
   },
+  computed: {
+    currentAmountFormatted() {
+      return Intl.NumberFormat().format(this.currentAmount);
+    },
+  },
+  mounted: function () {
+    const connection = new WebSocket("ws://localhost:8081/");
+    connection.onopen = () => {
+      connection.send("005930");
+    };
+    connection.onmessage = (event) => {
+      this.currentAmount = Number(event.data);
+    };
+  },
   data() {
     return {
+      currentAmount: 0,
       chartOptionsColumn: {
         title: {
           text: "<b>월별 예상 배당금</b>",
