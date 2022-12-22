@@ -148,7 +148,13 @@ export default {
       connection.send("005930");
     };
     connection.onmessage = (event) => {
-      this.currentAmount = Number(event.data);
+      console.log("호출");
+      let messages = JSON.parse(event.data);
+      for (const key of messages) {
+        if (key === "price") {
+          this.currentAmount = messages[key];
+        }
+      }
     };
   },
   data() {
