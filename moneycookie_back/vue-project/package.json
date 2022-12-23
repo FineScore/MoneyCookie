@@ -13,6 +13,8 @@
     "core-js": "^3.8.3",
     "highcharts": "^10.3.2",
     "highcharts-vue": "^1.4.0",
+    "moment": "^2.29.4",
+    "moment-locales-webpack-plugin": "^1.2.0",
     "postcss": "^8.4.19",
     "vue": "^3.2.45",
     "vue-loader": "^17.0.1",

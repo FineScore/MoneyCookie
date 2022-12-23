@@ -13,7 +13,7 @@
               <img src="@/assets/images/calendar.png" alt="오늘날짜" />
             </div>
             <p class="text-lg font-semibold text-black ml-3">
-              {{ nowDate }}
+              {{ date }}
             </p>
           </li>
           <li class="flex items-center">
@@ -21,7 +21,7 @@
               class="w-7 h-7 bg-red-600 border-2 border-gray-800 rounded-full"
             ></div>
             <p class="text-lg font-semibold text-black ml-3 hidden xl:block">
-              휴장일
+              {{ status }}
             </p>
           </li>
           <li class="flex items-center">
@@ -49,36 +49,42 @@
 </template>
 
 <script>
+import moment from "moment";
+
 export default {
   data() {
     return {
       time: "",
-      date: new Date(),
+      date: moment().locale("ko").format("LL"),
+      status: this.marketStatus(),
     };
   },
-  computed: {
-    nowDate() {
-      const options = {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        weekday: "long",
-      };
-      return new Intl.DateTimeFormat("ko-KR", options).format(this.date);
-    },
-  },
   mounted() {
-    window.setTimeout(this.updateTime, 1000);
+    this.updateTime();
   },
   methods: {
     updateTime() {
-      const now = new Date();
-      const hour = String(now.getHours()).padStart(2, "0");
-      const minute = String(now.getMinutes()).padStart(2, "0");
-      const second = String(now.getSeconds()).padStart(2, "0");
-
-      this.time = `${hour}:${minute}:${second}`;
+      this.time = moment().format("hh:mm:ss");
       this.$options = window.setTimeout(this.updateTime, 1000);
+
+      if (this.isNextDay) {
+        this.date = moment().locale("ko").format("LL");
+      }
+    },
+    isNextDay() {
+      return this.time === moment().startOf("day").format("hh:mm:ss");
+    },
+    isOpen() {
+      const nowHour = moment(this.time).hour();
+      const nowMinute = moment(this.time).minute();
+      return nowHour >= 9 && nowHour <= 15 && nowMinute <= 30;
+    },
+    marketStatus() {
+      if (this.isOpen()) {
+        return "장 시작";
+      } else {
+        return "장 종료";
+      }
     },
   },
 };

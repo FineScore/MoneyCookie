@@ -142,21 +142,29 @@ export default {
       return Intl.NumberFormat().format(this.currentAmount);
     },
   },
-  mounted: function () {
+  mounted() {
     const connection = new WebSocket("ws://localhost:8081/");
+    console.log(connection.readyState);
     connection.onopen = () => {
       connection.send("005930");
     };
+    connection.onerror = (event) => {
+      console.log("WebSocket error : ", event);
+    };
     connection.onmessage = (event) => {
-      console.log("호출");
       let messages = JSON.parse(event.data);
-      for (const key of messages) {
-        if (key === "price") {
-          this.currentAmount = messages[key];
-        }
+      console.log(messages);
+      if (messages["code"] === 1) {
+        this.currentAmount = messages["price"];
       }
     };
   },
+  // unmounted() {
+  //   console.log("업데이트 호출");
+  //   connection.onclose = () => {
+  //     console.log("close");
+  //   };
+  // },
   data() {
     return {
       currentAmount: 0,

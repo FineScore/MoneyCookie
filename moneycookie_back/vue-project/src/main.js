@@ -10,3 +10,5 @@ const app = createApp(App);
 app.use(router);
 app.use(HighchartsVue);
 app.mount("#app");
+
+// app.config.globalProperties.connection = new WebSocket("ws://localhost:8081/");
