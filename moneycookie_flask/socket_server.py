@@ -2,7 +2,7 @@ import asyncio
 import websockets
 import datetime
 import schedule
-from stock_inquiry import price
+from stock_krx import price
 from divi_inquiry import dividend
 import time
 import json
