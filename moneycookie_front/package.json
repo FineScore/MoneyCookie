@@ -16,6 +16,7 @@
     "moment": "^2.29.4",
     "moment-locales-webpack-plugin": "^1.2.0",
     "postcss": "^8.4.19",
+    "socket.io-client": "^4.5.4",
     "vue": "^3.2.45",
     "vue-loader": "^17.0.1",
     "vue-router": "^4.1.6"

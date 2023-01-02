@@ -1,30 +1,25 @@
-import asyncio
-import websockets
-import datetime
-import schedule
-from stock_krx import price
-from divi_inquiry import dividend
-import time
+from flask import Flask
+from flask_socketio import SocketIO
+from socketio import Server, WSGIApp
+from flask_cors import CORS
+from util import Util
+from aiohttp import web
 import json
 
+app = Flask(__name__)
+socketio = Server(async_mode="threading")
+app.wsgi_app = WSGIApp(socketio, app.wsgi_app)
 
-async def send_stock(websocket):
-    now_date = datetime.datetime.now().strftime("%Y%m%d")
-    ticker = await websocket.recv()
+
+@socketio.on('connect')
+async def sending_stock_info(info):
+    print(info)
+    info_list = await json.loads(info)
+    price = Util(info_list['ticker'], info_list['market']).now_price()
     while True:
-        now_price = price(ticker, now_date)
-        message = json.dumps({
-            "code": 1,
-            "ticker": ticker,
-            "price": int(now_price[0])
-        })
-        await websocket.send(message)
-        await asyncio.sleep(1)
+        await socketio.sleep(1)
+        await socketio.send(price)
 
 
-async def main():
-    async with websockets.serve(send_stock, "localhost", 8081):
-        await asyncio.Future()
-
-if __name__ == "__main__":
-    asyncio.run(main())
+if __name__ == '__main__':
+    app.run(port=8080, threaded=True)
