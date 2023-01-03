@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     updateTime() {
-      this.time = moment().format("hh:mm:ss");
+      this.time = moment().format("HH:mm:ss");
       this.$options = window.setTimeout(this.updateTime, 1000);
 
       if (this.isNextDay) {
@@ -72,7 +72,7 @@ export default {
       }
     },
     isNextDay() {
-      return this.time === moment().startOf("day").format("hh:mm:ss");
+      return this.time === moment().startOf("day").format("HH:mm:ss");
     },
     isOpen() {
       const nowHour = moment(this.time).hour();

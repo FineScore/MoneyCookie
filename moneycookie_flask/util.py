@@ -1,4 +1,5 @@
 from read import Reader
+import json
 
 
 class Util(Reader):
@@ -6,7 +7,11 @@ class Util(Reader):
         super().__init__(ticker, market, start)
 
     def now_price(self) -> str:
-        return self.prices().tail(1)['Close'].to_json()
+        data = {
+            "ticker": self.ticker,
+            "price": str(self.prices().tail(1)['Close'].values[0])
+        }
+        return json.dumps(data)
 
     def from_start_price(self) -> str:
         return self.prices()[self.start:]['Close'].to_json()

@@ -1,25 +1,25 @@
-from flask import Flask
-from flask_socketio import SocketIO
-from socketio import Server, WSGIApp
-from flask_cors import CORS
-from util import Util
-from aiohttp import web
 import json
+from flask import Flask
+from util import Util
+import websockets
+import asyncio
 
 app = Flask(__name__)
-socketio = Server(async_mode="threading")
-app.wsgi_app = WSGIApp(socketio, app.wsgi_app)
 
 
-@socketio.on('connect')
-async def sending_stock_info(info):
-    print(info)
-    info_list = await json.loads(info)
-    price = Util(info_list['ticker'], info_list['market']).now_price()
+async def send(websocket):
+    info_list = await websocket.recv()
+    info_list = json.loads(info_list)
     while True:
-        await socketio.sleep(1)
-        await socketio.send(price)
+        price = Util(info_list['ticker'], info_list['market']).now_price()
+        print(price)
+        await websocket.send(price)
+        await asyncio.sleep(1)
 
+
+async def main():
+    async with websockets.serve(send, "localhost", 8081):
+        await asyncio.Future()
 
 if __name__ == '__main__':
-    app.run(port=8080, threaded=True)
+    asyncio.run(main())

@@ -132,7 +132,6 @@
 
 <script>
 import { Chart } from "highcharts-vue";
-import { io } from "socket.io-client";
 
 export default {
   components: {
@@ -144,31 +143,22 @@ export default {
     },
   },
   mounted() {
-    const socket = io("ws://localhost:8080");
+    const connection = new WebSocket("ws://localhost:8081/");
     const data = {
       ticker: "005930",
       market: "KS",
     };
-    setInterval(function () {
-      socket.send(JSON.stringify(data));
-    }, 1000);
-    socket.on("connect", function (message) {
-      this.currentAmount = message;
-    });
-    // console.log(connection.readyState);
-    // connection.onopen = () => {
-    //   connection.send("005930");
-    // };
+    connection.onopen = () => {
+      connection.send(JSON.stringify(data));
+    };
     // connection.onerror = (event) => {
     //   console.log("WebSocket error : ", event);
     // };
-    // connection.onmessage = (event) => {
-    //   let messages = JSON.parse(event.data);
-    //   console.log(messages);
-    //   if (messages["code"] === 1) {
-    //     this.currentAmount = messages["price"];
-    //   }
-    // };
+    connection.onmessage = (event) => {
+      let messages = JSON.parse(event.data);
+      console.log(messages);
+      this.currentAmount = messages["price"];
+    };
   },
   // unmounted() {
   //   console.log("업데이트 호출");
