@@ -17,7 +17,10 @@ class Util(Reader):
         return self.prices()[self.start:]['Close'].to_json()
 
     def expect_dividends(self) -> str:
-        return self.dividends().to_json()
+        return self.dividends().to_json(orient="records", indent=4)
+
+    def get_listed_items(self) -> str:
+        return self.all_listed_items().to_json(orient="records", force_ascii=False, indent=4)
 
 
-# print(Util("317530", "KQ").expect_dividends())
+print(Util("005930", "KS").expect_dividends())

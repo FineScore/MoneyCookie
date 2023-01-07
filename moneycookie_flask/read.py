@@ -7,9 +7,10 @@ from io import StringIO
 
 
 class Reader:
-    def __init__(self, ticker: str, market: str, start=None):
+    def __init__(self, ticker='', market='', start=None):
         self.get_price_url = "https://fchart.stock.naver.com/sise.nhn?timeframe=day&count=6000&requestType=0&symbol={}"
         self.get_dividends_url = "https://query2.finance.yahoo.com/v8/finance/chart/{}.{}"
+        self.get_all_ticker = "http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd"
         self.ticker = ticker
         self.market = market
         self.start = start
@@ -50,5 +51,18 @@ class Reader:
             x['date'] = datetime.fromtimestamp(x['date']).strftime('%Y%m%d')
         df = pd.DataFrame(lists)
         df.columns = ['Amount', 'Date']
-        df.set_index('Date', inplace=True)
+        # df.set_index('Date', inplace=True)
+        return df
+
+    def all_listed_items(self) -> pd.DataFrame:
+        url = self.get_all_ticker
+        data = {
+            'bld': "dbms/comm/finder/finder_stkisu",
+            'mktsel': 'ALL',
+            'searchText': '',
+        }
+        lists = requests.post(url, data=data, headers=self.header).json()
+        df = pd.DataFrame(lists['block1'])
+        df = df[['short_code', 'codeName', 'marketEngName']]
+        df.columns = ['Ticker', 'Name', 'Market']
         return df

@@ -19,19 +19,19 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.7.6'
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:2.7.6'
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server:2.7.6'
-	implementation 'org.springframework.boot:spring-boot-starter-security:2.7.6'
-	implementation 'org.springframework.boot:spring-boot-starter-validation:2.7.6'
-	implementation 'org.springframework.boot:spring-boot-starter-web:2.7.6'
-	implementation 'org.springframework.boot:spring-boot-starter-websocket:2.7.6'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.7.7'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:2.7.7'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server:2.7.7'
+	implementation 'org.springframework.boot:spring-boot-starter-security:2.7.7'
+	implementation 'org.springframework.boot:spring-boot-starter-validation:2.7.7'
+	implementation 'org.springframework.boot:spring-boot-starter-web:2.7.7'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket:2.7.7'
 	implementation 'com.mysql:mysql-connector-j:8.0.31'
 	compileOnly 'org.projectlombok:lombok:1.18.24'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools:2.7.6'
-	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.7.6'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools:2.7.7'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.7.7'
 	annotationProcessor 'org.projectlombok:lombok:1.18.24'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.6'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.7'
 	testImplementation 'org.springframework.security:spring-security-test'
 }
 
