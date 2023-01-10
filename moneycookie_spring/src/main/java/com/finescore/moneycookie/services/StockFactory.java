@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finescore.moneycookie.models.Dividend;
+import com.finescore.moneycookie.models.StockItem;
 import com.finescore.moneycookie.models.Price;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpEntity;
@@ -104,6 +105,32 @@ public class StockFactory {
             System.out.println(date);
             System.out.println(price);
             list.add(new Dividend(date, price));
+        }
+
+        return list;
+    }
+
+    public ArrayList<StockItem> getAllItems() throws JsonProcessingException {
+        String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36";
+        String allItemsUrl = "http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?bld={bld}&mktsel={mktsel}&searchText={searchText}";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("User-Agent", userAgent);
+        Map<String, String> params = new HashMap<>();
+        params.put("bld", "dbms/comm/finder/finder_stkisu");
+        params.put("mktsel", "ALL");
+        params.put("searchText", "");
+
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        String response = restTemplate.exchange(allItemsUrl, HttpMethod.POST, request, String.class, params).getBody();
+        JsonNode root = objectMapper.readTree(response);
+        JsonNode allItems = root.get("block1");
+        ArrayList<StockItem> list = new ArrayList<>();
+
+        for (JsonNode item : allItems) {
+            String shortCode = item.get("short_code").asText();
+            String name = item.get("codeName").asText();
+            String market = item.get("marketEngName").asText();
+            list.add(new StockItem(shortCode, name, market));
         }
 
         return list;
