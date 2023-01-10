@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class Price {
+public class Dividend {
     private String date;
     private Integer price;
 }
