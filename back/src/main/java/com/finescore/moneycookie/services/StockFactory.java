@@ -7,6 +7,7 @@ import com.finescore.moneycookie.models.Dividend;
 import com.finescore.moneycookie.models.StockItem;
 import com.finescore.moneycookie.models.Price;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -30,6 +31,7 @@ import java.util.Map;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class StockFactory {
     private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate;
@@ -55,6 +57,7 @@ public class StockFactory {
     }
 
     public String getNowPrice(String ticker) throws ParserConfigurationException, IOException, SAXException {
+        log.info("실행 : {}", ticker);
         ArrayList<Price> totalPrice = getTotalPrice(ticker);
 
         return objectMapper.writeValueAsString(totalPrice.get(totalPrice.size() - 1));

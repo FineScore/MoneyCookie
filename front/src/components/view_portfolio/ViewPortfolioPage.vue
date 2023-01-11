@@ -132,6 +132,8 @@
 
 <script>
 import { Chart } from "highcharts-vue";
+import Stomp from "webstomp-client";
+import SockJS from "sockjs-client";
 
 export default {
   components: {
@@ -142,30 +144,28 @@ export default {
       return Intl.NumberFormat().format(this.currentAmount);
     },
   },
-  mounted() {
-    const connection = new WebSocket("ws://localhost:8081/");
-    const data = {
-      ticker: "005930",
-      market: "KS",
-    };
-    connection.onopen = () => {
-      connection.send(JSON.stringify(data));
-    };
-    // connection.onerror = (event) => {
-    //   console.log("WebSocket error : ", event);
-    // };
-    connection.onmessage = (event) => {
-      let messages = JSON.parse(event.data);
-      console.log(messages);
-      this.currentAmount = messages["price"];
-    };
+  created() {
+    const serverUrl = "http://localhost:8080/ws";
+    const socket = new SockJS(serverUrl);
+    const stompClient = Stomp.over(socket);
+    stompClient.connect(
+      {},
+      (frame) => {
+        console.log("Connected: " + frame);
+        stompClient.send(
+          "/pub/now",
+          JSON.stringify({ ticker: "005930", name: "삼성전자", market: "KS" })
+        );
+        stompClient.subscribe("/sub/now", (event) => {
+          let messages = JSON.parse(event.body);
+          this.currentAmount = messages["price"];
+        });
+      },
+      (error) => {
+        console.log("Connection Error : " + error.headers.messages);
+      }
+    );
   },
-  // unmounted() {
-  //   console.log("업데이트 호출");
-  //   connection.onclose = () => {
-  //     console.log("close");
-  //   };
-  // },
   data() {
     return {
       currentAmount: 0,

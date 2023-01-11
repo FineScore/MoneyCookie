@@ -4,10 +4,10 @@ spring:
     username: moneycookie
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
-  security:
-    oauth2:
-      client:
-        registration:
-          naver:
-            client-id:
-            client-secret:
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          naver:
+#            client-id:
+#            client-secret:
