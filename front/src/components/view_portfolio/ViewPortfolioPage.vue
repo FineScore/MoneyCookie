@@ -154,11 +154,14 @@ export default {
         console.log("Connected: " + frame);
         stompClient.send(
           "/pub/now",
-          JSON.stringify({ ticker: "005930", name: "삼성전자", market: "KS" })
+          JSON.stringify([
+            { ticker: "005930", name: "삼성전자", market: "KS" },
+            { ticker: "204320", name: "HL만도", market: "KS" },
+          ])
         );
         stompClient.subscribe("/sub/now", (event) => {
           let messages = JSON.parse(event.body);
-          this.currentAmount = messages["price"];
+          this.currentAmount = messages["contents"]["price"];
         });
       },
       (error) => {

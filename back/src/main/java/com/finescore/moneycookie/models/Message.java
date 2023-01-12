@@ -1,13 +1,16 @@
 package com.finescore.moneycookie.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
-@AllArgsConstructor
+@Setter
+@RequiredArgsConstructor
 public class Message {
+    @NonNull
     private String status;
+    @NonNull
     private String sender;
+    @NonNull
     private String receiver;
-    private String contents;
+    private Object contents;
 }

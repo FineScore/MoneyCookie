@@ -3,9 +3,7 @@ package com.finescore.moneycookie.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.finescore.moneycookie.models.Dividend;
-import com.finescore.moneycookie.models.StockItem;
-import com.finescore.moneycookie.models.Price;
+import com.finescore.moneycookie.models.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -36,12 +34,12 @@ public class StockFactory {
     private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate;
 
-    public ArrayList<Price> getTotalPrice(String ticker) throws ParserConfigurationException, IOException, SAXException {
+    public ArrayList<PriceToDate> getTotalPrice(String ticker) throws ParserConfigurationException, IOException, SAXException {
         String priceUrl = "https://fchart.stock.naver.com/sise.nhn?timeframe=day&count=6000&requestType=0&symbol=%s";
         String url = String.format(priceUrl, ticker);
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = builderFactory.newDocumentBuilder();
-        ArrayList<Price> priceList = new ArrayList<>();
+        ArrayList<PriceToDate> priceList = new ArrayList<>();
 
         Document document = builder.parse(url);
         document.getDocumentElement().normalize();
@@ -49,18 +47,35 @@ public class StockFactory {
 
         for (int i = 0; i < list.getLength(); i++) {
             String[] lists = list.item(i).getAttributes().getNamedItem("data").getNodeValue().split("\\|");
-            Price price = new Price(lists[0], Integer.parseInt(lists[4]));
+            PriceToDate price = new PriceToDate(lists[0], Integer.parseInt(lists[4]));
             priceList.add(price);
         }
 
         return priceList;
     }
 
-    public String getNowPrice(String ticker) throws ParserConfigurationException, IOException, SAXException {
+    public PriceNow getNowPrice(String ticker) throws ParserConfigurationException, IOException, SAXException {
         log.info("실행 : {}", ticker);
-        ArrayList<Price> totalPrice = getTotalPrice(ticker);
+        ArrayList<PriceToDate> totalPrice = getTotalPrice(ticker);
 
-        return objectMapper.writeValueAsString(totalPrice.get(totalPrice.size() - 1));
+        return new PriceNow(ticker, totalPrice.get(totalPrice.size() - 1).getPrice());
+    }
+
+    public PriceToPeriod getPeriodPrice(String ticker, String date) throws ParserConfigurationException, IOException, SAXException {
+        ArrayList<PriceToDate> totalPrice = getTotalPrice(ticker);
+        ArrayList<PriceToDate> dateList = new ArrayList<>();
+
+        for (int i = totalPrice.size() - 1; i <= 0; i--) {
+            if (date.equals(totalPrice.get(i).getDate())) {
+                for (int j = i; j < totalPrice.size(); j++) {
+                    dateList.add(totalPrice.get(j));
+                }
+
+                break;
+            }
+        }
+
+        return new PriceToPeriod(ticker, dateList);
     }
 
     public ArrayList<Dividend> getDividends(String ticker, String market) throws JsonProcessingException {
