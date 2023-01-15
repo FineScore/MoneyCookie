@@ -117,7 +117,41 @@
                 <td class="pl-4">
                   <div class="flex items-center justify-center">
                     <p class="text-base leading-none">
-                      {{ currentAmountFormatted }}
+                      {{ Intl.NumberFormat().format(currentAmount[0]) }}
+                    </p>
+                  </div>
+                </td>
+              </tr>
+              <tr class="h-16 border border-gray-200 rounded-lg">
+                <td class="pl-4">
+                  <div class="flex items-center justify-center">
+                    <p class="text-base leading-none">HL만도</p>
+                  </div>
+                </td>
+                <td class="pl-4">
+                  <div class="flex items-center justify-center">
+                    <p class="text-base leading-none">10</p>
+                  </div>
+                </td>
+                <td class="pl-4">
+                  <div class="flex items-center justify-center">
+                    <p class="text-base leading-none">매수평균가</p>
+                  </div>
+                </td>
+                <td class="pl-4">
+                  <div class="flex items-center justify-center">
+                    <p class="text-base leading-none">매수금액</p>
+                  </div>
+                </td>
+                <td class="pl-4">
+                  <div class="flex items-center justify-center">
+                    <p class="text-base leading-none">수익률</p>
+                  </div>
+                </td>
+                <td class="pl-4">
+                  <div class="flex items-center justify-center">
+                    <p class="text-base leading-none">
+                      {{ Intl.NumberFormat().format(currentAmount[1]) }}
                     </p>
                   </div>
                 </td>
@@ -141,7 +175,11 @@ export default {
   },
   computed: {
     currentAmountFormatted() {
-      return Intl.NumberFormat().format(this.currentAmount);
+      const arr = this.currentAmount;
+      for (let i = 0; i < arr.length; i++) {
+        arr[i] = Intl.NumberFormat().format(arr[i]);
+      }
+      return arr;
     },
   },
   created() {
@@ -161,7 +199,10 @@ export default {
         );
         stompClient.subscribe("/sub/now", (event) => {
           let messages = JSON.parse(event.body);
-          this.currentAmount = messages["contents"]["price"];
+          this.currentAmount[0] =
+            messages["contents"][0]["priceList"][0]["price"];
+          this.currentAmount[1] =
+            messages["contents"][1]["priceList"][0]["price"];
         });
       },
       (error) => {
@@ -171,7 +212,7 @@ export default {
   },
   data() {
     return {
-      currentAmount: 0,
+      currentAmount: [],
       chartOptionsColumn: {
         title: {
           text: "<b>월별 예상 배당금</b>",

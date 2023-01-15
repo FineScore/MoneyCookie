@@ -1,8 +1,8 @@
 package com.finescore.moneycookie.controllers;
 
-import com.finescore.moneycookie.models.Message;
-import com.finescore.moneycookie.models.PriceNow;
-import com.finescore.moneycookie.models.StockItem;
+import com.finescore.moneycookie.models.ItemInfo;
+import com.finescore.moneycookie.models.ResponseMessage;
+import com.finescore.moneycookie.models.PriceToTicker;
 import com.finescore.moneycookie.services.StockFactory;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +16,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -23,25 +24,24 @@ import java.util.ArrayList;
 public class StockWebSocketController {
     private SimpMessagingTemplate simpMessagingTemplate;
     private StockFactory stockFactory;
-    private static Message message;
-    private static ArrayList<StockItem> stockItems;
+    private static List<ItemInfo> tickerList;
+    private static ResponseMessage<PriceToTicker> respMessage;
 
     @MessageMapping("/now")
-    @SendTo("/now")
-    public void message(ArrayList<StockItem> itemList) throws InterruptedException, ParserConfigurationException, IOException, SAXException {
-        stockItems = itemList;
-//        log.info("연결 완료 : {}", stockItems.getName());
-        message = new Message("Now Price", "server", "client");
+    public void getNowPrice(List<ItemInfo> itemList) throws ParserConfigurationException, IOException, SAXException {
+        tickerList = itemList;
+        respMessage = new ResponseMessage<>("OK");
         send();
     }
 
     @Scheduled(fixedRate = 3000)
     private void send() throws ParserConfigurationException, IOException, SAXException {
-        ArrayList<PriceNow> list = new ArrayList<>();
-        for (StockItem item : stockItems) {
+        List<PriceToTicker> list = new ArrayList<>();
+        for (ItemInfo item : tickerList) {
             list.add(stockFactory.getNowPrice(item.getTicker()));
         }
-        message.setContents(list);
-        simpMessagingTemplate.convertAndSend("/sub/now", message);
+
+        respMessage.setContents(list);
+        simpMessagingTemplate.convertAndSend("/sub/now", respMessage);
     }
 }

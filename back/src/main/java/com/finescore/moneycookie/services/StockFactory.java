@@ -25,6 +25,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -34,12 +35,12 @@ public class StockFactory {
     private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate;
 
-    public ArrayList<PriceToDate> getTotalPrice(String ticker) throws ParserConfigurationException, IOException, SAXException {
+    public List<PriceToDate> getTotalPrice(String ticker) throws ParserConfigurationException, IOException, SAXException {
         String priceUrl = "https://fchart.stock.naver.com/sise.nhn?timeframe=day&count=6000&requestType=0&symbol=%s";
         String url = String.format(priceUrl, ticker);
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = builderFactory.newDocumentBuilder();
-        ArrayList<PriceToDate> priceList = new ArrayList<>();
+        List<PriceToDate> priceList = new ArrayList<>();
 
         Document document = builder.parse(url);
         document.getDocumentElement().normalize();
@@ -54,31 +55,27 @@ public class StockFactory {
         return priceList;
     }
 
-    public PriceNow getNowPrice(String ticker) throws ParserConfigurationException, IOException, SAXException {
-        log.info("실행 : {}", ticker);
-        ArrayList<PriceToDate> totalPrice = getTotalPrice(ticker);
+    public PriceToTicker getNowPrice(String ticker) throws ParserConfigurationException, IOException, SAXException {
+        List<PriceToDate> totalPrice = getTotalPrice(ticker);
 
-        return new PriceNow(ticker, totalPrice.get(totalPrice.size() - 1).getPrice());
+        return new PriceToTicker(ticker, totalPrice.subList(totalPrice.size() - 1, totalPrice.size()));
     }
 
-    public PriceToPeriod getPeriodPrice(String ticker, String date) throws ParserConfigurationException, IOException, SAXException {
-        ArrayList<PriceToDate> totalPrice = getTotalPrice(ticker);
-        ArrayList<PriceToDate> dateList = new ArrayList<>();
+    public PriceToTicker getPeriodPrice(String ticker, String date) throws ParserConfigurationException, IOException, SAXException {
+        List<PriceToDate> totalPrice = getTotalPrice(ticker);
+        List<PriceToDate> dateList = new ArrayList<>();
 
-        for (int i = totalPrice.size() - 1; i <= 0; i--) {
+        for (int i = totalPrice.size() - 1; i >= 0; i--) {
             if (date.equals(totalPrice.get(i).getDate())) {
-                for (int j = i; j < totalPrice.size(); j++) {
-                    dateList.add(totalPrice.get(j));
-                }
-
+                dateList = totalPrice.subList(i, totalPrice.size());
                 break;
             }
         }
 
-        return new PriceToPeriod(ticker, dateList);
+        return new PriceToTicker(ticker, dateList);
     }
 
-    public ArrayList<Dividend> getDividends(String ticker, String market) throws JsonProcessingException {
+    public PriceToTicker getDividends(String ticker, String market) throws JsonProcessingException {
         String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36";
         String dividendUrl = "https://query2.finance.yahoo.com/v8/finance/chart/%s.%s?period1={period1}&period2={period2}&interval={interval}&includePrePost={includePrePost}&events={events}";
         LocalDate startDate = LocalDate.of(
@@ -110,7 +107,7 @@ public class StockFactory {
                 .get(0)
                 .get("events")
                 .get("dividends");
-        ArrayList<Dividend> list = new ArrayList<>();
+        List<PriceToDate> list = new ArrayList<>();
 
         for (JsonNode objectNode : dividends) {
             LocalDate localDate =
@@ -120,15 +117,13 @@ public class StockFactory {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
             String date = localDate.format(formatter);
             Integer price = objectNode.get("amount").asInt();
-            System.out.println(date);
-            System.out.println(price);
-            list.add(new Dividend(date, price));
+            list.add(new PriceToDate(date, price));
         }
 
-        return list;
+        return new PriceToTicker(ticker, list);
     }
 
-    public ArrayList<StockItem> getAllItems() throws JsonProcessingException {
+    public List<ItemInfo> getAllItems() throws JsonProcessingException {
         String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36";
         String allItemsUrl = "http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?bld={bld}&mktsel={mktsel}&searchText={searchText}";
         HttpHeaders headers = new HttpHeaders();
@@ -142,13 +137,13 @@ public class StockFactory {
         String response = restTemplate.exchange(allItemsUrl, HttpMethod.POST, request, String.class, params).getBody();
         JsonNode root = objectMapper.readTree(response);
         JsonNode allItems = root.get("block1");
-        ArrayList<StockItem> list = new ArrayList<>();
+        List<ItemInfo> list = new ArrayList<>();
 
         for (JsonNode item : allItems) {
             String shortCode = item.get("short_code").asText();
             String name = item.get("codeName").asText();
             String market = item.get("marketEngName").asText();
-            list.add(new StockItem(shortCode, name, market));
+            list.add(new ItemInfo(shortCode, name, market));
         }
 
         return list;

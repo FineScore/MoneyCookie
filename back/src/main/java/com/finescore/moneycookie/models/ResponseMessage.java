@@ -2,15 +2,13 @@ package com.finescore.moneycookie.models;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class Message {
+public class ResponseMessage<T> {
     @NonNull
     private String status;
-    @NonNull
-    private String sender;
-    @NonNull
-    private String receiver;
-    private Object contents;
+    private List<T> contents;
 }

@@ -2,12 +2,15 @@ package com.finescore.moneycookie.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
-public class PriceNow {
+@NoArgsConstructor
+public class ItemInfo {
     private String ticker;
-    private Integer price;
+    private String name;
+    private String market;
 }
