@@ -32,11 +32,14 @@
       </div>
     </div>
     <div class="flex justify-around mb-10">
-      <div>
-        <Highcharts :constructorType="'chart'" :options="chartOptionsPie" />
+      <div class="w-1/3">
+        <HoldItemChart />
       </div>
-      <div>
-        <Highcharts :constructorType="'chart'" :options="chartOptionsColumn" />
+      <div class="w-1/3">
+        <DailyYieldChart />
+      </div>
+      <div class="w-1/3">
+        <ExpectedDividendChart />
       </div>
     </div>
     <div>
@@ -165,13 +168,17 @@
 </template>
 
 <script>
-import { Chart } from "highcharts-vue";
+import HoldItemChart from "./HoldItemChart.vue";
+import ExpectedDividendChart from "./ExpectedDividendChart.vue";
+import DailyYieldChart from "./DailyYieldChart.vue";
 import Stomp from "webstomp-client";
 import SockJS from "sockjs-client";
 
 export default {
   components: {
-    Highcharts: Chart,
+    HoldItemChart,
+    ExpectedDividendChart,
+    DailyYieldChart,
   },
   computed: {
     currentAmountFormatted() {
@@ -213,143 +220,6 @@ export default {
   data() {
     return {
       currentAmount: [],
-      chartOptionsColumn: {
-        title: {
-          text: "<b>월별 예상 배당금</b>",
-        },
-        chart: {
-          type: "column",
-        },
-        credits: {
-          enabled: false,
-        },
-        xAxis: {
-          categories: [
-            "1월",
-            "2월",
-            "3월",
-            "4월",
-            "5월",
-            "6월",
-            "7월",
-            "8월",
-            "9월",
-            "10월",
-            "11월",
-            "12월",
-          ],
-        },
-        yAxis: {
-          title: {
-            text: "원(&#8361;)",
-          },
-          labels: {
-            format: "&#8361; {value}",
-          },
-        },
-        tooltip: {
-          headerFormat: "{point.x} 예상 배당금 <br>",
-          pointFormat: "&#8361;{point.y}",
-        },
-        series: [
-          {
-            data: [
-              {
-                name: "1월",
-                y: 1,
-              },
-              {
-                name: "2월",
-                y: 2,
-              },
-              {
-                name: "3월",
-                y: 4,
-              },
-              {
-                name: "4월",
-                y: 2,
-              },
-              {
-                name: "5월",
-                y: 6,
-              },
-              {
-                name: "6월",
-                y: 6,
-              },
-              {
-                name: "7월",
-                y: 3,
-              },
-              {
-                name: "8월",
-                y: 3,
-              },
-              {
-                name: "9월",
-                y: 3,
-              },
-              {
-                name: "10월",
-                y: 3,
-              },
-              {
-                name: "11월",
-                y: 3,
-              },
-              {
-                name: "12월",
-                y: 4,
-              },
-            ],
-          },
-        ],
-        legend: {
-          enabled: false,
-        },
-      },
-      chartOptionsPie: {
-        title: {
-          text: "",
-        },
-        chart: {
-          type: "pie",
-        },
-        tooltip: {
-          pointFormat: "{point.percentage:.1f}%",
-        },
-        credits: {
-          enabled: false,
-        },
-        plotOptions: {
-          pie: {
-            dataLabels: {
-              enabled: false,
-            },
-            showInLegend: true,
-          },
-        },
-        series: [
-          {
-            data: [
-              {
-                name: "삼성전자",
-                y: 300,
-              },
-              {
-                name: "삼성SDS",
-                y: 100,
-              },
-            ],
-          },
-        ],
-        legend: {
-          align: "left",
-          verticalAlign: "top",
-          layout: "vertical",
-        },
-      },
     };
   },
 };
