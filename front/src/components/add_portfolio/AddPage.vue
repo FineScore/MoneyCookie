@@ -23,16 +23,23 @@
               placeholder="종목코드 또는 종목명을 입력하세요."
               autocomplete="off"
               class="w-1/4 peer text-sm px-4 py-3 focus:bg-white bg-gray-100 border border-gray-200 rounded focus:outline-none focus:border-yellow-400 transition ease-in duration-200"
+              :value="itemName"
+              @input="setItemName"
+              @focus="toggleItemList"
             />
             <div
-              class="absolute hidden peer-focus:block top-11 rounded drop-shadow bg-white overflow-hidden w-1/4 mt-1 border border-gray-200"
+              v-show="isVisible"
+              class="absolute top-11 rounded drop-shadow bg-white overflow-hidden w-1/4 mt-1 border border-gray-200"
             >
               <div class="cursor-pointer group">
-                <div
-                  class="block px-4 py-2 border-transparent border-l-4 group-hover:border-yellow-400 group-hover:bg-gray-100"
+                <button
+                  type="button"
+                  class="w-full px-4 py-2 border-transparent border-l-4 group-hover:border-yellow-400 group-hover:bg-gray-100"
+                  value="005930"
+                  @click="insertItemBtn"
                 >
-                  BBB
-                </div>
+                  005930
+                </button>
               </div>
               <div class="cursor-pointer group">
                 <div
@@ -42,77 +49,85 @@
                 </div>
               </div>
             </div>
-            <button
-              type="button"
-              class="w-[10%] ml-6 flex justify-center bg-yellow-600 text-black text-opacity-70 p-3 rounded-full tracking-wide font-semibold cursor-pointer"
-            >
-              종목 추가
-            </button>
           </div>
         </div>
         <div class="mt-7 overflow-x-auto bg-white rounded-lg">
           <table class="w-full whitespace-nowrap">
             <tbody>
-              <tr class="h-16 border border-gray-100 rounded-lg">
-                <td>
-                  <div class="flex items-center pl-5">
-                    <p class="text-base font-medium leading-none mr-2">
-                      종목코드
-                    </p>
-                  </div>
-                </td>
-                <td class="pl-4">
-                  <div class="flex items-center">
-                    <p class="text-base font-medium leading-none mr-2">
-                      종목명
-                    </p>
-                  </div>
-                </td>
-                <td class="pl-4">
-                  <div class="flex items-center">
-                    <input
-                      type="number"
-                      min="0"
-                      name="amount"
-                      id="amount"
-                      placeholder="보유수량"
-                      class="w-32 text-sm px-4 py-3 focus:bg-white bg-gray-100 border border-gray-200 rounded focus:outline-none focus:border-yellow-400 transition ease-in duration-200"
-                    />
-                  </div>
-                </td>
-                <td class="pl-4">
-                  <div class="flex items-center">
-                    <input
-                      type="text"
-                      name="avg-buy"
-                      id="avg-buy"
-                      placeholder="매수평균가"
-                      class="w-40 text-sm px-4 py-3 focus:bg-white bg-gray-100 border border-gray-200 rounded focus:outline-none focus:border-yellow-400 transition ease-in duration-200"
-                    />
-                  </div>
-                </td>
-                <td>
-                  <div class="flex items-center">
-                    <Datepicker
-                      v-model="date"
-                      :enable-time-picker="false"
-                      auto-apply
-                      locale="ko"
-                      format="yyyy/MM/dd"
-                      placeholder="매수일자"
-                      class="w-44"
-                    />
-                  </div>
-                </td>
-                <td>
-                  <button
-                    type="button"
-                    class="w-20 text-red-500 active:text-white border border-red-500 active:bg-red-500 p-3 rounded-full tracking-wide font-semibold cursor-pointer"
-                  >
-                    삭제
-                  </button>
+              <tr
+                v-if="items.length === 0"
+                class="h-16 border border-gray-100 rounded-lg"
+              >
+                <td class="font-medium text-center">
+                  보유 종목을 추가해주세요.
                 </td>
               </tr>
+              <div v-else>
+                <tr
+                  v-for="item in items"
+                  :key="item.ticker"
+                  class="h-16 border border-gray-100 rounded-lg"
+                >
+                  <td>
+                    <div class="flex items-center pl-5">
+                      <p class="text-base font-medium leading-none mr-2">
+                        {{ item.ticker }}
+                      </p>
+                    </div>
+                  </td>
+                  <td class="pl-4">
+                    <div class="flex items-center">
+                      <p class="text-base font-medium leading-none mr-2">
+                        {{ item.name }}
+                      </p>
+                    </div>
+                  </td>
+                  <td class="pl-4">
+                    <div class="flex items-center">
+                      <input
+                        type="number"
+                        min="0"
+                        name="amount"
+                        id="amount"
+                        placeholder="보유수량"
+                        class="w-32 text-sm px-4 py-3 focus:bg-white bg-gray-100 border border-gray-200 rounded focus:outline-none focus:border-yellow-400 transition ease-in duration-200"
+                      />
+                    </div>
+                  </td>
+                  <td class="pl-4">
+                    <div class="flex items-center">
+                      <input
+                        type="text"
+                        name="avg-buy"
+                        id="avg-buy"
+                        placeholder="매수평균가"
+                        class="w-40 text-sm px-4 py-3 focus:bg-white bg-gray-100 border border-gray-200 rounded focus:outline-none focus:border-yellow-400 transition ease-in duration-200"
+                      />
+                    </div>
+                  </td>
+                  <td>
+                    <div class="flex items-center">
+                      <Datepicker
+                        v-model="date"
+                        :enable-time-picker="false"
+                        auto-apply
+                        locale="ko"
+                        format="yyyy/MM/dd"
+                        placeholder="매수일자"
+                        class="w-44"
+                      />
+                    </div>
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      class="w-20 text-red-500 active:text-white border border-red-500 active:bg-red-500 p-3 rounded-full tracking-wide font-semibold cursor-pointer"
+                    >
+                      삭제
+                    </button>
+                  </td>
+                </tr>
+              </div>
             </tbody>
           </table>
         </div>
@@ -141,7 +156,26 @@ export default {
   data() {
     return {
       date: null,
+      itemName: "",
+      items: [{ ticker: "005930", name: "삼성전자", market: "KOSPI" }],
+      isVisible: false,
     };
+  },
+  methods: {
+    addItems() {
+      return this.items.push();
+    },
+    setItemName(event) {
+      this.itemName = event.target.value;
+    },
+    insertItemBtn(event) {
+      // console.log(event.target.value);
+      this.itemName = event.target.value;
+      this.isVisible = !this.isVisible;
+    },
+    toggleItemList() {
+      this.isVisible = !this.isVisible;
+    },
   },
 };
 </script>

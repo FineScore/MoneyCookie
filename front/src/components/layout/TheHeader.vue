@@ -18,10 +18,11 @@
           </li>
           <li class="flex items-center">
             <div
-              class="w-7 h-7 bg-red-600 border-2 border-gray-800 rounded-full"
+              :class="status ? 'bg-green-700' : 'bg-red-600'"
+              class="w-7 h-7 border-2 border-gray-800 rounded-full"
             ></div>
             <p class="text-lg font-semibold text-black ml-3 hidden xl:block">
-              {{ status }}
+              {{ statusStatement }}
             </p>
           </li>
           <li class="flex items-center">
@@ -62,6 +63,11 @@ export default {
   mounted() {
     this.updateTime();
   },
+  computed: {
+    statusStatement() {
+      return this.status ? "장 시작" : "장 종료";
+    },
+  },
   methods: {
     updateTime() {
       this.time = moment().format("HH:mm:ss");
@@ -81,9 +87,9 @@ export default {
     },
     marketStatus() {
       if (this.isOpen()) {
-        return "장 시작";
+        return true;
       } else {
-        return "장 종료";
+        return false;
       }
     },
   },

@@ -192,19 +192,19 @@ export default {
   created() {
     const serverUrl = "http://localhost:8080/ws";
     const socket = new SockJS(serverUrl);
-    const stompClient = Stomp.over(socket);
-    stompClient.connect(
+    this.stompClient = Stomp.over(socket);
+    this.stompClient.connect(
       {},
       (frame) => {
         console.log("Connected: " + frame);
-        stompClient.send(
+        this.stompClient.send(
           "/pub/now",
           JSON.stringify([
             { ticker: "005930", name: "삼성전자", market: "KS" },
             { ticker: "204320", name: "HL만도", market: "KS" },
           ])
         );
-        stompClient.subscribe("/sub/now", (event) => {
+        this.stompClient.subscribe("/sub/now", (event) => {
           let messages = JSON.parse(event.body);
           this.currentAmount[0] =
             messages["contents"][0]["priceList"][0]["price"];
@@ -217,9 +217,13 @@ export default {
       }
     );
   },
+  beforeUnmount() {
+    this.stompClient.disconnect();
+  },
   data() {
     return {
       currentAmount: [],
+      stompClient: null,
     };
   },
 };
