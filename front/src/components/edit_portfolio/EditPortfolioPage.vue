@@ -42,12 +42,6 @@
                 </div>
               </div>
             </div>
-            <button
-              type="button"
-              class="w-[10%] flex justify-center bg-yellow-600 text-black text-opacity-70 ml-6 p-3 rounded-full tracking-wide font-semibold cursor-pointer"
-            >
-              종목 추가
-            </button>
           </div>
         </div>
         <div class="mt-7 overflow-x-auto bg-white rounded">

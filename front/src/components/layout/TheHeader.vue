@@ -18,7 +18,7 @@
           </li>
           <li class="flex items-center">
             <div
-              :class="status ? 'bg-green-700' : 'bg-red-600'"
+              :class="status ? 'bg-green-600' : 'bg-red-600'"
               class="w-7 h-7 border-2 border-gray-800 rounded-full"
             ></div>
             <p class="text-lg font-semibold text-black ml-3 hidden xl:block">
@@ -83,7 +83,9 @@ export default {
     isOpen() {
       const nowHour = moment(this.time).hour();
       const nowMinute = moment(this.time).minute();
-      return nowHour >= 9 && nowHour <= 15 && nowMinute <= 30;
+      return (
+        (nowHour >= 9 && nowHour < 15) || (nowHour == 15 && nowMinute <= 30)
+      );
     },
     marketStatus() {
       if (this.isOpen()) {
