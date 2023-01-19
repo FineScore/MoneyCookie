@@ -9,6 +9,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ItemBuyInfo extends ItemInfo {
-    private LocalDate buyDate;
+public class ClosedDay {
+    private LocalDate date;
+    private String name;
 }

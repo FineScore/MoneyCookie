@@ -66,7 +66,7 @@
                 <tr
                   v-for="item in items"
                   :key="item.ticker"
-                  class="h-16 border border-gray-100 rounded-lg"
+                  class="flex items-center justify-around h-16 border border-gray-100 rounded-lg"
                 >
                   <td>
                     <div class="flex items-center pl-5">

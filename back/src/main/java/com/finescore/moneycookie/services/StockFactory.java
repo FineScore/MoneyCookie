@@ -48,7 +48,7 @@ public class StockFactory {
 
         for (int i = 0; i < list.getLength(); i++) {
             String[] lists = list.item(i).getAttributes().getNamedItem("data").getNodeValue().split("\\|");
-            PriceToDate price = new PriceToDate(lists[0], Integer.parseInt(lists[4]));
+            PriceToDate price = new PriceToDate(LocalDate.parse(lists[0]), Integer.parseInt(lists[4]));
             priceList.add(price);
         }
 
@@ -61,7 +61,7 @@ public class StockFactory {
         return new PriceToTicker(ticker, totalPrice.subList(totalPrice.size() - 1, totalPrice.size()));
     }
 
-    public PriceToTicker getPeriodPrice(String ticker, String date) throws ParserConfigurationException, IOException, SAXException {
+    public PriceToTicker getPeriodPrice(String ticker, LocalDate date) throws ParserConfigurationException, IOException, SAXException {
         List<PriceToDate> totalPrice = getTotalPrice(ticker);
         List<PriceToDate> dateList = new ArrayList<>();
 
@@ -114,10 +114,10 @@ public class StockFactory {
                     Instant.ofEpochMilli(objectNode.get("date").asLong() * 1000)
                             .atZone(ZoneOffset.UTC)
                             .toLocalDate();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-            String date = localDate.format(formatter);
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+//            String date = localDate.format(formatter);
             Integer price = objectNode.get("amount").asInt();
-            list.add(new PriceToDate(date, price));
+            list.add(new PriceToDate(localDate, price));
         }
 
         return new PriceToTicker(ticker, list);
