@@ -5,7 +5,6 @@ import com.finescore.moneycookie.models.ItemBuyInfo;
 import com.finescore.moneycookie.models.ItemInfo;
 import com.finescore.moneycookie.models.ResponseMessage;
 import com.finescore.moneycookie.models.PriceToTicker;
-import com.finescore.moneycookie.services.StockFactory;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +12,6 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
