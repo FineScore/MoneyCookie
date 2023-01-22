@@ -3,17 +3,24 @@ package com.finescore.moneycookie.services.generator;
 import com.finescore.moneycookie.models.ItemInfo;
 import com.finescore.moneycookie.models.PriceToDate;
 import com.finescore.moneycookie.models.PriceToTicker;
+import com.finescore.moneycookie.services.factory.PriceRequestFactory;
+import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.List;
 
-public class PriceNowGenerator extends PriceGenerator {
-    private ItemInfo itemInfo;
+@Service
+public class PriceNowGenerator extends PriceGenerator<ItemInfo> {
 
-    public PriceToTicker getPriceNow() throws IOException, ParserConfigurationException, SAXException {
-        return new PriceToTicker(itemInfo.getTicker(), rangeNow(get()));
+    public PriceNowGenerator(PriceRequestFactory factory) {
+        super(factory);
+    }
+
+    @Override
+    public PriceToTicker get(ItemInfo info) throws ParserConfigurationException, IOException, SAXException {
+        return new PriceToTicker(info.getTicker(), rangeNow(parse(info)));
     }
 
     private static List<PriceToDate> rangeNow(List<PriceToDate> priceToDates) {

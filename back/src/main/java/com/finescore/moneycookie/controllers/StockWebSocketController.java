@@ -3,6 +3,8 @@ package com.finescore.moneycookie.controllers;
 import com.finescore.moneycookie.models.ItemInfo;
 import com.finescore.moneycookie.models.ResponseMessage;
 import com.finescore.moneycookie.models.PriceToTicker;
+import com.finescore.moneycookie.services.generator.Generator;
+import com.finescore.moneycookie.services.generator.PriceNowGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -21,7 +23,7 @@ import java.util.List;
 @Slf4j
 public class StockWebSocketController {
     private SimpMessagingTemplate simpMessagingTemplate;
-    private StockFactory stockFactory;
+    private PriceNowGenerator generator;
     private static List<ItemInfo> tickerList;
     private static ResponseMessage<PriceToTicker> respMessage;
 
@@ -36,7 +38,8 @@ public class StockWebSocketController {
     private void send() throws ParserConfigurationException, IOException, SAXException {
         List<PriceToTicker> list = new ArrayList<>();
         for (ItemInfo item : tickerList) {
-            list.add(stockFactory.getNowPrice(item.getTicker()));
+            generator = new PriceNowGenerator(item);
+            list.add(generator.getPriceNow());
         }
 
         respMessage.setContents(list);

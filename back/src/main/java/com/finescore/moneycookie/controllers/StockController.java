@@ -5,6 +5,10 @@ import com.finescore.moneycookie.models.ItemBuyInfo;
 import com.finescore.moneycookie.models.ItemInfo;
 import com.finescore.moneycookie.models.ResponseMessage;
 import com.finescore.moneycookie.models.PriceToTicker;
+import com.finescore.moneycookie.services.generator.AllItemsGenerator;
+import com.finescore.moneycookie.services.generator.DividendGenerator;
+import com.finescore.moneycookie.services.generator.Generator;
+import com.finescore.moneycookie.services.generator.PricePeriodGenerator;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,13 +23,12 @@ import java.util.List;
 @AllArgsConstructor
 public class StockController {
 
-    private StockFactory stockFactory;
-
     @GetMapping("/daily")
     public ResponseMessage<PriceToTicker> getDailyPrice(List<ItemBuyInfo> lists) throws ParserConfigurationException, IOException, SAXException {
         List<PriceToTicker> price = new ArrayList<>();
         for (ItemBuyInfo info : lists) {
-            PriceToTicker periodPrice = stockFactory.getPeriodPrice(info.getTicker(), info.getBuyDate());
+            PricePeriodGenerator generator = new PricePeriodGenerator();
+            PriceToTicker periodPrice = generator.get();
             price.add(periodPrice);
         }
 
@@ -35,10 +38,11 @@ public class StockController {
     }
 
     @GetMapping("/dividend")
-    public ResponseMessage<PriceToTicker> getDividend(List<ItemInfo> lists) throws JsonProcessingException {
+    public ResponseMessage<PriceToTicker> getDividend(List<ItemInfo> lists) throws IOException {
         List<PriceToTicker> dividends = new ArrayList<>();
         for (ItemInfo info : lists) {
-            PriceToTicker dividend = stockFactory.getDividends(info.getTicker(), info.getMarket());
+            DividendGenerator generator = new DividendGenerator(info);
+            PriceToTicker dividend = generator.get();
             dividends.add(dividend);
         }
 
@@ -48,9 +52,10 @@ public class StockController {
     }
 
     @GetMapping("/items")
-    public ResponseMessage<ItemInfo> getAllItems() throws JsonProcessingException {
+    public ResponseMessage<ItemInfo> getAllItems() throws IOException, ParserConfigurationException, SAXException {
         ResponseMessage<ItemInfo> respMessage = new ResponseMessage<>("OK");
-        respMessage.setContents(stockFactory.getAllItems());
+        AllItemsGenerator generator = new AllItemsGenerator();
+        respMessage.setContents(generator.get());
         return respMessage;
     }
 }

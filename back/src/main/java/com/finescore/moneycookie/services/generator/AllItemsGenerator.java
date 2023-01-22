@@ -3,6 +3,8 @@ package com.finescore.moneycookie.services.generator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.finescore.moneycookie.models.ItemInfo;
 import com.finescore.moneycookie.services.factory.AllItemsRequestFactory;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -10,6 +12,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
+@AllArgsConstructor
 public class AllItemsGenerator implements Generator<List<ItemInfo>> {
     private AllItemsRequestFactory factory;
 

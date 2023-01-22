@@ -1,22 +1,10 @@
 package com.finescore.moneycookie.services.factory;
 
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
+import com.finescore.moneycookie.models.ItemInfo;
+import org.springframework.stereotype.Service;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
+@Service
+public abstract class XMLRequestFactory<R> implements RequestFactory<R> {
 
-public abstract class XMLRequestFactory implements RequestFactory<Document> {
-
-    @Override
-    public Document request() throws ParserConfigurationException, IOException, SAXException {
-        DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = builderFactory.newDocumentBuilder();
-
-        return builder.parse(setURL());
-    }
-
-    abstract String setURL();
+    abstract String setURL(ItemInfo info);
 }

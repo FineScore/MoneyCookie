@@ -1,7 +1,10 @@
 package com.finescore.moneycookie.services.factory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finescore.moneycookie.models.ItemInfo;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -13,17 +16,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class DividendRequestFactory extends JSONRequestFactory implements RequestURLContants {
-    private ItemInfo itemInfo;
-    private final RestTemplate restTemplate;
-
-    public DividendRequestFactory(ObjectMapper objectMapper, RestTemplate restTemplate) {
-        super(objectMapper);
-        this.restTemplate = restTemplate;
-    }
+@AllArgsConstructor
+public class DividendRequestFactory extends JSONRequestFactory<ItemInfo> implements RequestURLContants {
+    private RestTemplate restTemplate;
+    private ObjectMapper objectMapper;
 
     @Override
-    Map<String, String> setParams() {
+    public Map<String, String> setParams() {
         Map<String, String> params = new HashMap<>();
         params.put("period1", String.valueOf(getStartDateMilli()));
         params.put("period2", String.valueOf(getEndDateMilli()));
@@ -35,8 +34,9 @@ public class DividendRequestFactory extends JSONRequestFactory implements Reques
     }
 
     @Override
-    String sendRequest() {
-        return restTemplate.exchange(setURL(), HttpMethod.GET, setHeaders(), String.class, setParams()).getBody();
+    public JsonNode request(ItemInfo info) throws JsonProcessingException {
+        String body = restTemplate.exchange(setURL(info), HttpMethod.GET, setHeaders(), String.class, setParams()).getBody();
+        return objectMapper.readTree(body);
     }
 
     private long getEndDateMilli() {
@@ -59,8 +59,8 @@ public class DividendRequestFactory extends JSONRequestFactory implements Reques
         return startInstant.toEpochMilli() / 1000;
     }
 
-    private String setURL() {
-        return String.format(DIVIDEND_URL, itemInfo.getTicker(), itemInfo.getMarket());
+    private String setURL(ItemInfo info) {
+        return String.format(DIVIDEND_URL, info.getTicker(), info.getMarket());
     }
 
 }

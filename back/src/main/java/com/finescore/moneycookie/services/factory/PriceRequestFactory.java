@@ -1,16 +1,28 @@
 package com.finescore.moneycookie.services.factory;
 
 import com.finescore.moneycookie.models.ItemInfo;
-import lombok.AllArgsConstructor;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
-@AllArgsConstructor
-public class PriceRequestFactory extends XMLRequestFactory implements RequestURLContants {
-    private RestTemplate restTemplate;
-    private ItemInfo itemInfo;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+
+@Service
+public class PriceRequestFactory extends XMLRequestFactory<ItemInfo> implements RequestURLContants {
 
     @Override
-    String setURL() {
-        return String.format(PRICE_URL, itemInfo.getTicker());
+    public Document request(ItemInfo info) throws ParserConfigurationException, IOException, SAXException {
+        DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = builderFactory.newDocumentBuilder();
+
+        return builder.parse(setURL(info));
+    }
+
+    @Override
+    String setURL(ItemInfo info) {
+        return String.format(PRICE_URL, info.getTicker());
     }
 }
