@@ -1,4 +1,4 @@
-package com.finescore.moneycookie.services.factory;
+package com.finescore.moneycookie.api.factory;
 
 import com.finescore.moneycookie.models.ItemInfo;
 import org.springframework.stereotype.Service;

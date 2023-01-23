@@ -1,9 +1,9 @@
-package com.finescore.moneycookie.services.generator;
+package com.finescore.moneycookie.api.generator;
 
 import com.finescore.moneycookie.models.ItemInfo;
 import com.finescore.moneycookie.models.PriceToDate;
 import com.finescore.moneycookie.models.PriceToTicker;
-import com.finescore.moneycookie.services.factory.PriceRequestFactory;
+import com.finescore.moneycookie.api.factory.PriceRequestFactory;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 

@@ -1,4 +1,4 @@
-package com.finescore.moneycookie.services.generator;
+package com.finescore.moneycookie.api.generator;
 
 import com.finescore.moneycookie.models.PriceToTicker;
 import org.xml.sax.SAXException;

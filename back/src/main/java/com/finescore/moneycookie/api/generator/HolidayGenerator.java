@@ -1,8 +1,8 @@
-package com.finescore.moneycookie.services.generator;
+package com.finescore.moneycookie.api.generator;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.finescore.moneycookie.models.ClosedDay;
-import com.finescore.moneycookie.services.factory.HolidayRequestFactory;
+import com.finescore.moneycookie.api.factory.HolidayRequestFactory;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;

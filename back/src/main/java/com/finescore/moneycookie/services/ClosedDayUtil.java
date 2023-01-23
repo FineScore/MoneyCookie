@@ -1,7 +1,7 @@
 package com.finescore.moneycookie.services;
 
 import com.finescore.moneycookie.models.ClosedDay;
-import com.finescore.moneycookie.services.generator.HolidayGenerator;
+import com.finescore.moneycookie.api.generator.HolidayGenerator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;

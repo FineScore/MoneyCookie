@@ -1,4 +1,4 @@
-package com.finescore.moneycookie.services.factory;
+package com.finescore.moneycookie.api.factory;
 
 public interface RequestURLContants {
     String PRICE_URL = "https://fchart.stock.naver.com/sise.nhn?timeframe=day&count=6000&requestType=0&symbol=%s";

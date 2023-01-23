@@ -3,8 +3,7 @@ package com.finescore.moneycookie.controllers;
 import com.finescore.moneycookie.models.ItemInfo;
 import com.finescore.moneycookie.models.ResponseMessage;
 import com.finescore.moneycookie.models.PriceToTicker;
-import com.finescore.moneycookie.services.generator.Generator;
-import com.finescore.moneycookie.services.generator.PriceNowGenerator;
+import com.finescore.moneycookie.api.generator.PriceNowGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -28,18 +27,18 @@ public class StockWebSocketController {
     private static ResponseMessage<PriceToTicker> respMessage;
 
     @MessageMapping("/now")
-    public void getNowPrice(List<ItemInfo> itemList) throws ParserConfigurationException, IOException, SAXException {
+    public void getNowPrice(List<ItemInfo> itemList) throws ParserConfigurationException, IOException, SAXException, InterruptedException {
         tickerList = itemList;
         respMessage = new ResponseMessage<>("OK");
         send();
     }
 
-    @Scheduled(fixedRate = 3000)
-    private void send() throws ParserConfigurationException, IOException, SAXException {
+    @Scheduled(fixedRate = 1000)
+    private void send() throws ParserConfigurationException, IOException, SAXException, InterruptedException {
         List<PriceToTicker> list = new ArrayList<>();
         for (ItemInfo item : tickerList) {
-            generator = new PriceNowGenerator(item);
-            list.add(generator.getPriceNow());
+            list.add(generator.get(item));
+            Thread.sleep(1000);
         }
 
         respMessage.setContents(list);

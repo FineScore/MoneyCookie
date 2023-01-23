@@ -1,4 +1,4 @@
-package com.finescore.moneycookie.services.factory;
+package com.finescore.moneycookie.api.factory;
 
 public interface RequestSendConfig<T> {
     default String sendRequest(T t) {
