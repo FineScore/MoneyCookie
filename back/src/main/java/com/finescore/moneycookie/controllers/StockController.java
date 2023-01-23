@@ -48,12 +48,4 @@ public class StockController {
         respMessage.setContents(dividends);
         return respMessage;
     }
-
-    @GetMapping("/items")
-    public ResponseMessage<ItemInfo> getAllItems() throws IOException, ParserConfigurationException, SAXException {
-        ResponseMessage<ItemInfo> respMessage = new ResponseMessage<>("OK");
-        AllItemsGenerator generator = new AllItemsGenerator();
-        respMessage.setContents(generator.get());
-        return respMessage;
-    }
 }

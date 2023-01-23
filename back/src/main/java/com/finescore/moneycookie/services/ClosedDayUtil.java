@@ -22,16 +22,29 @@ public class ClosedDayUtil {
     public List<ClosedDay> getClosedDays() throws IOException, ParserConfigurationException, SAXException {
         List<ClosedDay> closedDays = generator.get();
         closedDays.add(getCSATDay());
+        closedDays.add(getLastClosedDay());
+        closedDays.add(getWorkersDay());
         return closedDays;
     }
 
     private ClosedDay getCSATDay() {
-        return new ClosedDay(getNovemberThirdThursday(), "CSAT");
+        return new ClosedDay(getNovemberThirdThursday(), "수능");
     }
 
     private LocalDate getNovemberThirdThursday() {
         return LocalDate
                 .of(LocalDate.now().getYear(), Month.NOVEMBER, 1)
                 .with(TemporalAdjusters.dayOfWeekInMonth(3, DayOfWeek.THURSDAY));
+    }
+
+    private ClosedDay getLastClosedDay() {
+        LocalDate date = LocalDate
+                .of(LocalDate.now().getYear(), Month.DECEMBER, 1)
+                .with(TemporalAdjusters.lastInMonth(DayOfWeek.FRIDAY));
+        return new ClosedDay(date, "연말 휴장일");
+    }
+
+    private ClosedDay getWorkersDay() {
+        return new ClosedDay(LocalDate.of(LocalDate.now().getYear(), Month.MAY,1), "수능");
     }
 }
