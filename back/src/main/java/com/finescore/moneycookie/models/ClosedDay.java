@@ -12,4 +12,5 @@ import java.time.LocalDate;
 public class ClosedDay {
     private LocalDate date;
     private String name;
+    private ClosedType type;
 }

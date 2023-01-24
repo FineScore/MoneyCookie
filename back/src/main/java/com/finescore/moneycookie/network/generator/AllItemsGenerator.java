@@ -5,10 +5,7 @@ import com.finescore.moneycookie.models.ItemInfo;
 import com.finescore.moneycookie.network.factory.AllItemsRequestFactory;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +15,7 @@ public class AllItemsGenerator implements Generator<List<ItemInfo>> {
     private AllItemsRequestFactory factory;
 
     @Override
-    public List<ItemInfo> get() throws IOException, ParserConfigurationException, SAXException {
+    public List<ItemInfo> get() {
         JsonNode allItems = factory.request().get("block1");
 
         return getItemInfos(allItems);

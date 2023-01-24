@@ -7,10 +7,7 @@ import com.finescore.moneycookie.models.PriceToTicker;
 import com.finescore.moneycookie.network.factory.DividendRequestFactory;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -23,7 +20,7 @@ public class DividendGenerator implements Generator<ItemInfo> {
     private DividendRequestFactory factory;
 
     @Override
-    public PriceToTicker get(ItemInfo info) throws IOException, ParserConfigurationException, SAXException {
+    public PriceToTicker get(ItemInfo info) {
         JsonNode dividends =
                 factory.request(info)
                         .get("chart")
@@ -35,7 +32,7 @@ public class DividendGenerator implements Generator<ItemInfo> {
         return new PriceToTicker(info.getTicker(), getDividend(dividends));
     }
 
-    private static List<PriceToDate> getDividend(JsonNode dividends) {
+    private List<PriceToDate> getDividend(JsonNode dividends) {
         List<PriceToDate> list = new ArrayList<>();
 
         for (JsonNode objectNode : dividends) {

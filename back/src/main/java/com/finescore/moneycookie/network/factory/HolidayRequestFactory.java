@@ -30,8 +30,13 @@ public class HolidayRequestFactory extends JSONRequestFactory implements Request
     }
 
     @Override
-    public JsonNode request() throws JsonProcessingException {
+    public JsonNode request() {
         String body = restTemplate.exchange(URLDecoder.decode(HOLIDAY_URL, StandardCharsets.UTF_8), HttpMethod.GET, setHeaders(), String.class, setParams()).getBody();
-        return objectMapper.readTree(body);
+
+        try {
+            return objectMapper.readTree(body);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

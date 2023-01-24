@@ -7,10 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -21,7 +18,7 @@ import java.util.List;
 abstract class PriceGenerator<T> implements Generator<T> {
     private final PriceRequestFactory factory;
 
-    List<PriceToDate> parse(ItemInfo info) throws ParserConfigurationException, IOException, SAXException {
+    List<PriceToDate> parse(ItemInfo info) {
         Document response = factory.request(info);
         response.getDocumentElement().normalize();
         NodeList list = response.getElementsByTagName("item");

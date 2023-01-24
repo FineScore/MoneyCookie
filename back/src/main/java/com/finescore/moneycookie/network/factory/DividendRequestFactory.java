@@ -34,9 +34,14 @@ public class DividendRequestFactory extends JSONRequestFactory<ItemInfo> impleme
     }
 
     @Override
-    public JsonNode request(ItemInfo info) throws JsonProcessingException {
+    public JsonNode request(ItemInfo info) {
         String body = restTemplate.exchange(setURL(info), HttpMethod.GET, setHeaders(), String.class, setParams()).getBody();
-        return objectMapper.readTree(body);
+
+        try {
+            return objectMapper.readTree(body);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private long getEndDateMilli() {

@@ -14,11 +14,16 @@ import java.io.IOException;
 public class PriceRequestFactory extends XMLRequestFactory<ItemInfo> implements RequestURLContants {
 
     @Override
-    public Document request(ItemInfo info) throws ParserConfigurationException, IOException, SAXException {
+    public Document request(ItemInfo info) {
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = builderFactory.newDocumentBuilder();
+        DocumentBuilder builder = null;
 
-        return builder.parse(setURL(info));
+        try {
+            builder = builderFactory.newDocumentBuilder();
+            return builder.parse(setURL(info));
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

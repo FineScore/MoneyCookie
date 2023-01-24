@@ -28,8 +28,13 @@ public class AllItemsRequestFactory extends JSONRequestFactory implements Reques
     }
 
     @Override
-    public JsonNode request() throws JsonProcessingException {
+    public JsonNode request() {
         String body = restTemplate.exchange(ALL_ITEMS_URL, HttpMethod.POST, setHeaders(), String.class, setParams()).getBody();
-        return objectMapper.readTree(body);
+
+        try {
+            return objectMapper.readTree(body);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

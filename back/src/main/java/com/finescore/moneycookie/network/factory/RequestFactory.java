@@ -1,17 +1,13 @@
 package com.finescore.moneycookie.network.factory;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 
 public interface RequestFactory<R> {
-    default JsonNode request() throws IOException {
+    default JsonNode request() {
         return null;
     }
 
-    default <T> T request(R r) throws ParserConfigurationException, IOException, SAXException {
+    default <T> T request(R r) {
         return null;
     }
 }
