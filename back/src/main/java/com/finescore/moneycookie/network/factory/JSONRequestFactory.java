@@ -1,4 +1,4 @@
-package com.finescore.moneycookie.api.factory;
+package com.finescore.moneycookie.network.factory;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

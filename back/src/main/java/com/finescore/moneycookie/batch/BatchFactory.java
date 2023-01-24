@@ -1,6 +1,6 @@
-package com.finescore.moneycookie.services.batch;
+package com.finescore.moneycookie.batch;
 
-import com.finescore.moneycookie.api.generator.AllItemsGenerator;
+import com.finescore.moneycookie.network.generator.AllItemsGenerator;
 import com.finescore.moneycookie.models.ItemInfo;
 import com.finescore.moneycookie.models.ResponseMessage;
 import lombok.AllArgsConstructor;

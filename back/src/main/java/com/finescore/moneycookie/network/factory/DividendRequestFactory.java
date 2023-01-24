@@ -1,4 +1,4 @@
-package com.finescore.moneycookie.api.factory;
+package com.finescore.moneycookie.network.factory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;

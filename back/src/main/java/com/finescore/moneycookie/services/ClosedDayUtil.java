@@ -1,7 +1,7 @@
 package com.finescore.moneycookie.services;
 
 import com.finescore.moneycookie.models.ClosedDay;
-import com.finescore.moneycookie.api.generator.HolidayGenerator;
+import com.finescore.moneycookie.network.generator.HolidayGenerator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
@@ -24,6 +24,7 @@ public class ClosedDayUtil {
         closedDays.add(getCSATDay());
         closedDays.add(getLastClosedDay());
         closedDays.add(getWorkersDay());
+        weekendFliter(closedDays);
         return closedDays;
     }
 
@@ -46,5 +47,13 @@ public class ClosedDayUtil {
 
     private ClosedDay getWorkersDay() {
         return new ClosedDay(LocalDate.of(LocalDate.now().getYear(), Month.MAY,1), "수능");
+    }
+
+    private void weekendFliter(List<ClosedDay> closedDays) {
+        for (ClosedDay day: closedDays) {
+            if (day.getDate().getDayOfWeek() == DayOfWeek.SATURDAY || day.getDate().getDayOfWeek() == DayOfWeek.SUNDAY) {
+                closedDays.remove(day);
+            }
+        }
     }
 }

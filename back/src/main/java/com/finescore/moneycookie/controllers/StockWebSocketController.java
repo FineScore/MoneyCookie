@@ -3,7 +3,7 @@ package com.finescore.moneycookie.controllers;
 import com.finescore.moneycookie.models.ItemInfo;
 import com.finescore.moneycookie.models.ResponseMessage;
 import com.finescore.moneycookie.models.PriceToTicker;
-import com.finescore.moneycookie.api.generator.PriceNowGenerator;
+import com.finescore.moneycookie.network.generator.PriceNowGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
