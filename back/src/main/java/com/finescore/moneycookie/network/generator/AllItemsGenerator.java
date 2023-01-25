@@ -2,21 +2,21 @@ package com.finescore.moneycookie.network.generator;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.finescore.moneycookie.models.ItemInfo;
-import com.finescore.moneycookie.network.factory.AllItemsRequestFactory;
+import com.finescore.moneycookie.network.factory.RequestFactory;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Component
 @AllArgsConstructor
 public class AllItemsGenerator implements Generator<List<ItemInfo>> {
-    private AllItemsRequestFactory factory;
+    private RequestFactory allItemsRequestFactory;
 
     @Override
     public List<ItemInfo> get() {
-        JsonNode allItems = factory.request().get("block1");
+        JsonNode allItems = allItemsRequestFactory.request().get("block1");
 
         return getItemInfos(allItems);
     }
@@ -25,7 +25,7 @@ public class AllItemsGenerator implements Generator<List<ItemInfo>> {
         List<ItemInfo> list = new ArrayList<>();
 
         for (JsonNode item : allItems) {
-            String shortCode = item.get("short_code").asText();
+            Integer shortCode = item.get("short_code").asInt();
             String name = item.get("codeName").asText();
             String market = item.get("marketEngName").asText();
             list.add(new ItemInfo(shortCode, name, market));

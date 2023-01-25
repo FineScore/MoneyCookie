@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.finescore.moneycookie.models.ItemInfo;
 import com.finescore.moneycookie.models.PriceToDate;
 import com.finescore.moneycookie.models.PriceToTicker;
-import com.finescore.moneycookie.network.factory.DividendRequestFactory;
+import com.finescore.moneycookie.network.factory.RequestFactory;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -14,15 +14,15 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Component
 @AllArgsConstructor
 public class DividendGenerator implements Generator<ItemInfo> {
-    private DividendRequestFactory factory;
+    private final RequestFactory<JsonNode, ItemInfo> dividendRequestFactory;
 
     @Override
     public PriceToTicker get(ItemInfo info) {
         JsonNode dividends =
-                factory.request(info)
+                dividendRequestFactory.request(info)
                         .get("chart")
                         .get("result")
                         .get(0)

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finescore.moneycookie.models.ItemInfo;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpMethod;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
@@ -15,9 +15,9 @@ import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
 
-@Service
+@Component
 @AllArgsConstructor
-public class DividendRequestFactory extends JSONRequestFactory<ItemInfo> implements RequestURLContants {
+public class DividendRequestFactory extends JSONRequestFactory<JsonNode, ItemInfo> implements RequestURLContants {
     private RestTemplate restTemplate;
     private ObjectMapper objectMapper;
 

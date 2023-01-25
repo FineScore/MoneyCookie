@@ -1,8 +1,7 @@
 package com.finescore.moneycookie.models;
 
 import lombok.*;
-
-import java.util.List;
+import org.springframework.lang.Nullable;
 
 @Getter
 @Setter
@@ -10,5 +9,6 @@ import java.util.List;
 public class ResponseMessage<T> {
     @NonNull
     private String status;
-    private List<T> contents;
+    @Nullable
+    private T contents;
 }

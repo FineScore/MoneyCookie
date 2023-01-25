@@ -3,16 +3,17 @@ package com.finescore.moneycookie.network.generator;
 import com.finescore.moneycookie.models.ItemInfo;
 import com.finescore.moneycookie.models.PriceToDate;
 import com.finescore.moneycookie.models.PriceToTicker;
-import com.finescore.moneycookie.network.factory.PriceRequestFactory;
-import org.springframework.stereotype.Service;
+import com.finescore.moneycookie.network.factory.RequestFactory;
+import org.springframework.stereotype.Component;
+import org.w3c.dom.Document;
 
 import java.util.List;
 
-@Service
+@Component
 public class PriceNowGenerator extends PriceGenerator<ItemInfo> {
 
-    public PriceNowGenerator(PriceRequestFactory factory) {
-        super(factory);
+    public PriceNowGenerator(RequestFactory<Document, ItemInfo> priceRequestFactory) {
+        super(priceRequestFactory);
     }
 
     @Override

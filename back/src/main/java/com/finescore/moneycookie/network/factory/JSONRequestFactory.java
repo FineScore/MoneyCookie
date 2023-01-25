@@ -3,13 +3,13 @@ package com.finescore.moneycookie.network.factory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
-@Service
-public class JSONRequestFactory<R> implements RequestFactory<R>, RequestParamConfig {
+@Component
+public class JSONRequestFactory<T, R> implements RequestFactory<T, R> {
 
     HttpEntity<String> setHeaders() {
         String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36";

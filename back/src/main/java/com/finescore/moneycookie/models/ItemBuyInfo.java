@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class ItemBuyInfo extends ItemInfo {
-    public ItemBuyInfo(String ticker, String name, String market, LocalDate buyDate) {
+    public ItemBuyInfo(Integer ticker, String name, String market, LocalDate buyDate) {
         super(ticker, name, market);
         this.buyDate = buyDate;
     }

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpMethod;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URLDecoder;
@@ -14,10 +14,9 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
-@Service
+@Component
 @AllArgsConstructor
 public class HolidayRequestFactory extends JSONRequestFactory implements RequestURLContants {
-
     private RestTemplate restTemplate;
     private ObjectMapper objectMapper;
 

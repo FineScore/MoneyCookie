@@ -3,9 +3,9 @@ package com.finescore.moneycookie.network.generator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.finescore.moneycookie.models.ClosedDay;
 import com.finescore.moneycookie.models.ClosedType;
-import com.finescore.moneycookie.network.factory.HolidayRequestFactory;
+import com.finescore.moneycookie.network.factory.RequestFactory;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -15,30 +15,22 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Component
 @AllArgsConstructor
 public class ClosedDayGenerator implements Generator<List<ClosedDay>> {
-    private HolidayRequestFactory factory;
+    private RequestFactory holidayRequestFactory;
 
     @Override
     public List<ClosedDay> get() {
         JsonNode nodes =
-                factory.request()
+                holidayRequestFactory.request()
                         .get("response")
                         .get("body")
                         .get("items")
                         .get("item");
 
         List<ClosedDay> list = setRestDays(nodes);
-        weekendFliter(list);
-        return list;
-    }
-
-    private List<ClosedDay> setRestDays(JsonNode nodes) {
-        List<ClosedDay> list = getHolidays(nodes);
-        list.add(getCSATDay());
-        list.add(getLastClosedDay());
-        list.add(getWorkersDay());
+        weekendFilter(list);
         return list;
     }
 
@@ -50,6 +42,14 @@ public class ClosedDayGenerator implements Generator<List<ClosedDay>> {
             LocalDate date = LocalDate.parse(node.get("locdate").asText(), DateTimeFormatter.ofPattern("yyyyMMdd"));
             list.add(new ClosedDay(date, name, ClosedType.CLOSED));
         }
+        return list;
+    }
+
+    private List<ClosedDay> setRestDays(JsonNode nodes) {
+        List<ClosedDay> list = getHolidays(nodes);
+        list.add(getCSATDay());
+        list.add(getLastClosedDay());
+        list.add(getWorkersDay());
         return list;
     }
 
@@ -74,12 +74,16 @@ public class ClosedDayGenerator implements Generator<List<ClosedDay>> {
         return new ClosedDay(LocalDate.of(LocalDate.now().getYear(), Month.MAY, 1), "근로자의 날", ClosedType.CLOSED);
     }
 
-    private void weekendFliter(List<ClosedDay> closedDays) {
+    private void weekendFilter(List<ClosedDay> closedDays) {
         for (ClosedDay day : closedDays) {
-            if (day.getDate().getDayOfWeek() == DayOfWeek.SATURDAY || day.getDate().getDayOfWeek() == DayOfWeek.SUNDAY) {
+            if (isWeekend(day)) {
                 closedDays.remove(day);
             }
         }
+    }
+
+    private boolean isWeekend(ClosedDay day) {
+        return day.getDate().getDayOfWeek() == DayOfWeek.SATURDAY || day.getDate().getDayOfWeek() == DayOfWeek.SUNDAY;
     }
 
 }

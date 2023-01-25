@@ -2,9 +2,9 @@ package com.finescore.moneycookie.network.generator;
 
 import com.finescore.moneycookie.models.ItemInfo;
 import com.finescore.moneycookie.models.PriceToDate;
-import com.finescore.moneycookie.network.factory.PriceRequestFactory;
+import com.finescore.moneycookie.network.factory.RequestFactory;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
@@ -13,13 +13,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
 @AllArgsConstructor
-abstract class PriceGenerator<T> implements Generator<T> {
-    private final PriceRequestFactory factory;
+@Component
+public abstract class PriceGenerator<T> implements Generator<T> {
+    private final RequestFactory<Document, ItemInfo> priceRequestFactory;
 
-    List<PriceToDate> parse(ItemInfo info) {
-        Document response = factory.request(info);
+    protected List<PriceToDate> parse(ItemInfo info) {
+        Document response = priceRequestFactory.request(info);
         response.getDocumentElement().normalize();
         NodeList list = response.getElementsByTagName("item");
 

@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ItemInfo {
-    private String ticker;
+    private Integer ticker;
     private String name;
     private String market;
 }

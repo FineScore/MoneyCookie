@@ -1,7 +1,7 @@
 package com.finescore.moneycookie.network.factory;
 
 import com.finescore.moneycookie.models.ItemInfo;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -10,8 +10,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 
-@Service
-public class PriceRequestFactory extends XMLRequestFactory<ItemInfo> implements RequestURLContants {
+@Component
+public class PriceRequestFactory extends XMLRequestFactory implements RequestURLContants {
 
     @Override
     public Document request(ItemInfo info) {

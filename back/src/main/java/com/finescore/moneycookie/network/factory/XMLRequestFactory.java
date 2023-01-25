@@ -1,10 +1,9 @@
 package com.finescore.moneycookie.network.factory;
 
 import com.finescore.moneycookie.models.ItemInfo;
-import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
 
-@Service
-public abstract class XMLRequestFactory<R> implements RequestFactory<R> {
+public abstract class XMLRequestFactory implements RequestFactory<Document, ItemInfo> {
 
     abstract String setURL(ItemInfo info);
 }
