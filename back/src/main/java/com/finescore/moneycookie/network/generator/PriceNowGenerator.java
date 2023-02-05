@@ -3,25 +3,23 @@ package com.finescore.moneycookie.network.generator;
 import com.finescore.moneycookie.models.ItemInfo;
 import com.finescore.moneycookie.models.PriceToDate;
 import com.finescore.moneycookie.models.PriceToTicker;
-import com.finescore.moneycookie.network.factory.RequestFactory;
+import com.finescore.moneycookie.network.NetworkRequest;
+import com.finescore.moneycookie.network.parser.Parser;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Document;
 
 import java.util.List;
 
 @Component
-public class PriceNowGenerator extends PriceGenerator<ItemInfo> {
+public class PriceNowGenerator extends PriceAllGenerator {
 
-    public PriceNowGenerator(RequestFactory<Document, ItemInfo> priceRequestFactory) {
-        super(priceRequestFactory);
+    public PriceNowGenerator(NetworkRequest networkRequest, Parser XMLParser) {
+        super(networkRequest, XMLParser);
     }
 
     @Override
-    public PriceToTicker get(ItemInfo info) {
-        return new PriceToTicker(info.getTicker(), rangeNow(parse(info)));
-    }
+    public PriceToTicker getPrice(ItemInfo info) {
+        List<PriceToDate> list = getList(info);
 
-    private List<PriceToDate> rangeNow(List<PriceToDate> priceToDates) {
-        return priceToDates.subList(priceToDates.size() - 1, priceToDates.size());
+        return new PriceToTicker(info.getTicker(), list.subList(list.size() - 1, list.size()));
     }
 }

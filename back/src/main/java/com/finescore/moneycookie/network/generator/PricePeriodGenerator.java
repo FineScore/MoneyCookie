@@ -1,38 +1,31 @@
 package com.finescore.moneycookie.network.generator;
 
-import com.finescore.moneycookie.models.ItemBuyInfo;
 import com.finescore.moneycookie.models.ItemInfo;
 import com.finescore.moneycookie.models.PriceToDate;
 import com.finescore.moneycookie.models.PriceToTicker;
-import com.finescore.moneycookie.network.factory.RequestFactory;
+import com.finescore.moneycookie.network.NetworkRequest;
+import com.finescore.moneycookie.network.parser.Parser;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Document;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class PricePeriodGenerator extends PriceGenerator<ItemBuyInfo> {
-
-    public PricePeriodGenerator(RequestFactory<Document, ItemInfo> priceRequestFactory) {
-        super(priceRequestFactory);
+public class PricePeriodGenerator extends PriceAllGenerator {
+    public PricePeriodGenerator(NetworkRequest networkRequest, Parser XMLParser) {
+        super(networkRequest, XMLParser);
     }
 
     @Override
-    public PriceToTicker get(ItemBuyInfo info) {
-        return new PriceToTicker(info.getTicker(), getPriceToDates(parse(info), info));
-    }
+    public PriceToTicker getPrice(ItemInfo info) {
+        List<PriceToDate> list = getList(info);
 
-    private List<PriceToDate> getPriceToDates(List<PriceToDate> totalPrice, ItemBuyInfo info) {
-        List<PriceToDate> dateList = new ArrayList<>();
-
-        for (int i = totalPrice.size() - 1; i >= 0; i--) {
-            if (info.getBuyDate().equals(totalPrice.get(i).getDate())) {
-                dateList = totalPrice.subList(i, totalPrice.size());
+        for (int i = list.size() - 1; i >= 0; i--) {
+            if (info.getBuyDate().equals(list.get(i).getDate())) {
+                list = list.subList(i, list.size());
                 break;
             }
         }
 
-        return dateList;
+        return new PriceToTicker(info.getTicker(), list);
     }
 }

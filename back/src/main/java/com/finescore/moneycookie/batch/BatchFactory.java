@@ -10,14 +10,14 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 
-@Service
-@AllArgsConstructor
-public class BatchFactory {
-    private final AllItemsGenerator generator;
-
-    public ResponseMessage<ItemInfo> getAllItems() throws IOException, ParserConfigurationException, SAXException {
-        ResponseMessage<ItemInfo> respMessage = new ResponseMessage<>("OK");
-        respMessage.setContents(generator.get());
-        return respMessage;
-    }
-}
+//@Service
+//@AllArgsConstructor
+//public class BatchFactory {
+//    private final AllItemsGenerator generator;
+//
+//    public ResponseMessage<ItemInfo> getAllItems() throws IOException, ParserConfigurationException, SAXException {
+//        ResponseMessage<ItemInfo> respMessage = new ResponseMessage<>("OK");
+//        respMessage.setContents(generator.get());
+//        return respMessage;
+//    }
+//}

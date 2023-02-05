@@ -4,45 +4,93 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.finescore.moneycookie.models.ItemInfo;
 import com.finescore.moneycookie.models.PriceToDate;
 import com.finescore.moneycookie.models.PriceToTicker;
-import com.finescore.moneycookie.network.factory.RequestFactory;
+import com.finescore.moneycookie.network.NetworkRequest;
+import com.finescore.moneycookie.network.parser.Parser;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @AllArgsConstructor
-public class DividendGenerator implements Generator<ItemInfo> {
-    private final RequestFactory<JsonNode, ItemInfo> dividendRequestFactory;
+public class DividendGenerator implements PriceGenerator {
+    private final String URL = "https://query2.finance.yahoo.com/v8/finance/chart/%s.%s?period1={period1}&period2={period2}&interval={interval}&includePrePost={includePrePost}&events={events}";
+    private final NetworkRequest networkRequest;
+    private final Parser<JsonNode> JSONParser;
 
     @Override
-    public PriceToTicker get(ItemInfo info) {
-        JsonNode dividends =
-                dividendRequestFactory.request(info)
-                        .get("chart")
-                        .get("result")
-                        .get(0)
-                        .get("events")
-                        .get("dividends");
+    public PriceToTicker getPrice(ItemInfo info) {
+        String response = networkRequest.request(setURL(URL, info), HttpMethod.GET, setParams());
+        JsonNode body = JSONParser.parse(response);
+        JsonNode dividends = getDividendNode(body);
 
-        return new PriceToTicker(info.getTicker(), getDividend(dividends));
+        return new PriceToTicker(info.getTicker(), getDividendList(dividends));
     }
 
-    private List<PriceToDate> getDividend(JsonNode dividends) {
+    private JsonNode getDividendNode(JsonNode body) {
+        return body.get("chart")
+                .get("result")
+                .get(0)
+                .get("events")
+                .get("dividends");
+    }
+
+    private List<PriceToDate> getDividendList(JsonNode dividends) {
         List<PriceToDate> list = new ArrayList<>();
 
         for (JsonNode objectNode : dividends) {
-            LocalDate localDate =
-                    Instant.ofEpochMilli(objectNode.get("date").asLong() * 1000)
-                            .atZone(ZoneOffset.UTC)
-                            .toLocalDate();
+            LocalDate localDate = convertDate(objectNode);
             Integer price = objectNode.get("amount").asInt();
             list.add(new PriceToDate(localDate, price));
         }
         return list;
+    }
+
+    private LocalDate convertDate(JsonNode objectNode) {
+        return Instant.ofEpochMilli(objectNode.get("date").asLong() * 1000)
+                .atZone(ZoneOffset.UTC)
+                .toLocalDate();
+    }
+
+    private String setURL(String url, Object object) {
+        return String.format(url, object);
+    }
+
+    private Map<String, String> setParams() {
+        Map<String, String> params = new HashMap<>();
+        params.put("period1", String.valueOf(getStartDateMilli()));
+        params.put("period2", String.valueOf(getEndDateMilli()));
+        params.put("interval", "1d");
+        params.put("includePrePost", "false");
+        params.put("events", "div,splits");
+
+        return params;
+    }
+
+    private long getStartDateMilli() {
+        LocalDate startDate = LocalDate.of(
+                LocalDate.now().getYear() - 1,
+                LocalDate.now().getMonth().plus(1),
+                1
+        );
+        Instant startInstant = startDate.atStartOfDay().toInstant(ZoneOffset.UTC);
+        return startInstant.toEpochMilli() / 1000;
+    }
+
+    private long getEndDateMilli() {
+        LocalDate endDate = LocalDate.of(
+                LocalDate.now().getYear(),
+                LocalDate.now().getMonth(),
+                1
+        );
+        Instant endInstant = endDate.atStartOfDay().toInstant(ZoneOffset.UTC);
+        return endInstant.toEpochMilli() / 1000;
     }
 }

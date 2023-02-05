@@ -1,6 +1,5 @@
 package com.finescore.moneycookie.controllers;
 
-import com.finescore.moneycookie.models.ItemBuyInfo;
 import com.finescore.moneycookie.models.ItemInfo;
 import com.finescore.moneycookie.models.ResponseMessage;
 import com.finescore.moneycookie.models.PriceToTicker;
@@ -17,10 +16,10 @@ import java.util.List;
 public class StockController {
     private UserStockInfoService userService;
 
-    @GetMapping("/daily")
-    public ResponseMessage<List<PriceToTicker>> getDailyPrice(List<ItemBuyInfo> lists) {
+    @GetMapping("/period")
+    public ResponseMessage<List<PriceToTicker>> getPeriodPrice(List<ItemInfo> lists) {
         List<PriceToTicker> price = new ArrayList<>();
-        for (ItemBuyInfo info : lists) {
+        for (ItemInfo info : lists) {
             PriceToTicker periodPrice = userService.getUserPeriodPrice(info);
             price.add(periodPrice);
         }

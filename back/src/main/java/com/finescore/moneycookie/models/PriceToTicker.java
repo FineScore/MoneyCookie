@@ -12,6 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class PriceToTicker {
-    private Integer ticker;
+    private String ticker;
     private List<PriceToDate> priceList;
 }

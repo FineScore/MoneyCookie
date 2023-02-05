@@ -1,16 +1,32 @@
 package com.finescore.moneycookie.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.time.LocalDate;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@EqualsAndHashCode
 public class ItemInfo {
-    private Integer ticker;
-    private String name;
+    private Long id;
+    private String ticker;
+    private String itemName;
     private String market;
+    private LocalDate buyDate;
+
+    public ItemInfo() {
+    }
+
+    public ItemInfo(String ticker, String itemName, String market) {
+        this.ticker = ticker;
+        this.itemName = itemName;
+        this.market = market;
+    }
+
+    public ItemInfo(String ticker, String itemName, String market, LocalDate buyDate) {
+        this.ticker = ticker;
+        this.itemName = itemName;
+        this.market = market;
+        this.buyDate = buyDate;
+    }
 }

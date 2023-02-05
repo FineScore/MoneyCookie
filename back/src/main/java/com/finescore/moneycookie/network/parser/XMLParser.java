@@ -1,6 +1,5 @@
-package com.finescore.moneycookie.network.factory;
+package com.finescore.moneycookie.network.parser;
 
-import com.finescore.moneycookie.models.ItemInfo;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -11,23 +10,17 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 
 @Component
-public class PriceRequestFactory extends XMLRequestFactory implements RequestURLContants {
-
+public class XMLParser implements Parser<Document> {
     @Override
-    public Document request(ItemInfo info) {
+    public Document parse(String responseBody) {
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = null;
 
         try {
             builder = builderFactory.newDocumentBuilder();
-            return builder.parse(setURL(info));
-        } catch (ParserConfigurationException | SAXException | IOException e) {
+            return builder.parse(responseBody);
+        } catch (ParserConfigurationException | IOException | SAXException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    String setURL(ItemInfo info) {
-        return String.format(PRICE_URL, info.getTicker());
     }
 }

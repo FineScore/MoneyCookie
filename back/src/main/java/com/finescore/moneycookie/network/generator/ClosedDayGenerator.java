@@ -3,35 +3,57 @@ package com.finescore.moneycookie.network.generator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.finescore.moneycookie.models.ClosedDay;
 import com.finescore.moneycookie.models.ClosedType;
-import com.finescore.moneycookie.network.factory.RequestFactory;
+import com.finescore.moneycookie.network.NetworkRequest;
+import com.finescore.moneycookie.network.parser.Parser;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @AllArgsConstructor
-public class ClosedDayGenerator implements Generator<List<ClosedDay>> {
-    private RequestFactory holidayRequestFactory;
+public class ClosedDayGenerator implements InfoGenerator<List<ClosedDay>> {
+    private final String URL = "http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo?solYear={year}&serviceKey=%2FS3lvmOXDstcmEQBFyBCOuEAbFWuWx68Rm5XUeF5iWVtNNGWgdzArkw6Y7vu1miYgXHvN52i8LK8PyCuIEyuOA%3D%3D&_type=json&numOfRows=20";
+    private final NetworkRequest networkRequest;
+    private final Parser<JsonNode> JSONParser;
 
     @Override
     public List<ClosedDay> get() {
-        JsonNode nodes =
-                holidayRequestFactory.request()
-                        .get("response")
-                        .get("body")
-                        .get("items")
-                        .get("item");
-
+        String response = networkRequest.request(decode(URL), HttpMethod.GET, setParams());
+        JsonNode body = JSONParser.parse(response);
+        JsonNode nodes = getHolidayNode(body);
         List<ClosedDay> list = setRestDays(nodes);
         weekendFilter(list);
         return list;
+    }
+
+    private JsonNode getHolidayNode(JsonNode body) {
+        return body.get("response")
+                .get("body")
+                .get("items")
+                .get("item");
+    }
+
+    private String decode(String url) {
+        return URLDecoder.decode(url, StandardCharsets.UTF_8);
+    }
+
+    public Map<String, String> setParams() {
+        Map<String, String> params = new HashMap<>();
+        params.put("year", String.valueOf(LocalDate.now().getYear()));
+
+        return params;
     }
 
     private List<ClosedDay> getHolidays(JsonNode nodes) {

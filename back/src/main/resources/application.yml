@@ -3,11 +3,9 @@ spring:
     url: jdbc:mysql://localhost:3306/moneycookie
     username: moneycookie
     password: 1234
-    driver-class-name: com.mysql.cj.jdbc.Driver
-#  security:
-#    oauth2:
-#      client:
-#        registration:
-#          naver:
-#            client-id:
-#            client-secret:
+
+jwt:
+  header-string: Authorization
+  token-prefix: Bearer
+  secret: xggxb8YtetDnjQ8p2kI6etnu3YZZD2QgD0TlQH4189yIIgMlT9HpbGohRiZmtbYw
+  expiration-time: 864000000

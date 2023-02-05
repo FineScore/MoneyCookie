@@ -3,7 +3,7 @@ package com.finescore.moneycookie.controllers;
 import com.finescore.moneycookie.models.ItemInfo;
 import com.finescore.moneycookie.models.ResponseMessage;
 import com.finescore.moneycookie.models.PriceToTicker;
-import com.finescore.moneycookie.services.PriceService;
+import com.finescore.moneycookie.services.UserStockInfoService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 public class StockWebSocketController {
     private SimpMessagingTemplate simpMessagingTemplate;
-    private PriceService service;
+    private UserStockInfoService service;
     private static List<ItemInfo> tickerList;
     private static ResponseMessage<List<PriceToTicker>> respMessage;
 
@@ -34,7 +34,7 @@ public class StockWebSocketController {
     private void send() {
         List<PriceToTicker> list = new ArrayList<>();
         for (ItemInfo item : tickerList) {
-            list.add(service.getNowPrice(item));
+            list.add(service.getUserNowPrice(item));
         }
 
         respMessage.setContents(list);
