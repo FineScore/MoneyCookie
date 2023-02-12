@@ -1,6 +1,7 @@
 package com.finescore.moneycookie.configs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.finescore.moneycookie.repository.ClosedDayRepository;
 import com.finescore.moneycookie.repository.ItemRepository;
 import com.finescore.moneycookie.repository.MemberRepository;
 import com.finescore.moneycookie.repository.SectionRepository;
@@ -40,5 +41,10 @@ public class GeneralConfig {
     @Bean
     public ItemRepository itemRepository() {
         return new ItemRepository(dataSource);
+    }
+
+    @Bean
+    public ClosedDayRepository infoRepository() {
+        return new ClosedDayRepository(dataSource);
     }
 }

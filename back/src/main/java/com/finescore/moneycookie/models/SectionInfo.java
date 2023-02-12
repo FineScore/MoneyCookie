@@ -4,9 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -17,7 +17,7 @@ public class SectionInfo {
     private Integer sectionNum;
     private String title;
     private LocalDateTime createDate;
-    private List<HoldingInfo> holdingList;
+    private Optional<List<HoldingInfo>> holdingList;
 
     public SectionInfo(Long memberId, Integer sectionNum, String title, LocalDateTime createDate) {
         this.memberId = memberId;

@@ -64,11 +64,18 @@ public class SectionRepository {
         }
     }
 
-    public List<SectionInfo> findSectionByMemberId(Long memberId) {
+    public List<SectionInfo> findById(Long memberId) {
         String sql = "select id, member_id, section_num, title, create_date from section where member_id=:memberId";
         Map<String, Long> param = Map.of("memberId", memberId);
 
-        return template.query(sql, param, sectionRowMapper());
+        List<SectionInfo> infoList = template.query(sql, param, sectionRowMapper());
+
+        for (SectionInfo info:infoList) {
+            Optional<List<HoldingInfo>> holdings = findHoldingsById(info.getId());
+            info.setHoldingList(holdings);
+        }
+
+        return infoList;
     }
 
     public void deleteSection(Long sectionId) {
@@ -80,7 +87,7 @@ public class SectionRepository {
         template.update(sql, param);
     }
 
-    public void updateHolding(Long sectionId, List<HoldingInfo> updateHoldings) {
+    public void updateHolding(SectionInfo sectionInfo, List<HoldingInfo> updateHoldings) {
         String sql = "update holdings set item_kr_id=:itemKrId, quantity=:quantity, buy_price=:buyPrice, buy_date=:buyDate where id=:id and section_id=:sectionId";
 
         for (HoldingInfo info: updateHoldings) {
@@ -90,10 +97,20 @@ public class SectionRepository {
                     .addValue("buyPrice", info.getBuyPrice())
                     .addValue("buyDate", info.getBuyDate())
                     .addValue("id", info.getId())
-                    .addValue("sectionId", sectionId);
+                    .addValue("sectionId", sectionInfo.getId());
 
             template.update(sql, param);
         }
+    }
+
+    public void updateSection(SectionInfo info, String title) {
+        String sql = "update section set title=:title where id=:id";
+
+        SqlParameterSource param = new MapSqlParameterSource()
+                .addValue("title", title)
+                .addValue("id", info.getId());
+
+        template.update(sql, param);
     }
 
     private RowMapper<SectionInfo> sectionRowMapper() {
