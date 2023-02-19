@@ -1,31 +1,43 @@
 package com.finescore.moneycookie.controllers;
 
-import com.finescore.moneycookie.models.ResponseMessage;
-import com.finescore.moneycookie.models.HoldingInfo;
-import com.finescore.moneycookie.models.SectionInfo;
+import com.finescore.moneycookie.models.Section;
 import com.finescore.moneycookie.services.SectionService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
+@RequestMapping("/section")
 public class SectionController {
     private final SectionService service;
 
     @GetMapping("/all")
-    public ResponseMessage<String> findAll() {
+    public ResponseEntity<List<Section>> findAll(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        List<Section> sectionList = service.findByUsername(
+                String.valueOf(session.getAttribute("username"))
+        );
 
+        return new ResponseEntity<>(sectionList, HttpStatus.OK);
     }
 
     @PostMapping("/save")
-    public ResponseMessage<String> save(SectionInfo info) {
-        SectionInfo savedInfo = service.saveSection(info);
-        return new ResponseMessage<>(String.format("보유종목%d 저장 완료", savedInfo.getId()));
-    }
+    public ResponseEntity<String> save(
+            @RequestBody Section section,
+            HttpServletRequest request
+    ) {
+        HttpSession session = request.getSession();
+        String username = String.valueOf(session.getAttribute("username"));
+        service.save(username, section.getTitle(), section.getHoldingList());
 
-    @DeleteMapping("/delete/{num}")
-    public ResponseMessage<String> delete(@PathVariable String num) {
-        service.delete(Long.parseLong(num));
-        return new ResponseMessage<>(String.format("보유종목%d 삭제 완료", num));
+        return new ResponseEntity<>("보유종목 저장 완료", HttpStatus.OK);
     }
 }

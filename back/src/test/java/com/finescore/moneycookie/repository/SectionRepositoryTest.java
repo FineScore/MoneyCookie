@@ -1,10 +1,9 @@
 package com.finescore.moneycookie.repository;
 
-import com.finescore.moneycookie.models.HoldingInfo;
-import com.finescore.moneycookie.models.ItemInfo;
+import com.finescore.moneycookie.models.Holding;
+import com.finescore.moneycookie.models.Item;
 import com.finescore.moneycookie.models.MemberInfo;
-import com.finescore.moneycookie.models.SectionInfo;
-import org.assertj.core.api.Assertions;
+import com.finescore.moneycookie.models.Section;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
@@ -31,7 +29,7 @@ class SectionRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
     @Autowired
-    ItemRepository itemRepository;
+    ListedItemRepository itemRepository;
 
     MemberInfo saveMemberInfo;
 
@@ -44,7 +42,7 @@ class SectionRepositoryTest {
     @Test
     @DisplayName("섹션 저장")
     void saveSection() {
-        SectionInfo info = new SectionInfo(saveMemberInfo.getId(), 1, "제목", LocalDateTime.now());
+        Section info = new Section(saveMemberInfo.getId(), 1, "제목", LocalDateTime.now());
         sectionRepository.saveSection(info);
 
         assertThat(info.getId()).isEqualTo(1L);
@@ -53,13 +51,13 @@ class SectionRepositoryTest {
     @Test
     @DisplayName("보유 종목 저장")
     void saveHolding() {
-        SectionInfo sectionInfo = new SectionInfo(saveMemberInfo.getId(), 1, "제목", LocalDateTime.now());
-        List<ItemInfo> itemInfo = List.of(new ItemInfo("010101", "종목1", "KOSPI"));
+        Section sectionInfo = new Section(saveMemberInfo.getId(), 1, "제목", LocalDateTime.now());
+        List<Item> itemInfo = List.of(new Item("010101", "종목1", "KOSPI"));
 
-        SectionInfo saveSection = sectionRepository.saveSection(sectionInfo);
-        List<ItemInfo> saveItemInfoList = itemRepository.save(itemInfo);
+        Section saveSection = sectionRepository.saveSection(sectionInfo);
+        List<Item> saveItemInfoList = itemRepository.save(itemInfo);
 
-        HoldingInfo holdingInfo = new HoldingInfo(saveSection.getId(), saveItemInfoList.get(0).getId(), 1, 10000, LocalDate.now());
+        Holding holdingInfo = new Holding(saveSection.getId(), saveItemInfoList.get(0).getId(), 1, 10000, LocalDate.now());
         sectionRepository.saveHolding(holdingInfo);
 
         assertThat(holdingInfo.getId()).isEqualTo(1L);
@@ -68,10 +66,10 @@ class SectionRepositoryTest {
     @Test
     @DisplayName("섹션 조회")
     void findSectionById() {
-        SectionInfo sectionInfo = new SectionInfo(saveMemberInfo.getId(), 1, "제목", LocalDateTime.now());
+        Section sectionInfo = new Section(saveMemberInfo.getId(), 1, "제목", LocalDateTime.now());
 
-        SectionInfo saveSection = sectionRepository.saveSection(sectionInfo);
-        List<SectionInfo> info = sectionRepository.findSectionByMemberId(saveMemberInfo.getId());
+        Section saveSection = sectionRepository.saveSection(sectionInfo);
+        List<Section> info = sectionRepository.findSectionByMemberId(saveMemberInfo.getId());
 
         assertThat(info.get(0).getId()).isEqualTo(saveSection.getId());
         assertThat(info.get(0).getMemberId()).isEqualTo(saveSection.getMemberId());
@@ -82,12 +80,12 @@ class SectionRepositoryTest {
     @Test
     @DisplayName("회원별 전체 섹션 조회")
     void findSectionByMemberId() {
-        SectionInfo sectionInfo1 = new SectionInfo(saveMemberInfo.getId(), 1, "제목1", LocalDateTime.now());
-        SectionInfo sectionInfo2 = new SectionInfo(saveMemberInfo.getId(), 2, "제목2", LocalDateTime.now());
+        Section sectionInfo1 = new Section(saveMemberInfo.getId(), 1, "제목1", LocalDateTime.now());
+        Section sectionInfo2 = new Section(saveMemberInfo.getId(), 2, "제목2", LocalDateTime.now());
 
-        SectionInfo saveSectionInfo1 = sectionRepository.saveSection(sectionInfo1);
-        SectionInfo saveSectionInfo2 = sectionRepository.saveSection(sectionInfo2);
-        List<SectionInfo> sectionList = sectionRepository.findSectionByMemberId(saveMemberInfo.getId());
+        Section saveSectionInfo1 = sectionRepository.saveSection(sectionInfo1);
+        Section saveSectionInfo2 = sectionRepository.saveSection(sectionInfo2);
+        List<Section> sectionList = sectionRepository.findSectionByMemberId(saveMemberInfo.getId());
 
         assertThat(sectionList.get(0)).usingRecursiveComparison().ignoringFields("createDate").isEqualTo(saveSectionInfo1);
         assertThat(sectionList.get(1)).usingRecursiveComparison().ignoringFields("createDate").isEqualTo(saveSectionInfo2);
@@ -96,18 +94,18 @@ class SectionRepositoryTest {
     @Test
     @DisplayName("섹션별 보유 종목 수정")
     void updateHolding() {
-        SectionInfo sectionInfo1 = new SectionInfo(saveMemberInfo.getId(), 1, "제목1", LocalDateTime.now());
-        List<ItemInfo> itemInfo = List.of(new ItemInfo("010101", "종목1", "KOSPI"), new ItemInfo("010102", "종목2", "KOSPI"));
-        SectionInfo saveSectionInfo = sectionRepository.saveSection(sectionInfo1);
-        List<ItemInfo> saveItemInfoList = itemRepository.save(itemInfo);
-        HoldingInfo holdingInfo1 = new HoldingInfo(saveSectionInfo.getId(), saveItemInfoList.get(0).getId(), 1, 10000, LocalDate.now());
-        HoldingInfo holdingInfo2 = new HoldingInfo(saveSectionInfo.getId(), saveItemInfoList.get(0).getId(), 1, 20000, LocalDate.now());
-        HoldingInfo saveHoldingInfo1 = sectionRepository.saveHolding(holdingInfo1);
-        HoldingInfo saveHoldingInfo2 = sectionRepository.saveHolding(holdingInfo2);
+        Section sectionInfo1 = new Section(saveMemberInfo.getId(), 1, "제목1", LocalDateTime.now());
+        List<Item> itemInfo = List.of(new Item("010101", "종목1", "KOSPI"), new Item("010102", "종목2", "KOSPI"));
+        Section saveSectionInfo = sectionRepository.saveSection(sectionInfo1);
+        List<Item> saveItemInfoList = itemRepository.save(itemInfo);
+        Holding holdingInfo1 = new Holding(saveSectionInfo.getId(), saveItemInfoList.get(0).getId(), 1, 10000, LocalDate.now());
+        Holding holdingInfo2 = new Holding(saveSectionInfo.getId(), saveItemInfoList.get(0).getId(), 1, 20000, LocalDate.now());
+        Holding saveHoldingInfo1 = sectionRepository.saveHolding(holdingInfo1);
+        Holding saveHoldingInfo2 = sectionRepository.saveHolding(holdingInfo2);
         saveHoldingInfo1.setQuantity(2);
         saveHoldingInfo2.setBuyPrice(30000);
         sectionRepository.updateHolding(saveSectionInfo.getId(), List.of(saveHoldingInfo1, saveHoldingInfo2));
-        Optional<List<HoldingInfo>> saveHoldingsList = sectionRepository.findHoldingsById(saveSectionInfo.getId());
+        Optional<List<Holding>> saveHoldingsList = sectionRepository.findHoldingsById(saveSectionInfo.getId());
         assertThat(saveHoldingsList.get().get(0).getQuantity()).isEqualTo(2);
         assertThat(saveHoldingsList.get().get(1).getBuyPrice()).isEqualTo(30000);
     }

@@ -223,7 +223,7 @@ export default {
   data() {
     return {
       currentAmount: [],
-      stompClient: null,
+      // stompClient: null,
     };
   },
 };

@@ -1,6 +1,6 @@
 package com.finescore.moneycookie.network.generator;
 
-import com.finescore.moneycookie.models.ItemInfo;
+import com.finescore.moneycookie.models.Item;
 import com.finescore.moneycookie.models.PriceToDate;
 import com.finescore.moneycookie.models.PriceToTicker;
 import com.finescore.moneycookie.network.NetworkRequest;
@@ -17,7 +17,7 @@ public class PriceNowGenerator extends PriceAllGenerator {
     }
 
     @Override
-    public PriceToTicker getPrice(ItemInfo info) {
+    public PriceToTicker getPrice(Item info) {
         List<PriceToDate> list = getList(info);
 
         return new PriceToTicker(info.getTicker(), list.subList(list.size() - 1, list.size()));

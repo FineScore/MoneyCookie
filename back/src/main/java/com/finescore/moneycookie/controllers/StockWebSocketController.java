@@ -1,9 +1,8 @@
 package com.finescore.moneycookie.controllers;
 
-import com.finescore.moneycookie.models.ItemInfo;
-import com.finescore.moneycookie.models.ResponseMessage;
+import com.finescore.moneycookie.models.Item;
 import com.finescore.moneycookie.models.PriceToTicker;
-import com.finescore.moneycookie.services.UserStockInfoService;
+import com.finescore.moneycookie.services.PriceService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -19,25 +18,22 @@ import java.util.List;
 @Slf4j
 public class StockWebSocketController {
     private SimpMessagingTemplate simpMessagingTemplate;
-    private UserStockInfoService service;
-    private static List<ItemInfo> tickerList;
-    private static ResponseMessage<List<PriceToTicker>> respMessage;
+    private PriceService service;
+    private static List<Item> tickerList;
 
     @MessageMapping("/now")
-    public void getNowPrice(List<ItemInfo> itemList) {
+    public void getNowPrice(List<Item> itemList) {
         tickerList = itemList;
-        respMessage = new ResponseMessage<>("OK");
         send();
     }
 
     @Scheduled(fixedRate = 1000)
     private void send() {
         List<PriceToTicker> list = new ArrayList<>();
-        for (ItemInfo item : tickerList) {
+        for (Item item : tickerList) {
             list.add(service.getUserNowPrice(item));
         }
 
-        respMessage.setContents(list);
-        simpMessagingTemplate.convertAndSend("/sub/now", respMessage);
+        simpMessagingTemplate.convertAndSend("/sub/now", list);
     }
 }

@@ -1,10 +1,5 @@
 package com.finescore.moneycookie.services;
 
-import com.finescore.moneycookie.models.ItemInfo;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 class PriceServiceTest {
 
 //    @Test

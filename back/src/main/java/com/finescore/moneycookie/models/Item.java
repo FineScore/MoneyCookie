@@ -7,23 +7,23 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class ItemInfo {
+public class Item {
     private Long id;
     private String ticker;
     private String itemName;
     private String market;
     private LocalDate buyDate;
 
-    public ItemInfo() {
+    public Item() {
     }
 
-    public ItemInfo(String ticker, String itemName, String market) {
+    public Item(String ticker, String itemName, String market) {
         this.ticker = ticker;
         this.itemName = itemName;
         this.market = market;
     }
 
-    public ItemInfo(String ticker, String itemName, String market, LocalDate buyDate) {
+    public Item(String ticker, String itemName, String market, LocalDate buyDate) {
         this.ticker = ticker;
         this.itemName = itemName;
         this.market = market;

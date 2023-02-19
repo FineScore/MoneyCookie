@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '2.7.5'
+	id 'org.springframework.boot' version '2.7.8'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
@@ -19,22 +19,17 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-security:2.7.7'
-	implementation 'org.springframework.boot:spring-boot-starter-validation:2.7.7'
-	implementation 'org.springframework.boot:spring-boot-starter-web:2.7.7'
-	implementation 'org.springframework.boot:spring-boot-starter-websocket:2.7.7'
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc:2.7.7'
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	runtimeOnly 'com.h2database:h2'
 	implementation 'com.mysql:mysql-connector-j:8.0.31'
 	compileOnly 'org.projectlombok:lombok:1.18.24'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools:2.7.7'
-	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.7.7'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	annotationProcessor 'org.projectlombok:lombok:1.18.24'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.7'
-	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {

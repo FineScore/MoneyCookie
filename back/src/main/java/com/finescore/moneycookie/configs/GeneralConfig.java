@@ -1,10 +1,7 @@
 package com.finescore.moneycookie.configs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.finescore.moneycookie.repository.ClosedDayRepository;
-import com.finescore.moneycookie.repository.ItemRepository;
-import com.finescore.moneycookie.repository.MemberRepository;
-import com.finescore.moneycookie.repository.SectionRepository;
+import com.finescore.moneycookie.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -39,12 +36,27 @@ public class GeneralConfig {
     }
 
     @Bean
-    public ItemRepository itemRepository() {
-        return new ItemRepository(dataSource);
+    public ListedItemRepository listedItemRepository() {
+        return new ListedItemRepository(dataSource);
     }
 
     @Bean
-    public ClosedDayRepository infoRepository() {
-        return new ClosedDayRepository(dataSource);
+    public StockMarketClosedDaysRepository stockMarketClosedDaysRepository() {
+        return new StockMarketClosedDaysRepository(dataSource);
+    }
+
+    @Bean
+    public HoldingRepository holdingRepository() {
+        return new HoldingRepository(dataSource);
+    }
+
+    @Bean
+    public TotalRatingRepository totalRatingRepository() {
+        return new TotalRatingRepository(dataSource);
+    }
+
+    @Bean
+    public EvaluationRepository evaluationRepository() {
+        return new EvaluationRepository(dataSource);
     }
 }

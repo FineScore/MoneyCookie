@@ -1,7 +1,7 @@
 package com.finescore.moneycookie.network.generator;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.finescore.moneycookie.models.ItemInfo;
+import com.finescore.moneycookie.models.Item;
 import com.finescore.moneycookie.models.PriceToDate;
 import com.finescore.moneycookie.models.PriceToTicker;
 import com.finescore.moneycookie.network.NetworkRequest;
@@ -26,7 +26,7 @@ public class DividendGenerator implements PriceGenerator {
     private final Parser<JsonNode> JSONParser;
 
     @Override
-    public PriceToTicker getPrice(ItemInfo info) {
+    public PriceToTicker getPrice(Item info) {
         String response = networkRequest.request(setURL(URL, info), HttpMethod.GET, setParams());
         JsonNode body = JSONParser.parse(response);
         JsonNode dividends = getDividendNode(body);
@@ -35,7 +35,8 @@ public class DividendGenerator implements PriceGenerator {
     }
 
     private JsonNode getDividendNode(JsonNode body) {
-        return body.get("chart")
+        return body
+                .get("chart")
                 .get("result")
                 .get(0)
                 .get("events")

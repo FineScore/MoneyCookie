@@ -1,8 +1,6 @@
 package com.finescore.moneycookie.repository;
 
-import com.finescore.moneycookie.models.HoldingInfo;
-import com.finescore.moneycookie.models.SectionInfo;
-import org.springframework.dao.EmptyResultDataAccessException;
+import com.finescore.moneycookie.models.*;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -13,7 +11,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import javax.sql.DataSource;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,99 +22,53 @@ public class SectionRepository {
         this.template = new NamedParameterJdbcTemplate(dataSource);
     }
 
-    public SectionInfo saveSection(SectionInfo info) {
-        String sql = "insert into section(member_id, section_num, title, create_date) " +
-                "values(:memberId, :sectionNum, :title, :createDate)";
+    public Long save(Section section) {
+        String sql = "insert into sections (username, title, create_date) " +
+                "values (:username, :title, :createDate)";
 
-        SqlParameterSource param = new BeanPropertySqlParameterSource(info);
+        SqlParameterSource param = new BeanPropertySqlParameterSource(section);
         KeyHolder keyHolder = new GeneratedKeyHolder();
+
         template.update(sql, param, keyHolder);
 
-        Long key = keyHolder.getKey().longValue();
-        info.setId(key);
-        return info;
+        return keyHolder.getKey().longValue();
     }
 
-    public HoldingInfo saveHolding(HoldingInfo info) {
-        String sql = "insert into holdings(section_id, item_kr_id, quantity, buy_price, buy_date) " +
-                "values(:sectionId, :itemKrId, :quantity, :buyPrice, :buyDate)";
+    public Optional<List<Section>> findByUsername(String username) {
+        String sql = "select username, title, " +
+                "(select id, section_id, total_asset, total_evaluation_rate, total_evaluation_amount " +
+                "from total_ratings where sections.id = total_ratings.section_id), " +
+                "(select id, section_id, item_kr_id, quantity, buy_avg_price, buy_total_amount " +
+                "from holdings where sections.id = holdings.section_id), " +
+                "(select id, holding_id, evaluation_rate, evaluation_amount " +
+                "from evaluations where holdings.id = evaluations.holding_id) " +
+                "from sections where username = :username";
 
-        SqlParameterSource param = new BeanPropertySqlParameterSource(info);
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        template.update(sql, param, keyHolder);
+        Map<String, String> param = Map.of("username", username);
 
-        Long key = keyHolder.getKey().longValue();
-        info.setId(key);
-        return info;
+        return Optional.of(template.query(sql, param, sectionRowMapper()));
     }
 
-    public Optional<List<HoldingInfo>> findHoldingsById(Long id) {
-        String sql = "select h.id as id, s.id as section_id, h.item_kr_id as item_kr_id, h.quantity as quantity, h.buy_price as buy_price, h.buy_date as buy_date from section s join holdings h on s.id=h.section_id where s.id=:id";
-
-        try {
-            Map<String, Long> param = Map.of("id", id);
-            List<HoldingInfo> info = template.query(sql, param, holdingRowMapper());
-
-            return Optional.of(info);
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
-    public List<SectionInfo> findById(Long memberId) {
-        String sql = "select id, member_id, section_num, title, create_date from section where member_id=:memberId";
-        Map<String, Long> param = Map.of("memberId", memberId);
-
-        List<SectionInfo> infoList = template.query(sql, param, sectionRowMapper());
-
-        for (SectionInfo info:infoList) {
-            Optional<List<HoldingInfo>> holdings = findHoldingsById(info.getId());
-            info.setHoldingList(holdings);
-        }
-
-        return infoList;
-    }
-
-    public void deleteSection(Long sectionId) {
-        String sql = "delete from section where id=:id";
+    public void delete(Section section) {
+        String sql = "delete from sections where id = :id";
 
         SqlParameterSource param = new MapSqlParameterSource()
+                .addValue("id", section.getId());
+
+        template.update(sql, param);
+    }
+
+    public void update(Long sectionId, String newTitle) {
+        String sql = "update sections set title = :title where id = :id";
+
+        SqlParameterSource param = new MapSqlParameterSource()
+                .addValue("title", newTitle)
                 .addValue("id", sectionId);
 
         template.update(sql, param);
     }
 
-    public void updateHolding(SectionInfo sectionInfo, List<HoldingInfo> updateHoldings) {
-        String sql = "update holdings set item_kr_id=:itemKrId, quantity=:quantity, buy_price=:buyPrice, buy_date=:buyDate where id=:id and section_id=:sectionId";
-
-        for (HoldingInfo info: updateHoldings) {
-            SqlParameterSource param = new MapSqlParameterSource()
-                    .addValue("itemKrId", info.getItemKrId())
-                    .addValue("quantity", info.getQuantity())
-                    .addValue("buyPrice", info.getBuyPrice())
-                    .addValue("buyDate", info.getBuyDate())
-                    .addValue("id", info.getId())
-                    .addValue("sectionId", sectionInfo.getId());
-
-            template.update(sql, param);
-        }
-    }
-
-    public void updateSection(SectionInfo info, String title) {
-        String sql = "update section set title=:title where id=:id";
-
-        SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("title", title)
-                .addValue("id", info.getId());
-
-        template.update(sql, param);
-    }
-
-    private RowMapper<SectionInfo> sectionRowMapper() {
-        return BeanPropertyRowMapper.newInstance(SectionInfo.class);
-    }
-
-    private RowMapper<HoldingInfo> holdingRowMapper() {
-        return BeanPropertyRowMapper.newInstance(HoldingInfo.class);
+    private RowMapper<Section> sectionRowMapper() {
+        return BeanPropertyRowMapper.newInstance(Section.class);
     }
 }

@@ -6,7 +6,7 @@
         @cancel-delete="activeRoute"
         @click="goToPortfolio"
       />
-      <router-link to="/portfolio/add">
+      <router-link to="/section/add">
         <BlankCard />
       </router-link>
     </div>
@@ -36,7 +36,7 @@ export default {
     },
     goToPortfolio() {
       if (!this.deleteMode) {
-        this.$router.push("/portfolio/1");
+        this.$router.push("/section/1");
       }
     },
   },

@@ -23,7 +23,7 @@ import java.util.Map;
 
 @Component
 @AllArgsConstructor
-public class ClosedDayGenerator implements InfoGenerator<List<ClosedDay>> {
+public class StockMarketClosedDaysGenerator implements InfoGenerator<List<ClosedDay>> {
     private final String URL = "http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo?solYear={year}&serviceKey=%2FS3lvmOXDstcmEQBFyBCOuEAbFWuWx68Rm5XUeF5iWVtNNGWgdzArkw6Y7vu1miYgXHvN52i8LK8PyCuIEyuOA%3D%3D&_type=json&numOfRows=20";
     private final NetworkRequest networkRequest;
     private final Parser<JsonNode> JSONParser;
@@ -34,12 +34,13 @@ public class ClosedDayGenerator implements InfoGenerator<List<ClosedDay>> {
         JsonNode body = JSONParser.parse(response);
         JsonNode nodes = getHolidayNode(body);
         List<ClosedDay> list = setRestDays(nodes);
-        weekendFilter(list);
+//        filterWeekend(list);
         return list;
     }
 
     private JsonNode getHolidayNode(JsonNode body) {
-        return body.get("response")
+        return body
+                .get("response")
                 .get("body")
                 .get("items")
                 .get("item");
@@ -96,16 +97,16 @@ public class ClosedDayGenerator implements InfoGenerator<List<ClosedDay>> {
         return new ClosedDay(LocalDate.of(LocalDate.now().getYear(), Month.MAY, 1), "근로자의 날", ClosedType.CLOSED);
     }
 
-    private void weekendFilter(List<ClosedDay> closedDays) {
-        for (ClosedDay day : closedDays) {
-            if (isWeekend(day)) {
-                closedDays.remove(day);
-            }
-        }
-    }
-
-    private boolean isWeekend(ClosedDay day) {
-        return day.getDate().getDayOfWeek() == DayOfWeek.SATURDAY || day.getDate().getDayOfWeek() == DayOfWeek.SUNDAY;
-    }
+//    private void filterWeekend(List<ClosedDay> closedDays) {
+//        for (ClosedDay day : closedDays) {
+//            if (isWeekend(day)) {
+//                closedDays.remove(day);
+//            }
+//        }
+//    }
+//
+//    private boolean isWeekend(ClosedDay day) {
+//        return day.getDate().getDayOfWeek() == DayOfWeek.SATURDAY || day.getDate().getDayOfWeek() == DayOfWeek.SUNDAY;
+//    }
 
 }

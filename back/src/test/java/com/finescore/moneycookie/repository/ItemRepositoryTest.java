@@ -1,7 +1,6 @@
 package com.finescore.moneycookie.repository;
 
-import com.finescore.moneycookie.models.ItemInfo;
-import org.assertj.core.api.Assertions;
+import com.finescore.moneycookie.models.Item;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,13 +8,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @SpringBootTest
@@ -23,17 +19,17 @@ import static org.junit.jupiter.api.Assertions.*;
 class ItemRepositoryTest {
 
     @Autowired
-    ItemRepository itemRepository;
+    ListedItemRepository itemRepository;
 
     @Test
     @DisplayName("상장 종목 정보 저장")
     void save() {
-        ItemInfo info1 = new ItemInfo("010101", "종목1", "KOSPI");
-        ItemInfo info2 = new ItemInfo("010102", "종목2", "KOSPI");
-        List<ItemInfo> infoList = List.of(info1, info2);
+        Item info1 = new Item("010101", "종목1", "KOSPI");
+        Item info2 = new Item("010102", "종목2", "KOSPI");
+        List<Item> infoList = List.of(info1, info2);
 
         itemRepository.save(infoList);
-        List<ItemInfo> list = itemRepository.findAll();
+        List<Item> list = itemRepository.findAll();
 
         assertThat(list)
                 .usingRecursiveComparison()
@@ -44,16 +40,16 @@ class ItemRepositoryTest {
     @Test
     @DisplayName("상장 종목 검색")
     void findSearch() {
-        ItemInfo info1 = new ItemInfo("010101", "종목1", "KOSPI");
-        ItemInfo info2 = new ItemInfo("010102", "종목2", "KOSPI");
-        List<ItemInfo> infoList = List.of(info1, info2);
+        Item info1 = new Item("010101", "종목1", "KOSPI");
+        Item info2 = new Item("010102", "종목2", "KOSPI");
+        List<Item> infoList = List.of(info1, info2);
 
         itemRepository.save(infoList);
 
-        Optional<List<ItemInfo>> searchList1 = itemRepository.findSearch("0");
-        Optional<List<ItemInfo>> searchList2 = itemRepository.findSearch("010102");
-        Optional<List<ItemInfo>> searchList3 = itemRepository.findSearch("종");
-        Optional<List<ItemInfo>> searchList4 = itemRepository.findSearch("종목2");
+        Optional<List<Item>> searchList1 = itemRepository.findSearch("0");
+        Optional<List<Item>> searchList2 = itemRepository.findSearch("010102");
+        Optional<List<Item>> searchList3 = itemRepository.findSearch("종");
+        Optional<List<Item>> searchList4 = itemRepository.findSearch("종목2");
 
         assertThat(searchList1.get().get(0).getTicker()).isEqualTo("010101");
         assertThat(searchList1.get().get(1).getTicker()).isEqualTo("010102");

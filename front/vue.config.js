@@ -1,9 +1,15 @@
 const { defineConfig } = require("@vue/cli-service");
 
 module.exports = defineConfig({
+  outputDir: "../back/src/main/resources/static",
   transpileDependencies: true,
   devServer: {
-    port: 3000,
-    proxy: process.env.VUE_APP_BASE_API,
+    historyApiFallback: true,
+    proxy: {
+      "/": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+      },
+    },
   },
 });
