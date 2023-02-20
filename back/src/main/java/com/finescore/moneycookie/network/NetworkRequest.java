@@ -1,6 +1,7 @@
 package com.finescore.moneycookie.network;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -8,16 +9,20 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class NetworkRequest {
     private final RestTemplate restTemplate;
 
     public String request(String url, HttpMethod httpMethod) {
+        log.info("URL : {}", url);
         return restTemplate.exchange(url, httpMethod, setHeaders(), String.class).getBody();
     }
 

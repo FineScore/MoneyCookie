@@ -11,8 +11,8 @@ import java.util.List;
 
 @Component
 public class PricePeriodGenerator extends PriceAllGenerator {
-    public PricePeriodGenerator(NetworkRequest networkRequest, Parser XMLParser) {
-        super(networkRequest, XMLParser);
+    public PricePeriodGenerator(Parser XMLParser) {
+        super(XMLParser);
     }
 
     @Override

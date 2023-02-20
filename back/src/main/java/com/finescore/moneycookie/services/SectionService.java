@@ -3,6 +3,7 @@ package com.finescore.moneycookie.services;
 import com.finescore.moneycookie.models.*;
 import com.finescore.moneycookie.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SectionService {
     private final SectionRepository sectionRepository;
     private final HoldingRepository holdingRepository;
@@ -19,6 +21,12 @@ public class SectionService {
     private final EvaluationRepository evaluationRepository;
     private final ListedItemRepository listedItemRepository;
     private final PriceService priceService;
+
+    public List<Section> findByUsername(String username) {
+        return sectionRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.OK, "등록된 보유종목이 없습니다."));
+    }
 
     public void save(String username, String title, List<Holding> holdingList) {
         Section section = Section.builder()
@@ -35,31 +43,26 @@ public class SectionService {
 
             for (Holding holding : holdingList) {
                 holding.setSectionId(savedSectionId);
-                holding.setBuyTotalAmount(
-                        priceService.calcTotalAmount(
-                                holding.getBuyAvgPrice(),
-                                holding.getQuantity()
-                        ));
+                holding.setBuyTotalAmount(calcTotalAmount(holding));
 
                 Long savedHoldingId = holdingRepository.save(holding);
 
                 Evaluation evaluation = Evaluation.builder()
                         .holdingId(savedHoldingId)
-                        .evaluationRate(nowHoldingEvaluationRate(holding))
-                        .evaluationAmount(nowHoldingEvaluationAmount(holding))
+                        .evaluationRate(nowEvaluationRate(holding))
+                        .evaluationAmount(nowEvaluationAmount(holding))
                         .build();
+
                 evaluationRepository.save(evaluation);
 
                 totalBuyAmount += holding.getBuyTotalAmount();
-                totalEvaluationAmount += evaluation.getEvaluationAmount();
+                totalEvaluationAmount += priceService.calcEvaluationPrice(holding.getQuantity(), getNowPrice(holding));
             }
 
             TotalRating totalRating = TotalRating.builder()
                     .sectionId(savedSectionId)
-                    .totalEvaluationRate(priceService.calcTotalEvaluationRate(
-                            totalBuyAmount,
-                            totalEvaluationAmount
-                    ))
+                    .totalAsset(totalBuyAmount)
+                    .totalEvaluationRate(calcTotalEvaluationRate(totalBuyAmount, totalEvaluationAmount))
                     .totalEvaluationAmount(totalEvaluationAmount)
                     .build();
 
@@ -67,6 +70,7 @@ public class SectionService {
         } else {
             TotalRating totalRating = TotalRating.builder()
                     .sectionId(savedSectionId)
+                    .totalAsset(0L)
                     .totalEvaluationRate(0D)
                     .totalEvaluationAmount(0L)
                     .build();
@@ -76,10 +80,43 @@ public class SectionService {
 
     }
 
-    public List<Section> findByUsername(String username) {
-        return sectionRepository
-                .findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.OK, "등록된 보유종목이 없습니다."));
+    private Long calcTotalAmount(Holding holding) {
+        return priceService.calcTotalAmount(
+                holding.getBuyAvgPrice(),
+                holding.getQuantity()
+        );
+    }
+
+    private Double calcTotalEvaluationRate(Long totalBuyAmount, Long totalEvaluationAmount) {
+        return priceService.calcTotalEvaluationRate(
+                totalBuyAmount,
+                totalEvaluationAmount
+        );
+    }
+
+
+    private Double nowEvaluationRate(Holding savedHolding) {
+        return priceService.calcEvaluationRate(
+                getNowPrice(savedHolding),
+                savedHolding.getBuyAvgPrice()
+        );
+    }
+
+    private Long nowEvaluationAmount(Holding savedHolding) {
+        return priceService.calcEvaluationAmount(
+                getNowPrice(savedHolding),
+                savedHolding.getBuyAvgPrice(),
+                savedHolding.getQuantity()
+        );
+    }
+
+    private Integer getNowPrice(Holding holding) {
+        return priceService.getUserNowPrice(
+                        listedItemRepository
+                                .findByItemKrId(holding.getItemKrId()))
+                .getPriceList()
+                .get(0)
+                .getPrice();
     }
 
     public void updateSection(Long sectionId, String newTitle) {
@@ -137,23 +174,4 @@ public class SectionService {
 //    public void updateEvaluation() {
 //
 //    }
-
-    private Long nowHoldingEvaluationAmount(Holding savedHolding) {
-        return priceService.calcEvaluationAmount(
-                savedHolding.getBuyAvgPrice(),
-                nowHoldingEvaluationRate(savedHolding),
-                savedHolding.getQuantity()
-        );
-    }
-
-    private Double nowHoldingEvaluationRate(Holding savedHolding) {
-        return priceService.calcEvaluationRate(
-                priceService.getUserNowPrice(
-                                listedItemRepository
-                                        .findByItemKrId(savedHolding.getItemKrId()))
-                        .getPriceList()
-                        .get(0)
-                        .getPrice(),
-                savedHolding.getBuyAvgPrice());
-    }
 }

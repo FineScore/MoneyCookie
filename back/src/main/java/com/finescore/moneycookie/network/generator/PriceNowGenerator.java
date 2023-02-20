@@ -7,13 +7,14 @@ import com.finescore.moneycookie.network.NetworkRequest;
 import com.finescore.moneycookie.network.parser.Parser;
 import org.springframework.stereotype.Component;
 
+import java.net.URISyntaxException;
 import java.util.List;
 
 @Component
 public class PriceNowGenerator extends PriceAllGenerator {
 
-    public PriceNowGenerator(NetworkRequest networkRequest, Parser XMLParser) {
-        super(networkRequest, XMLParser);
+    public PriceNowGenerator(Parser XMLParser) {
+        super(XMLParser);
     }
 
     @Override

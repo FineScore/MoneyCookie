@@ -1,5 +1,6 @@
 package com.finescore.moneycookie.network.parser;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -10,6 +11,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 
 @Component
+@Slf4j
 public class XMLParser implements Parser<Document> {
     @Override
     public Document parse(String responseBody) {
@@ -18,6 +20,7 @@ public class XMLParser implements Parser<Document> {
 
         try {
             builder = builderFactory.newDocumentBuilder();
+            log.info(responseBody);
             return builder.parse(responseBody);
         } catch (ParserConfigurationException | IOException | SAXException e) {
             throw new RuntimeException(e);

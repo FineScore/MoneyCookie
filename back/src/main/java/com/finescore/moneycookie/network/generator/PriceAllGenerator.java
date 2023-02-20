@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -18,13 +19,11 @@ import java.util.List;
 @Component
 @AllArgsConstructor
 public abstract class PriceAllGenerator implements PriceGenerator {
-    private final NetworkRequest networkRequest;
     private final Parser<Document> XMLParser;
     private final String URL = "https://fchart.stock.naver.com/sise.nhn?timeframe=day&count=6000&requestType=0&symbol=%s";
 
     protected List<PriceToDate> getList(Item info) {
-        String response = networkRequest.request(setURL(URL, info), HttpMethod.GET);
-        Document body = XMLParser.parse(response);
+        Document body = XMLParser.parse(setURL(URL, info.getTicker()));
         NodeList list = body.getElementsByTagName("item");
 
         return getPriceToList(list);

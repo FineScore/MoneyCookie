@@ -99,7 +99,7 @@
                         id="amount"
                         placeholder="보유수량"
                         class="w-32 text-sm text-center py-3 focus:bg-white bg-gray-100 border border-gray-200 rounded focus:outline-none focus:border-yellow-400 transition ease-in duration-200"
-                        v-model.number="items[index].quentity"
+                        v-model.number="items[index].quantity"
                       />
                     </div>
                   </td>
@@ -247,7 +247,7 @@ export default {
           itemKrId: item.itemKrId,
           quantity: item.quantity,
           buyAvgPrice: item.buyAvgPrice,
-          buyDate: moment(item.buyDate).format("YYYY-DD-MM"),
+          buyDate: moment(item.buyDate).format("YYYY-MM-DD"),
         };
         holdingList.push(holding);
       }
