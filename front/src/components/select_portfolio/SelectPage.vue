@@ -16,6 +16,7 @@
 <script>
 import BlankCard from "./BlankCard.vue";
 import FilledCard from "./FilledCard.vue";
+import axios from "axios";
 
 export default {
   data() {
@@ -26,6 +27,17 @@ export default {
   components: {
     BlankCard,
     FilledCard,
+  },
+  mounted() {
+    const url = "/section";
+    axios
+      .get(url)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
   methods: {
     blockRoute() {

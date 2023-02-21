@@ -35,14 +35,14 @@ public class SectionRepository {
     }
 
     public Optional<List<Section>> findByUsername(String username) {
-        String sql = "select username, title, " +
-                "(select id, section_id, total_asset, total_evaluation_rate, total_evaluation_amount " +
-                "from total_ratings where sections.id = total_ratings.section_id), " +
-                "(select id, section_id, item_kr_id, quantity, buy_avg_price, buy_total_amount " +
-                "from holdings where sections.id = holdings.section_id), " +
-                "(select id, holding_id, evaluation_rate, evaluation_amount " +
-                "from evaluations where holdings.id = evaluations.holding_id) " +
-                "from sections where username = :username";
+        String sql = "select s.username, s.title, " +
+                "tr.id, tr.section_id, tr.total_asset, tr.total_evaluation_rate, tr.total_evaluation_amount, " +
+                "h.id, h.section_id, h.item_kr_id, h.quantity, h.buy_avg_price, h.buy_total_amount, " +
+                "e.id, e.holding_id, e.evaluation_rate, e.evaluation_amount " +
+                "from sections s join total_ratings tr on s.id = tr.section_id " +
+                "left join holdings h on s.id = h.section_id " +
+                "left join evaluations e on h.id = e.holding_id " +
+                "where username = :username";
 
         Map<String, String> param = Map.of("username", username);
 

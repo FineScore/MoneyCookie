@@ -25,7 +25,7 @@ public class SectionService {
     public List<Section> findByUsername(String username) {
         return sectionRepository
                 .findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.OK, "등록된 보유종목이 없습니다."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.OK, "등록된 섹션이 없습니다."));
     }
 
     public void save(String username, String title, List<Holding> holdingList) {
