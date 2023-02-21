@@ -22,6 +22,7 @@ export default {
   data() {
     return {
       deleteMode: false,
+      isFullSection: false,
     };
   },
   components: {
@@ -33,7 +34,8 @@ export default {
     axios
       .get(url)
       .then((response) => {
-        console.log(response);
+        console.log(response.data);
+        this.checkFullSection(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -49,6 +51,11 @@ export default {
     goToPortfolio() {
       if (!this.deleteMode) {
         this.$router.push("/section/1");
+      }
+    },
+    checkFullSection(sectionList) {
+      if (sectionList.length >= 6) {
+        this.isFullSection = true;
       }
     },
   },
