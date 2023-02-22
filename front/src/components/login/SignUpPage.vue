@@ -116,7 +116,7 @@ export default {
   },
   methods: {
     checkDuplicate() {
-      const url = "http://localhost:8080/check";
+      const url = "/api/check";
       const regex = /^[a-z|0-9]+$/;
 
       if (regex.test(this.username)) {
@@ -151,7 +151,7 @@ export default {
       }
     },
     checkRegisterForm() {
-      const url = "http://localhost:8080/register";
+      const url = "/api/register";
       const data = {
         username: this.username,
         password: this.password,

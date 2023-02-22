@@ -4,6 +4,7 @@
       <FilledCard
         v-for="section in sectionList"
         :key="section.id"
+        :id="section.id"
         :title="section.title"
         @delete-mode="blockRoute"
         @cancel-delete="activeRoute"
@@ -36,7 +37,7 @@ export default {
     FilledCard,
   },
   mounted() {
-    const url = "/section";
+    const url = "/api/section/all";
     axios
       .get(url)
       .then((response) => {
@@ -72,6 +73,13 @@ export default {
         this.isFullSection = true;
       }
     },
+    // handleMode(sequence) {
+    //   if (this.deleteMode) {
+    //     this.deleteSection(sequence);
+    //   } else {
+    //     this.goToPortfolio(sequence);
+    //   }
+    // },
   },
 };
 </script>

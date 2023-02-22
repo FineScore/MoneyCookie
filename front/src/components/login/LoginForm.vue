@@ -65,7 +65,7 @@ export default {
   },
   methods: {
     checkLoginForm() {
-      const url = "/login";
+      const url = "/api/login";
       const data = {
         username: this.username,
         password: this.password,

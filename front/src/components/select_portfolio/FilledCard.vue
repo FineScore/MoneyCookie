@@ -2,7 +2,11 @@
   <div
     class="relative w-64 h-80 border-4 border-gray-400 border-solid rounded-xl cursor-pointer"
   >
-    <DeleteCard v-if="deleteMode" @cancel-delete="cancelDeleteMode" />
+    <DeleteCard
+      v-if="deleteMode"
+      @cancel-delete="cancelDeleteMode"
+      :id="id"
+    />
     <div v-else>
       <button
         type="button"
@@ -27,7 +31,7 @@ export default {
       deleteMode: false,
     };
   },
-  props: ["title"],
+  props: ["title", "id"],
   components: {
     DeleteCard,
   },

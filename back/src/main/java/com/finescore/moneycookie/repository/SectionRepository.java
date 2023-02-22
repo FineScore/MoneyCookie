@@ -62,11 +62,11 @@ public class SectionRepository {
         return Optional.of(sectionList);
     }
 
-    public void delete(Section section) {
+    public void delete(Long sectionId) {
         String sql = "delete from sections where id = :id";
 
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("id", section.getId());
+                .addValue("id", sectionId);
 
         template.update(sql, param);
     }

@@ -3,6 +3,7 @@
     <button
       type="button"
       class="w-full py-3 text-sm text-center text-white bg-red-600 border border-red-600 rounded-lg"
+      @click="deleteSection(id)"
     >
       삭제
     </button>
@@ -17,10 +18,30 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
+  props: ["id"],
   methods: {
     cancelDelete() {
       this.$emit("cancel-delete");
+    },
+    deleteSection(id) {
+      const url = "/api/section";
+
+      axios
+        .delete(url, {
+          params: {
+            sectionId: id,
+          },
+        })
+        .then((response) => {
+          console.log(response);
+          this.$router.go(0);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };

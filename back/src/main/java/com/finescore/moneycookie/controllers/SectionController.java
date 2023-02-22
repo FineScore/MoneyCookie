@@ -19,7 +19,7 @@ import java.util.List;
 public class SectionController {
     private final SectionService service;
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Section>> findAll(HttpServletRequest request) {
         HttpSession session = request.getSession();
         List<Section> sectionList = service.findByUsername(
@@ -29,7 +29,7 @@ public class SectionController {
         return new ResponseEntity<>(sectionList, HttpStatus.OK);
     }
 
-    @PostMapping("/save")
+    @PostMapping
     public ResponseEntity<String> save(
             @RequestBody Section section,
             HttpServletRequest request
@@ -39,5 +39,12 @@ public class SectionController {
         service.save(username, section.getTitle(), section.getHoldingList());
 
         return new ResponseEntity<>("보유종목 저장 완료", HttpStatus.OK);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<String> delete(Long sectionId) {
+        service.delete(sectionId);
+
+        return new ResponseEntity<>("보유종목 삭제 완료", HttpStatus.OK);
     }
 }

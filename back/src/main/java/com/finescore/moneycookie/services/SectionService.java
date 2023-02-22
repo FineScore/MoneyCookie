@@ -80,6 +80,10 @@ public class SectionService {
 
     }
 
+    public void delete(Long sectionId) {
+        sectionRepository.delete(sectionId);
+    }
+
     private Long calcTotalAmount(Holding holding) {
         return priceService.calcTotalAmount(
                 holding.getBuyAvgPrice(),

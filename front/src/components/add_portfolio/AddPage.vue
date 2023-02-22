@@ -98,6 +98,7 @@
                         name="amount"
                         id="amount"
                         placeholder="보유수량"
+                        autocomplete="off"
                         class="w-32 text-sm text-center py-3 focus:bg-white bg-gray-100 border border-gray-200 rounded focus:outline-none focus:border-yellow-400 transition ease-in duration-200"
                         v-model.number="items[index].quantity"
                       />
@@ -110,6 +111,7 @@
                         name="avg-buy"
                         id="avg-buy"
                         placeholder="매수평균가"
+                        autocomplete="off"
                         class="w-40 text-sm text-center py-3 focus:bg-white bg-gray-100 border border-gray-200 rounded focus:outline-none focus:border-yellow-400 transition ease-in duration-200"
                         v-model="items[index].buyAvgPrice"
                       />
@@ -191,7 +193,7 @@ export default {
   methods: {
     setItemName(event) {
       this.itemName = event.target.value;
-      const url = "/search";
+      const url = "/api/search";
 
       axios
         .get(url, {
@@ -251,7 +253,7 @@ export default {
         };
         holdingList.push(holding);
       }
-      const url = "/section/save";
+      const url = "/api/section";
 
       const data = {
         title: this.title,
