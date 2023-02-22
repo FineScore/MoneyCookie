@@ -11,6 +11,7 @@ public class Holding {
     private Long id;
     private Long sectionId;
     private Long itemKrId;
+    private String itemName;
     private Integer quantity;
     private Integer buyAvgPrice;
     private Long buyTotalAmount;
@@ -20,10 +21,11 @@ public class Holding {
     public Holding() {
     }
 
-    public Holding(Long id, Long sectionId, Long itemKrId, Integer quantity, Integer buyAvgPrice, Long buyTotalAmount, Date buyDate, Evaluation evaluation) {
+    public Holding(Long id, Long sectionId, Long itemKrId, String itemName, Integer quantity, Integer buyAvgPrice, Long buyTotalAmount, Date buyDate, Evaluation evaluation) {
         this.id = id;
         this.sectionId = sectionId;
         this.itemKrId = itemKrId;
+        this.itemName = itemName;
         this.quantity = quantity;
         this.buyAvgPrice = buyAvgPrice;
         this.buyTotalAmount = buyTotalAmount;

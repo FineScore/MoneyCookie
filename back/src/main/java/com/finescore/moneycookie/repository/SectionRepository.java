@@ -41,9 +41,10 @@ public class SectionRepository {
                 "tr.id tr_id, tr.section_id, tr.total_asset, tr.total_evaluation_rate, tr.total_evaluation_amount " +
                 "from sections s join total_ratings tr on s.id = tr.section_id " +
                 "where username = :username";
-        String find_holding_sql = "select h.id h_id, h.section_id, h.item_kr_id, h.quantity, h.buy_avg_price, h.buy_total_amount, " +
+        String find_holding_sql = "select h.id h_id, h.section_id, h.item_kr_id, i.item_name, h.quantity, h.buy_avg_price, h.buy_total_amount, " +
                 "e.id e_id, e.holding_id, e.evaluation_rate, e.evaluation_amount " +
                 "from holdings h join evaluations e on h.id = e.holding_id " +
+                "join items_kr i on h.item_kr_id = i.id " +
                 "where h.section_id = :sectionId";
 
         Map<String, String> sectionParam = Map.of("username", username);
@@ -103,6 +104,7 @@ public class SectionRepository {
                 .id(rs.getLong("h_id"))
                 .sectionId(rs.getLong("section_id"))
                 .itemKrId(rs.getLong("item_kr_id"))
+                .itemName(rs.getString("item_name"))
                 .quantity(rs.getInt("quantity"))
                 .buyAvgPrice(rs.getInt("buy_avg_price"))
                 .buyTotalAmount(rs.getLong("buy_total_amount"))

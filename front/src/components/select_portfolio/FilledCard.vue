@@ -12,7 +12,7 @@
         <img src="@/assets/images/delete_icon.png" alt="삭제" />
       </button>
       <div class="mx-3 my-12 text-3xl font-bold text-center">
-        <h3>포트폴리오 1123123</h3>
+        <h3>{{ this.title }}</h3>
       </div>
     </div>
   </div>
@@ -27,6 +27,7 @@ export default {
       deleteMode: false,
     };
   },
+  props: ["title"],
   components: {
     DeleteCard,
   },

@@ -20,6 +20,7 @@ const router = createRouter({
     },
     {
       path: "/section",
+      name: "section",
       component: BasicPage,
       children: [
         {
@@ -27,7 +28,8 @@ const router = createRouter({
           component: SelectPage,
         },
         {
-          path: ":id",
+          path: ":sequence",
+          name: "sequence",
           component: ViewPortfolioPage,
         },
         {
@@ -35,7 +37,7 @@ const router = createRouter({
           component: AddPage,
         },
         {
-          path: "edit/:id",
+          path: "edit/:sequence",
           component: EditPortfolioPage,
         },
       ],

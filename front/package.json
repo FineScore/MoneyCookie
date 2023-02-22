@@ -24,6 +24,7 @@
     "vue": "^3.2.45",
     "vue-loader": "^17.0.1",
     "vue-router": "^4.1.6",
+    "vuex": "^4.1.0",
     "webstomp-client": "^1.2.6"
   },
   "devDependencies": {

@@ -2,13 +2,18 @@
   <div class="absolute w-2/3 left-1/2 top-2/3 -translate-x-1/2 -translate-y-80">
     <div class="flex flex-wrap gap-x-32 gap-y-20 justify-around">
       <FilledCard
+        v-for="section in sectionList"
+        :key="section.id"
+        :title="section.title"
         @delete-mode="blockRoute"
         @cancel-delete="activeRoute"
-        @click="goToPortfolio"
+        @click="goToPortfolio(section.sequence)"
       />
-      <router-link to="/section/add">
-        <BlankCard />
-      </router-link>
+      <div v-if="!isFullSection">
+        <router-link to="/section/add">
+          <BlankCard />
+        </router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -23,6 +28,7 @@ export default {
     return {
       deleteMode: false,
       isFullSection: false,
+      sectionList: [],
     };
   },
   components: {
@@ -35,7 +41,12 @@ export default {
       .get(url)
       .then((response) => {
         console.log(response.data);
-        this.checkFullSection(response.data);
+        this.sectionList = response.data;
+        for (let i = 0; i < this.sectionList.length; i++) {
+          this.sectionList[i].sequence = i + 1;
+        }
+        this.checkFullSection(this.sectionList);
+        this.$store.commit("setSectionList", this.sectionList);
       })
       .catch((error) => {
         console.log(error);
@@ -48,9 +59,12 @@ export default {
     activeRoute() {
       this.deleteMode = false;
     },
-    goToPortfolio() {
+    goToPortfolio(sequence) {
+      this.$store.commit("setIndex", sequence);
+      console.log("sequence : " + sequence);
+
       if (!this.deleteMode) {
-        this.$router.push("/section/1");
+        this.$router.push({ name: "sequence", params: { sequence } });
       }
     },
     checkFullSection(sectionList) {

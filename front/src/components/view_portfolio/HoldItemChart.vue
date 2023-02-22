@@ -34,16 +34,7 @@ export default {
         },
         series: [
           {
-            data: [
-              {
-                name: "삼성전자",
-                y: 300,
-              },
-              {
-                name: "삼성SDS",
-                y: 100,
-              },
-            ],
+            data: [],
           },
         ],
         legend: {
@@ -53,6 +44,15 @@ export default {
         },
       },
     };
+  },
+  props: ["holdingList"],
+  mounted() {
+    for (const holding of this.holdingList) {
+      this.chartOptionsPie.series[0].data.push({
+        name: holding.itemName,
+        y: holding.buyTotalAmount,
+      });
+    }
   },
 };
 </script>
