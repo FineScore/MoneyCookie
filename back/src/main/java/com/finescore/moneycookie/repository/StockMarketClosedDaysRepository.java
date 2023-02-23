@@ -28,13 +28,13 @@ public class StockMarketClosedDaysRepository {
         return template.query(sql, closedDayRowMapper());
     }
 
-    public Optional<ClosedDay> findByDate(LocalDate date) {
+    public List<ClosedDay> findByDate(LocalDate date) {
         String sql = "select date, name, type from closed_days where date = :date";
 
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("date", date);
 
-        return Optional.ofNullable(template.queryForObject(sql, param, closedDayRowMapper()));
+        return template.query(sql, param, closedDayRowMapper());
     }
 
     public void save(List<ClosedDay> dayList) {

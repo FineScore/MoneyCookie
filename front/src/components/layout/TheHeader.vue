@@ -51,17 +51,34 @@
 
 <script>
 import moment from "moment";
+import axios from "axios";
 
 export default {
   data() {
     return {
       time: "",
       date: moment().locale("ko").format("LL"),
-      status: this.marketStatus(),
+      dayName: "",
+      isTodayClosed: false,
+      status: false,
     };
   },
   mounted() {
     this.updateTime();
+    const url = "/api/closed";
+    axios
+      .get(url)
+      .then((response) => {
+        console.log(response.data);
+        const day = response.data;
+        if (typeof day !== "string") {
+          this.dayName = day.name;
+          this.isHoliday = true;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
   computed: {
     statusStatement() {
@@ -76,6 +93,14 @@ export default {
       if (this.isNextDay) {
         this.date = moment().locale("ko").format("LL");
       }
+
+      if (this.dayName !== "" || moment().day() === 0 || moment().day() === 6) {
+        this.isTodayClosed = true;
+      }
+
+      if (this.isTodayClosed === false) {
+        this.status = !this.isOpen;
+      }
     },
     isNextDay() {
       return this.time === moment().startOf("day").format("HH:mm:ss");
@@ -86,13 +111,6 @@ export default {
       return (
         (nowHour >= 9 && nowHour < 15) || (nowHour == 15 && nowMinute <= 30)
       );
-    },
-    marketStatus() {
-      if (this.isOpen()) {
-        return true;
-      } else {
-        return false;
-      }
     },
   },
 };
