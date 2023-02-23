@@ -4,10 +4,12 @@ import com.finescore.moneycookie.models.Item;
 import com.finescore.moneycookie.models.PriceToTicker;
 import com.finescore.moneycookie.network.generator.PriceGenerator;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class PriceService {
     private final PriceGenerator priceNowGenerator;
     private final PriceGenerator pricePeriodGenerator;
@@ -36,6 +38,7 @@ public class PriceService {
     }
 
     public Long calcEvaluationAmount(Integer nowPrice, Integer buyPrice, Integer quantity) {
+        log.info("quantity: {}", quantity);
         // (현재가 - 매수평균가) * 수량
         return (long) (nowPrice - buyPrice) * quantity;
     }

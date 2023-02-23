@@ -25,6 +25,9 @@ const store = createStore({
     getSection(state) {
       return state.sectionList[state.index];
     },
+    getId(_, getters) {
+      return getters.getSection.id;
+    },
     getTitle(_, getters) {
       return getters.getSection.title;
     },

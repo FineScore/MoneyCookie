@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -28,6 +29,7 @@ public class SectionService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.OK, "등록된 섹션이 없습니다."));
     }
 
+    @Transactional
     public void save(String username, String title, List<Holding> holdingList) {
         Section section = Section.builder()
                 .username(username)
@@ -80,6 +82,81 @@ public class SectionService {
 
     }
 
+    @Transactional
+    public void updateSection(UpdateForm form) {
+        if (form.getTitle() != null) {
+            sectionRepository.update(form.getId(), form.getTitle());
+        }
+
+        if (form.getHoldingList() != null) {
+            for (UpdateHolding newHolding : form.getHoldingList()) {
+                // 삭제
+                if (newHolding.getUpdateStatus() == UpdateStatus.DELETE) {
+                    holdingRepository.delete(newHolding.getId());
+                    continue;
+                }
+
+                Holding holding = Holding.builder()
+                        .id(newHolding.getId())
+                        .sectionId(newHolding.getSectionId())
+                        .itemKrId(newHolding.getItemKrId())
+                        .quantity(newHolding.getQuantity())
+                        .buyAvgPrice(newHolding.getBuyAvgPrice())
+                        .buyTotalAmount(priceService.calcTotalAmount(
+                                newHolding.getBuyAvgPrice(),
+                                newHolding.getQuantity()
+                        ))
+                        .buyDate(newHolding.getBuyDate())
+                        .build();
+
+                // 추가
+                if (newHolding.getUpdateStatus() == UpdateStatus.INSERT) {
+                    Long savedId = holdingRepository.save(holding);
+                    Evaluation evaluation = Evaluation.builder()
+                            .holdingId(savedId)
+                            .evaluationRate(nowEvaluationRate(holding))
+                            .evaluationAmount(nowEvaluationAmount(holding))
+                            .build();
+                    evaluationRepository.save(evaluation);
+
+                }
+
+                // 수정
+                if (newHolding.getUpdateStatus() == UpdateStatus.UPDATE) {
+                    holdingRepository.update(holding);
+                    Evaluation evaluation = Evaluation.builder()
+                            .holdingId(holding.getId())
+                            .evaluationRate(nowEvaluationRate(holding))
+                            .evaluationAmount(nowEvaluationAmount(holding))
+                            .build();
+                    log.info("amount: {}", evaluation.getEvaluationAmount());
+                    evaluationRepository.update(evaluation);
+                }
+
+
+            }
+
+            List<Holding> holdingList = holdingRepository.findBySectionId(form.getId());
+
+            Long totalBuyAmount = 0L;
+            Long totalEvaluationAmount = 0L;
+
+            for (Holding holding : holdingList) {
+                totalBuyAmount += holding.getBuyTotalAmount();
+                totalEvaluationAmount += priceService.calcEvaluationPrice(holding.getQuantity(), getNowPrice(holding));
+            }
+
+            TotalRating totalRating = TotalRating.builder()
+                    .sectionId(form.getId())
+                    .totalAsset(totalBuyAmount)
+                    .totalEvaluationRate(calcTotalEvaluationRate(totalBuyAmount, totalEvaluationAmount))
+                    .totalEvaluationAmount(totalEvaluationAmount)
+                    .build();
+
+            totalRatingRepository.update(totalRating);
+        }
+    }
+
     public void delete(Long sectionId) {
         sectionRepository.delete(sectionId);
     }
@@ -122,60 +199,4 @@ public class SectionService {
                 .get(0)
                 .getPrice();
     }
-
-    public void updateSection(Long sectionId, String newTitle) {
-        sectionRepository.update(sectionId, newTitle);
-    }
-
-//    public void updateSection(List<NewHolding> newHoldingList) {
-//        for (NewHolding newHolding : newHoldingList) {
-//            Holding holding = Holding.builder()
-//                    .id(newHolding.getId())
-//                    .sectionId(newHolding.getSectionId())
-//                    .itemKrId(newHolding.getItemKrId())
-//                    .quantity(newHolding.getQuantity())
-//                    .buyAvgPrice(newHolding.getBuyAvgPrice())
-//                    .buyTotalAmount(priceService.calcTotalAmount(
-//                            newHolding.getBuyAvgPrice(),
-//                            newHolding.getQuantity()
-//                    ))
-//                    .build();
-//
-//            // 추가
-//            if (newHolding.getUpdateStatus() == UpdateStatus.INSERT) {
-//                Holding savedHolding = holdingRepository.save(holding);
-//                Evaluation evaluation = Evaluation.builder()
-//                        .holdingId(savedHolding.getId())
-//                        .evaluationRate(nowHoldingEvaluationRate(savedHolding))
-//                        .evaluationAmount(nowHoldingEvaluationAmount(savedHolding))
-//                        .build();
-//                evaluationRepository.save(evaluation);
-//            }
-//
-//            // 수정
-//            if (newHolding.getUpdateStatus() == UpdateStatus.UPDATE) {
-//                holdingRepository.update(holding);
-//                Evaluation evaluation = Evaluation.builder()
-//                        .holdingId(holding.getId())
-//                        .evaluationRate(nowHoldingEvaluationRate(holding))
-//                        .evaluationAmount(nowHoldingEvaluationAmount(holding))
-//                        .build();
-//                evaluationRepository.update(evaluation);
-//            }
-//
-//            // 삭제
-//            if (newHolding.getUpdateStatus() == UpdateStatus.DELETE) {
-//                holdingRepository.delete(holding);
-//            }
-//        }
-//    }
-
-//    public void updateSection(Long sectionId, String newTitle, List<NewHolding> newHoldingList) {
-//        updateSection(sectionId, newTitle);
-//        updateSection(newHoldingList);
-//    }
-
-//    public void updateEvaluation() {
-//
-//    }
 }

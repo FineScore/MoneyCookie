@@ -28,12 +28,12 @@ public class EvaluationRepository {
 
     public void update(Evaluation newEval) {
         String sql = "update evaluations set evaluation_rate = :evaluationRate, evaluation_amount = :evaluationAmount " +
-                "where id = :id";
+                "where holding_id = :holdingId";
 
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("evaluationRate", newEval.getEvaluationRate())
-                .addValue("evaluation_amount", newEval.getEvaluationAmount())
-                .addValue("id", newEval.getId());
+                .addValue("evaluationAmount", newEval.getEvaluationAmount())
+                .addValue("holdingId", newEval.getHoldingId());
 
         template.update(sql, param);
     }

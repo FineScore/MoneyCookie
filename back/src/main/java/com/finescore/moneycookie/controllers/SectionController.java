@@ -1,6 +1,7 @@
 package com.finescore.moneycookie.controllers;
 
 import com.finescore.moneycookie.models.Section;
+import com.finescore.moneycookie.models.UpdateForm;
 import com.finescore.moneycookie.services.SectionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,14 @@ public class SectionController {
         service.save(username, section.getTitle(), section.getHoldingList());
 
         return new ResponseEntity<>("보유종목 저장 완료", HttpStatus.OK);
+    }
+
+    @PutMapping
+    public ResponseEntity<String> update(@RequestBody UpdateForm form) {
+        log.info(form.getHoldingList().toString());
+        service.updateSection(form);
+
+        return new ResponseEntity<>("보유종목 수정 완료", HttpStatus.OK);
     }
 
     @DeleteMapping

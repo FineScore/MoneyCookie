@@ -31,14 +31,8 @@ const router = createRouter({
           path: ":sequence",
           name: "sequence",
           component: ViewPortfolioPage,
-          children: [
-            {
-              path: "edit",
-              name: "edit",
-              component: EditPortfolioPage,
-            },
-          ],
         },
+        { path: ":sequence/edit", name: "edit", component: EditPortfolioPage },
         {
           path: "add",
           component: AddPage,

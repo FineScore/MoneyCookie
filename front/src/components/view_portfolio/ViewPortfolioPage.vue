@@ -46,7 +46,7 @@
       <div class="space-y-2">
         <div class="flex items-center justify-between mx-4 mb-3">
           <label for="hold-stocks" class="font-bold">나의 보유 종목</label>
-          <router-link to="edit/1">
+          <router-link :to="{ name: 'edit' }">
             <button
               type="button"
               class="w-28 flex justify-center bg-yellow-600 text-black text-opacity-70 p-3 rounded-full tracking-wide font-semibold cursor-pointer"
