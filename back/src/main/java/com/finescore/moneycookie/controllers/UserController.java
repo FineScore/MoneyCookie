@@ -29,7 +29,7 @@ public class UserController {
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
+        HttpSession session = request.getSession();
 
         if (session != null) {
             session.invalidate();
@@ -46,6 +46,28 @@ public class UserController {
         memberService.save(member);
 
         return new ResponseEntity<>("회원가입 완료", HttpStatus.OK);
+    }
+
+    @PostMapping("/password")
+    public ResponseEntity<String> updatePassword(@RequestBody String password, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String username = (String) session.getAttribute("username");
+
+        memberService.updatePassword(username, password);
+
+        return new ResponseEntity<>("비밀번호 변경 완료", HttpStatus.OK);
+    }
+
+    @DeleteMapping("/user")
+    public ResponseEntity<String> deleteUser(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String username = (String) session.getAttribute("username");
+
+        session.invalidate();
+
+        memberService.delete(username);
+
+        return new ResponseEntity<>("회원 탈퇴 완료", HttpStatus.OK);
     }
 
     @GetMapping("/check")

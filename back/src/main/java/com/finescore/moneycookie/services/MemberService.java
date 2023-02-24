@@ -12,10 +12,6 @@ import org.springframework.web.server.ResponseStatusException;
 public class MemberService {
     private final MemberRepository memberRepository;
 
-    public void save(MemberInfo member) {
-        memberRepository.save(member);
-    }
-
     public MemberInfo checkInfo(MemberInfo loginInfo) {
         MemberInfo savedMember = findByUsername(loginInfo.getUsername());
 
@@ -28,6 +24,18 @@ public class MemberService {
 
     public Boolean checkUsername(String username) {
         return memberRepository.checkUsername(username);
+    }
+
+    public void updatePassword(String username, String password) {
+        memberRepository.update(username, password);
+    }
+
+    public void save(MemberInfo member) {
+        memberRepository.save(member);
+    }
+
+    public void delete(String username) {
+        memberRepository.delete(username);
     }
 
     private MemberInfo findByUsername(String username) {

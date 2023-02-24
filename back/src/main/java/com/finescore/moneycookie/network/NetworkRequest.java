@@ -19,11 +19,6 @@ import java.util.Map;
 public class NetworkRequest {
     private final RestTemplate restTemplate;
 
-    public String request(String url, HttpMethod httpMethod) {
-        log.info("URL : {}", url);
-        return restTemplate.exchange(url, httpMethod, setHeaders(), String.class).getBody();
-    }
-
     public String request(String url, HttpMethod httpMethod, Map<String, String> params) {
         return restTemplate.exchange(url, httpMethod, setHeaders(), String.class, params).getBody();
     }
@@ -34,7 +29,6 @@ public class NetworkRequest {
         headers.set("User-Agent", userAgent);
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAcceptCharset(Collections.singletonList(StandardCharsets.UTF_8));
-//        headers.set("Accept", "text/json;charset=UTF-8");
         return new HttpEntity<>(headers);
     }
 

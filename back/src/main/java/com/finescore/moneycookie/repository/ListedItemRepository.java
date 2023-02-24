@@ -34,12 +34,6 @@ public class ListedItemRepository {
         }
     }
 
-    public List<Item> findAll() {
-        String sql = "select ticker, item_name, market from items_kr";
-
-        return template.query(sql, itemRowMapper());
-    }
-
     public Item findByHoldingId(Long holdingId) {
         log.info("holdingid : {}", holdingId);
         String sql = "select i.id, i.ticker, i.item_name, i.market, h.buy_date from items_kr i join holdings h on i.id = h.item_kr_id where h.id = :holdingId";

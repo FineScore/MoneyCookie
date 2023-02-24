@@ -6,6 +6,7 @@ import SelectPage from "@/components/select_portfolio/SelectPage.vue";
 import ViewPortfolioPage from "@/components/view_portfolio/ViewPortfolioPage";
 import AddPage from "@/components/add_portfolio/AddPage.vue";
 import EditPortfolioPage from "@/components/edit_portfolio/EditPortfolioPage.vue";
+import UpdateUserForm from "@/components/userinfo/UpdateUserForm.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -36,6 +37,10 @@ const router = createRouter({
         {
           path: "add",
           component: AddPage,
+        },
+        {
+          path: "user",
+          component: UpdateUserForm,
         },
       ],
     },

@@ -34,7 +34,6 @@ public class StockMarketClosedDaysGenerator implements InfoGenerator<List<Closed
         JsonNode body = JSONParser.parse(response);
         JsonNode nodes = getHolidayNode(body);
         List<ClosedDay> list = setRestDays(nodes);
-//        filterWeekend(list);
         return list;
     }
 
@@ -96,17 +95,4 @@ public class StockMarketClosedDaysGenerator implements InfoGenerator<List<Closed
     private ClosedDay getWorkersDay() {
         return new ClosedDay(LocalDate.of(LocalDate.now().getYear(), Month.MAY, 1), "근로자의 날", ClosedType.CLOSED);
     }
-
-//    private void filterWeekend(List<ClosedDay> closedDays) {
-//        for (ClosedDay day : closedDays) {
-//            if (isWeekend(day)) {
-//                closedDays.remove(day);
-//            }
-//        }
-//    }
-//
-//    private boolean isWeekend(ClosedDay day) {
-//        return day.getDate().getDayOfWeek() == DayOfWeek.SATURDAY || day.getDate().getDayOfWeek() == DayOfWeek.SUNDAY;
-//    }
-
 }

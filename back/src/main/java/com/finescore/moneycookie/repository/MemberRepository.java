@@ -58,21 +58,21 @@ public class MemberRepository {
         }
     }
 
-    public void update(MemberInfo changeMember) {
+    public void update(String username, String newPassword) {
         String sql = "update users set password = :password where username = :username";
 
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("username", changeMember.getUsername())
-                .addValue("password", changeMember.getPassword());
+                .addValue("username", username)
+                .addValue("password", newPassword);
 
         template.update(sql, param);
     }
 
-    public void delete(MemberInfo deleteMember) {
+    public void delete(String username) {
         String sql = "delete from users where username = :username";
 
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("username", deleteMember.getUsername());
+                .addValue("username", username);
 
         template.update(sql, param);
     }
