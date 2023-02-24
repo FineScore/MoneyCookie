@@ -190,16 +190,18 @@ export default {
       {},
       (frame) => {
         console.log("Connected: " + frame);
-        this.stompClient.send(
-          "/pub/now",
-          JSON.stringify(this.$store.getters.getSection)
-        );
-        this.stompClient.subscribe("/sub/now", (event) => {
-          let messages = JSON.parse(event.body);
-          console.log(messages);
-          this.$store.commit("setSection", messages);
-          this.section = this.$store.getters.getSection;
-        });
+        if (this.$store.getters.getStatus) {
+          this.stompClient.send(
+            "/pub/now",
+            JSON.stringify(this.$store.getters.getSection)
+          );
+          this.stompClient.subscribe("/sub/now", (event) => {
+            let messages = JSON.parse(event.body);
+            console.log(messages);
+            this.$store.commit("setSection", messages);
+            this.section = this.$store.getters.getSection;
+          });
+        }
       },
       (error) => {
         console.log("Connection Error : " + error.headers.messages);
@@ -207,7 +209,7 @@ export default {
     );
   },
   beforeUnmount() {
-    this.stompClient.disconnect();
+    this.stompClient.send("/pub/close", "close");
   },
   methods: {
     currencyFormat(money) {

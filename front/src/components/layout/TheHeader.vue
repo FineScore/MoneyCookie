@@ -58,7 +58,7 @@ export default {
     return {
       time: "",
       date: moment().locale("ko").format("LL"),
-      status: false,
+      status: this.$store.getters.getStatus,
     };
   },
   mounted() {
@@ -90,9 +90,9 @@ export default {
   watch: {
     time(newTime) {
       if (this.isOpenTime(newTime) && !this.isWeekend(this.date)) {
-        this.status = true;
+        this.$store.commit("setStatus", true);
       } else {
-        this.status = false;
+        this.$store.commit("setStatus", false);
       }
     },
   },

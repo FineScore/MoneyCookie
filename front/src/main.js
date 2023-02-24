@@ -11,6 +11,7 @@ const store = createStore({
     return {
       sectionList: [],
       index: 0,
+      status: false,
     };
   },
   mutations: {
@@ -22,7 +23,10 @@ const store = createStore({
     },
     setSection(state, data) {
       state.sectionList[state.index] = data;
-    }
+    },
+    setStatus(state, data) {
+      state.status = data;
+    },
   },
   getters: {
     getSection(state) {
@@ -45,6 +49,9 @@ const store = createStore({
     },
     getHoldingList(_, getters) {
       return getters.getSection.holdingList;
+    },
+    getStatus(state) {
+      return state.status;
     },
   },
 });
