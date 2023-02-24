@@ -19,7 +19,7 @@ public class PriceService {
         return priceNowGenerator.getPrice(item);
     }
 
-    public PriceToTicker getUserPeriodPrice(Item item) {
+    public PriceToTicker getPeriodPrice(Item item) {
         return pricePeriodGenerator.getPrice(item);
     }
 

@@ -53,6 +53,9 @@ const store = createStore({
     getStatus(state) {
       return state.status;
     },
+    getPeriodicRates(_, getters) {
+      return getters.getSection.periodicRates;
+    }
   },
 });
 

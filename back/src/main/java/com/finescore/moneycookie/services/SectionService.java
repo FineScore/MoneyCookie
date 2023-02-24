@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -24,9 +26,43 @@ public class SectionService {
     private final PriceService priceService;
 
     public List<Section> findByUsername(String username) {
-        return sectionRepository
+        List<Section> sections = sectionRepository
                 .findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.OK, "등록된 섹션이 없습니다."));
+
+        for (Section section : sections) {
+            // totalbuyamount
+            // 날짜별 totalEvaluationAmount
+            // 날짜 수 만큼 리스트 만들어
+            Long totalBuyAmount = 0L;
+            List<Long> totalPeriodicEvalAmount = new ArrayList<>();
+            List<PeriodicTotalRate> periodicTotalRates = new ArrayList<>();
+
+            for (int i = 0; i < section.getHoldingList().size(); i++) {
+                totalBuyAmount += section.getHoldingList().get(i).getBuyTotalAmount();
+
+                PriceToTicker periodPrice = priceService.getPeriodPrice(listedItemRepository.findByItemKrId(section.getHoldingList().get(i).getItemKrId()));
+                log.info("index : {}", periodPrice.getPriceList().size());
+                for (int j = 0; j < periodPrice.getPriceList().size(); j++) {
+                    if (i == 0) {
+                        totalPeriodicEvalAmount.add(priceService.calcEvaluationPrice(section.getHoldingList().get(i).getQuantity(), periodPrice.getPriceList().get(j).getPrice()));
+                    } else {
+                        totalPeriodicEvalAmount.set(j, totalPeriodicEvalAmount.get(j) + priceService.calcEvaluationPrice(section.getHoldingList().get(i).getQuantity(), periodPrice.getPriceList().get(j).getPrice()));
+                    }
+
+                }
+                periodicTotalRates.add(new PeriodicTotalRate(periodPrice.getPriceList().get(i).getDate()));
+            }
+
+            log.info("SIZE : {}",periodicTotalRates.size());
+            for (int i = 0; i < periodicTotalRates.size(); i++) {
+                periodicTotalRates.get(i).setTotalEvaluationRate(priceService.calcTotalEvaluationRate(totalBuyAmount, totalPeriodicEvalAmount.get(i)));
+            }
+
+            section.setPeriodicRates(periodicTotalRates);
+        }
+
+        return sections;
     }
 
     public List<Holding> findHoldingBySectionId(Long sectionId) {

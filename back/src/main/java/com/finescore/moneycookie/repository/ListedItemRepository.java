@@ -41,7 +41,7 @@ public class ListedItemRepository {
     }
 
     public Item findByItemKrId(Long itemKrId) {
-        String sql = "select ticker, item_name, market from items_kr where id = :id";
+        String sql = "select i.id, i.ticker, i.item_name, i.market, h.buy_date from items_kr i join holdings h on i.id = h.item_kr_id where i.id = :id";
 
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("id", itemKrId);

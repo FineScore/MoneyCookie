@@ -4,8 +4,10 @@
 
 <script>
 import { Chart } from "highcharts-vue";
+import moment from "moment";
 
 export default {
+  props: ["periodicRates"],
   components: {
     Highcharts: Chart,
   },
@@ -40,15 +42,19 @@ export default {
 
         series: [
           {
-            name: "Installation & Developers",
-            data: [
-              43934, 48656, 65165, 81827, 112143, 142383, 171533, 165174,
-              155157, 161454, 154610,
-            ],
+            data: [],
           },
         ],
       },
     };
+  },
+  mounted() {
+    for (const rate of this.periodicRates) {
+      this.chartOptionsLine.xAxis.categories.push(
+        moment(rate.date).format("YYYYMMDD")
+      );
+      this.chartOptionsLine.series[0].data.push(rate.totalEvaluationRate);
+    }
   },
 };
 </script>

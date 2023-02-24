@@ -1,6 +1,5 @@
 package com.finescore.moneycookie.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,6 +21,7 @@ public class Section {
     private LocalDateTime createDate;
     private TotalRating totalRating;
     private List<Holding> holdingList;
+    private List<PeriodicTotalRate> periodicRates;
 
     public Section(Long id, String username, String title, LocalDateTime createDate, TotalRating totalRating, List<Holding> holdingList) {
         this.id = id;
@@ -30,6 +30,16 @@ public class Section {
         this.createDate = createDate;
         this.totalRating = totalRating;
         this.holdingList = holdingList;
+    }
+
+    public Section(Long id, String username, String title, LocalDateTime createDate, TotalRating totalRating, List<Holding> holdingList, List<PeriodicTotalRate> periodicRates) {
+        this.id = id;
+        this.username = username;
+        this.title = title;
+        this.createDate = createDate;
+        this.totalRating = totalRating;
+        this.holdingList = holdingList;
+        this.periodicRates = periodicRates;
     }
 
     public Section() {

@@ -88,11 +88,13 @@ export default {
   },
   watch: {
     time(newTime) {
-      if (this.isOpenTime(newTime) && !this.isWeekend(this.date)) {
+      if (this.isOpenTime(newTime) && !this.isWeekend()) {
         this.$store.commit("setStatus", true);
       } else {
         this.$store.commit("setStatus", false);
       }
+
+      this.status = this.$store.getters.getStatus;
     },
   },
   methods: {
@@ -111,11 +113,11 @@ export default {
       const nowHour = moment(time, "HH:mm:ss").hour();
       const nowMinute = moment(time, "HH:mm:ss").minute();
       return (
-        (nowHour >= 9 && nowHour <= 15) || (nowHour === 15 && nowMinute <= 30)
+        (nowHour >= 9 && nowHour < 15) || (nowHour === 15 && nowMinute <= 30)
       );
     },
-    isWeekend(date) {
-      return moment(date).day() === 0 || moment(date).day() === 6;
+    isWeekend() {
+      return moment().day() === 0 || moment().day() === 6;
     },
     execLogout() {
       const url = "/api/logout";

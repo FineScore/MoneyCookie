@@ -36,7 +36,7 @@
         <HoldItemChart :holdingList="holdingList" />
       </div>
       <div class="w-1/3">
-        <DailyYieldChart />
+        <DailyYieldChart :periodicRates="periodicRates" />
       </div>
       <div class="w-1/3">
         <ExpectedDividendChart />
@@ -180,6 +180,9 @@ export default {
     holdingList() {
       return this.section.holdingList;
     },
+    periodicRates() {
+      return this.section.periodicRates;
+    }
   },
   mounted() {
     const serverUrl = "http://localhost:8080/ws";
