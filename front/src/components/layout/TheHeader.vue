@@ -34,14 +34,13 @@
             </p>
           </li>
           <li>
-            <router-link to="/">
-              <button
-                type="button"
-                class="w-32 flex justify-center border-yellow-600 active:bg-yellow-600 border-2 text-black text-opacity-70 p-3 rounded-full tracking-wide font-semibold cursor-pointer"
-              >
-                로그아웃
-              </button>
-            </router-link>
+            <button
+              type="button"
+              class="w-32 flex justify-center border-yellow-600 active:bg-yellow-600 border-2 text-black text-opacity-70 p-3 rounded-full tracking-wide font-semibold cursor-pointer"
+              @click="execLogout"
+            >
+              로그아웃
+            </button>
           </li>
         </ul>
       </div>
@@ -112,11 +111,23 @@ export default {
       const nowHour = moment(time, "HH:mm:ss").hour();
       const nowMinute = moment(time, "HH:mm:ss").minute();
       return (
-        (nowHour >= 9 && nowHour < 15) || (nowHour === 15 && nowMinute <= 30)
+        (nowHour >= 9 && nowHour <= 15) || (nowHour === 15 && nowMinute <= 30)
       );
     },
     isWeekend(date) {
       return moment(date).day() === 0 || moment(date).day() === 6;
+    },
+    execLogout() {
+      const url = "/api/logout";
+      axios
+        .post(url)
+        .then((response) => {
+          console.log(response.data);
+          this.$router.push("/");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };

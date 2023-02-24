@@ -11,7 +11,7 @@ const store = createStore({
     return {
       sectionList: [],
       index: 0,
-      status: false,
+      status: true,
     };
   },
   mutations: {
