@@ -22,7 +22,7 @@
               class="w-7 h-7 border-2 border-gray-800 rounded-full"
             ></div>
             <p class="text-lg font-semibold text-black ml-3 hidden xl:block">
-              {{ statusStatement }}
+              {{ statusText }}
             </p>
           </li>
           <li class="flex items-center">
@@ -58,8 +58,6 @@ export default {
     return {
       time: "",
       date: moment().locale("ko").format("LL"),
-      dayName: "",
-      isTodayClosed: false,
       status: false,
     };
   },
@@ -81,8 +79,21 @@ export default {
       });
   },
   computed: {
-    statusStatement() {
-      return this.status ? "장 시작" : "장 종료";
+    statusText() {
+      if (this.status) {
+        return "장 시작";
+      } else {
+        return "장 종료";
+      }
+    },
+  },
+  watch: {
+    time(newTime) {
+      if (this.isOpenTime(newTime) && !this.isWeekend(this.date)) {
+        this.status = true;
+      } else {
+        this.status = false;
+      }
     },
   },
   methods: {
@@ -93,24 +104,19 @@ export default {
       if (this.isNextDay) {
         this.date = moment().locale("ko").format("LL");
       }
-
-      if (this.dayName !== "" || moment().day() === 0 || moment().day() === 6) {
-        this.isTodayClosed = true;
-      }
-
-      if (this.isTodayClosed === false) {
-        this.status = !this.isOpen;
-      }
     },
     isNextDay() {
       return this.time === moment().startOf("day").format("HH:mm:ss");
     },
-    isOpen() {
-      const nowHour = moment(this.time).hour();
-      const nowMinute = moment(this.time).minute();
+    isOpenTime(time) {
+      const nowHour = moment(time, "HH:mm:ss").hour();
+      const nowMinute = moment(time, "HH:mm:ss").minute();
       return (
-        (nowHour >= 9 && nowHour < 15) || (nowHour == 15 && nowMinute <= 30)
+        (nowHour >= 9 && nowHour < 15) || (nowHour === 15 && nowMinute <= 30)
       );
+    },
+    isWeekend(date) {
+      return moment(date).day() === 0 || moment(date).day() === 6;
     },
   },
 };
