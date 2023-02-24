@@ -20,6 +20,9 @@ const store = createStore({
     setIndex(state, sequence) {
       state.index = sequence - 1;
     },
+    setSection(state, data) {
+      state.sectionList[state.index] = data;
+    }
   },
   getters: {
     getSection(state) {

@@ -43,9 +43,9 @@ public class SectionController {
     }
 
     @PutMapping
-    public ResponseEntity<String> update(@RequestBody UpdateForm form) {
-        log.info(form.getHoldingList().toString());
-        service.updateSection(form);
+    public ResponseEntity<String> update(@RequestBody Section section) {
+        log.info(section.getHoldingList().toString());
+        service.updateSection(section);
 
         return new ResponseEntity<>("보유종목 수정 완료", HttpStatus.OK);
     }

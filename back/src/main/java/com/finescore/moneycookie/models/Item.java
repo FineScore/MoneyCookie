@@ -3,6 +3,7 @@ package com.finescore.moneycookie.models;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -12,7 +13,7 @@ public class Item {
     private String ticker;
     private String itemName;
     private String market;
-    private LocalDate buyDate;
+    private Date buyDate;
 
     public Item() {
     }
@@ -23,7 +24,7 @@ public class Item {
         this.market = market;
     }
 
-    public Item(String ticker, String itemName, String market, LocalDate buyDate) {
+    public Item(String ticker, String itemName, String market, Date buyDate) {
         this.ticker = ticker;
         this.itemName = itemName;
         this.market = market;

@@ -15,7 +15,7 @@ public class PriceService {
     private final PriceGenerator pricePeriodGenerator;
     private final PriceGenerator dividendGenerator;
 
-    public PriceToTicker getUserNowPrice(Item item) {
+    public PriceToTicker getNowPrice(Item item) {
         return priceNowGenerator.getPrice(item);
     }
 

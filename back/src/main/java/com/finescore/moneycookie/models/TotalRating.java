@@ -13,4 +13,15 @@ public class TotalRating {
     private Long totalAsset;
     private Double totalEvaluationRate;
     private Long totalEvaluationAmount;
+
+    public TotalRating() {
+    }
+
+    public TotalRating(Long id, Long sectionId, Long totalAsset, Double totalEvaluationRate, Long totalEvaluationAmount) {
+        this.id = id;
+        this.sectionId = sectionId;
+        this.totalAsset = totalAsset;
+        this.totalEvaluationRate = totalEvaluationRate;
+        this.totalEvaluationAmount = totalEvaluationAmount;
+    }
 }

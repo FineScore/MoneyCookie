@@ -147,13 +147,14 @@
 import HoldItemChart from "./HoldItemChart.vue";
 import ExpectedDividendChart from "./ExpectedDividendChart.vue";
 import DailyYieldChart from "./DailyYieldChart.vue";
-// import Stomp from "webstomp-client";
-// import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
+import SockJS from "sockjs-client";
 
 export default {
   data() {
     return {
-      // stompClient: null,
+      stompClient: null,
+      section: this.$store.getters.getSection,
     };
   },
   components: {
@@ -163,53 +164,51 @@ export default {
   },
   computed: {
     title() {
-      console.log(this.$store.getters.getSection);
-      return this.$store.getters.getTitle;
+      return this.section.title;
     },
     totalAsset() {
-      return this.currencyFormat(this.$store.getters.getTotalAsset);
+      return this.currencyFormat(this.section.totalRating.totalAsset);
     },
     totalEvaluationRate() {
-      return this.round(this.$store.getters.getTotalEvaluationRate);
+      return this.round(this.section.totalRating.totalEvaluationRate);
     },
     totalEvaluationAmount() {
-      return this.currencyFormat(this.$store.getters.getTotalEvaluationAmount);
+      return this.currencyFormat(
+        this.section.totalRating.totalEvaluationAmount
+      );
     },
     holdingList() {
-      return this.$store.getters.getHoldingList;
+      return this.section.holdingList;
     },
   },
-  // created() {
-  //   const serverUrl = "http://localhost:8080/ws";
-  //   const socket = new SockJS(serverUrl);
-  //   this.stompClient = Stomp.over(socket);
-  //   this.stompClient.connect(
-  //     {},
-  //     (frame) => {
-  //       console.log("Connected: " + frame);
-  //       this.stompClient.send(
-  //         "/pub/now",
-  //         JSON.stringify([
-  //           { ticker: "005930", name: "삼성전자", market: "KS" },
-  //           { ticker: "204320", name: "HL만도", market: "KS" },
-  //         ])
-  //       );
-  //       this.stompClient.subscribe("/sub/now", (event) => {
-  //         let messages = JSON.parse(event.body);
-  //         this.currentAmount[0] =
-  //           messages["contents"][0]["priceList"][0]["price"];
-  //         this.currentAmount[1] =
-  //           messages["contents"][1]["priceList"][0]["price"];
-  //       });
-  //     },
-  //     (error) => {
-  //       console.log("Connection Error : " + error.headers.messages);
-  //     }
-  //   );
-  // },
-  // beforeUnmount() {
-  //   this.stompClient.disconnect();
-  // },
+  mounted() {
+    const serverUrl = "http://localhost:8080/ws";
+    const socket = new SockJS(serverUrl);
+    this.stompClient = Stomp.over(socket);
+
+    this.stompClient.connect(
+      {},
+      (frame) => {
+        console.log("Connected: " + frame);
+        this.stompClient.send(
+          "/pub/now",
+          JSON.stringify(this.$store.getters.getSection)
+        );
+        this.stompClient.subscribe("/sub/now", (event) => {
+          let messages = JSON.parse(event.body);
+          console.log(messages);
+          this.$store.commit("setSection", messages);
+          this.section = this.$store.getters.getSection;
+        });
+      },
+      (error) => {
+        console.log("Connection Error : " + error.headers.messages);
+      }
+    );
+  },
+  beforeUnmount() {
+    this.stompClient.disconnect();
+  },
   methods: {
     currencyFormat(money) {
       return Intl.NumberFormat("ko-KR", {

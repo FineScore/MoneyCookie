@@ -14,10 +14,7 @@ import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @AllArgsConstructor
@@ -48,17 +45,16 @@ public class DividendGenerator implements PriceGenerator {
         List<PriceToDate> list = new ArrayList<>();
 
         for (JsonNode objectNode : dividends) {
-            LocalDate localDate = convertDate(objectNode);
+            Date date = convertDate(objectNode);
             Integer price = objectNode.get("amount").asInt();
-            list.add(new PriceToDate(localDate, price));
+            list.add(new PriceToDate(date, price));
         }
         return list;
     }
 
-    private LocalDate convertDate(JsonNode objectNode) {
-        return Instant.ofEpochMilli(objectNode.get("date").asLong() * 1000)
-                .atZone(ZoneOffset.UTC)
-                .toLocalDate();
+    private Date convertDate(JsonNode objectNode) {
+        return Date.from(Instant.ofEpochMilli(objectNode.get("date").asLong() * 1000)
+                .atZone(ZoneOffset.UTC).toInstant());
     }
 
     private String setURL(String url, Object object) {

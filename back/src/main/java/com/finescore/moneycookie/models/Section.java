@@ -1,5 +1,7 @@
 package com.finescore.moneycookie.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +14,7 @@ import java.util.List;
 @Setter
 @Builder
 @ToString
+@JsonIgnoreProperties({"sequence"})
 public class Section {
     private Long id;
     private String username;

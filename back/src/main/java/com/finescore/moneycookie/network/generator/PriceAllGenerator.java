@@ -11,6 +11,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -31,10 +33,16 @@ public abstract class PriceAllGenerator implements PriceGenerator {
 
     private List<PriceToDate> getPriceToList(NodeList list) {
         List<PriceToDate> priceList = new ArrayList<>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 
         for (int i = 0; i < list.getLength(); i++) {
             String[] lists = list.item(i).getAttributes().getNamedItem("data").getNodeValue().split("\\|");
-            PriceToDate price = new PriceToDate(LocalDate.parse(lists[0], DateTimeFormatter.ofPattern("yyyyMMdd")), Integer.parseInt(lists[4]));
+            PriceToDate price = null;
+            try {
+                price = new PriceToDate(dateFormat.parse(lists[0]), Integer.parseInt(lists[4]));
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
             priceList.add(price);
         }
         return priceList;

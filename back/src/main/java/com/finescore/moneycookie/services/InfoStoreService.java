@@ -45,8 +45,8 @@ public class InfoStoreService {
         listedItemRepository.save(listedItems);
     }
 
-    public List<Item> findAllListedItemsInfo() {
-        return listedItemRepository.findAll();
+    public Item findByItemKrId(Long itemKrId) {
+        return listedItemRepository.findByItemKrId(itemKrId);
     }
 
     public Optional<List<Item>> searchItem(String keyword) {
