@@ -23,7 +23,7 @@ public class PriceService {
         return pricePeriodGenerator.getPrice(item);
     }
 
-    public PriceToTicker getUserDividend(Item item) {
+    public PriceToTicker getDividend(Item item) {
         return dividendGenerator.getPrice(item);
     }
 

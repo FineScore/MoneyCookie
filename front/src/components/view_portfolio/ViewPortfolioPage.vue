@@ -39,7 +39,7 @@
         <DailyYieldChart :periodicRates="periodicRates" />
       </div>
       <div class="w-1/3">
-        <ExpectedDividendChart />
+        <ExpectedDividendChart :dividends="dividends" />
       </div>
     </div>
     <div>
@@ -182,6 +182,9 @@ export default {
     },
     periodicRates() {
       return this.section.periodicRates;
+    },
+    dividends() {
+      return this.section.dividends;
     }
   },
   mounted() {

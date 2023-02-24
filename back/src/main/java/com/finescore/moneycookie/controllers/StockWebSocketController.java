@@ -2,7 +2,6 @@ package com.finescore.moneycookie.controllers;
 
 import com.finescore.moneycookie.models.*;
 import com.finescore.moneycookie.services.SectionService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;

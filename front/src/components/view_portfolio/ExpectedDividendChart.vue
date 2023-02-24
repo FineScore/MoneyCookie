@@ -6,6 +6,7 @@
 import { Chart } from "highcharts-vue";
 
 export default {
+  props: ["dividends"],
   components: {
     Highcharts: Chart,
   },
@@ -51,56 +52,7 @@ export default {
         },
         series: [
           {
-            data: [
-              {
-                name: "1월",
-                y: 1,
-              },
-              {
-                name: "2월",
-                y: 2,
-              },
-              {
-                name: "3월",
-                y: 4,
-              },
-              {
-                name: "4월",
-                y: 2,
-              },
-              {
-                name: "5월",
-                y: 6,
-              },
-              {
-                name: "6월",
-                y: 6,
-              },
-              {
-                name: "7월",
-                y: 3,
-              },
-              {
-                name: "8월",
-                y: 3,
-              },
-              {
-                name: "9월",
-                y: 3,
-              },
-              {
-                name: "10월",
-                y: 3,
-              },
-              {
-                name: "11월",
-                y: 3,
-              },
-              {
-                name: "12월",
-                y: 4,
-              },
-            ],
+            data: [],
           },
         ],
         legend: {
@@ -108,6 +60,14 @@ export default {
         },
       },
     };
+  },
+  mounted() {
+    for (const key in this.dividends) {
+      this.chartOptionsColumn.series[0].data.push({
+        name: key + "월",
+        y: this.dividends[key],
+      });
+    }
   },
 };
 </script>

@@ -1,7 +1,6 @@
 package com.finescore.moneycookie.controllers;
 
 import com.finescore.moneycookie.models.Section;
-import com.finescore.moneycookie.models.UpdateForm;
 import com.finescore.moneycookie.services.SectionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -6,10 +6,8 @@ import com.finescore.moneycookie.network.generator.InfoGenerator;
 import com.finescore.moneycookie.repository.StockMarketClosedDaysRepository;
 import com.finescore.moneycookie.repository.ListedItemRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -43,10 +41,6 @@ public class InfoStoreService {
         List<Item> listedItems = generateListedItemsInfo();
 
         listedItemRepository.save(listedItems);
-    }
-
-    public Item findByItemKrId(Long itemKrId) {
-        return listedItemRepository.findByItemKrId(itemKrId);
     }
 
     public Optional<List<Item>> searchItem(String keyword) {

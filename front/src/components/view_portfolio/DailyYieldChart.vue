@@ -53,7 +53,9 @@ export default {
       this.chartOptionsLine.xAxis.categories.push(
         moment(rate.date).format("YYYYMMDD")
       );
-      this.chartOptionsLine.series[0].data.push(rate.totalEvaluationRate);
+      this.chartOptionsLine.series[0].data.push(
+        Math.round(rate.totalEvaluationRate * 100) / 100
+      );
     }
   },
 };

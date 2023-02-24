@@ -10,9 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -31,35 +29,42 @@ public class SectionService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.OK, "등록된 섹션이 없습니다."));
 
         for (Section section : sections) {
-            // totalbuyamount
-            // 날짜별 totalEvaluationAmount
-            // 날짜 수 만큼 리스트 만들어
             Long totalBuyAmount = 0L;
             List<Long> totalPeriodicEvalAmount = new ArrayList<>();
             List<PeriodicTotalRate> periodicTotalRates = new ArrayList<>();
+            Map<Integer, Integer> dividends = new HashMap<>();
+
+            for (int i = 1; i <= 12; i++) {
+                dividends.put(i, 0);
+            }
 
             for (int i = 0; i < section.getHoldingList().size(); i++) {
                 totalBuyAmount += section.getHoldingList().get(i).getBuyTotalAmount();
 
-                PriceToTicker periodPrice = priceService.getPeriodPrice(listedItemRepository.findByItemKrId(section.getHoldingList().get(i).getItemKrId()));
-                log.info("index : {}", periodPrice.getPriceList().size());
+                Item item = listedItemRepository.findByHoldingId(section.getHoldingList().get(i).getId());
+                PriceToTicker periodPrice = priceService.getPeriodPrice(item);
+                PriceToTicker dividend = priceService.getDividend(item);
+
+                for (int j = 0; j < dividend.getPriceList().size(); j++) {
+                    dividends.put(dividend.getPriceList().get(j).getDate().getMonth() + 1, dividends.get(dividend.getPriceList().get(j).getDate().getMonth() + 1) + dividend.getPriceList().get(j).getPrice() * section.getHoldingList().get(i).getQuantity());
+                }
+
                 for (int j = 0; j < periodPrice.getPriceList().size(); j++) {
                     if (i == 0) {
                         totalPeriodicEvalAmount.add(priceService.calcEvaluationPrice(section.getHoldingList().get(i).getQuantity(), periodPrice.getPriceList().get(j).getPrice()));
+                        periodicTotalRates.add(new PeriodicTotalRate(periodPrice.getPriceList().get(j).getDate()));
                     } else {
                         totalPeriodicEvalAmount.set(j, totalPeriodicEvalAmount.get(j) + priceService.calcEvaluationPrice(section.getHoldingList().get(i).getQuantity(), periodPrice.getPriceList().get(j).getPrice()));
                     }
-
                 }
-                periodicTotalRates.add(new PeriodicTotalRate(periodPrice.getPriceList().get(i).getDate()));
             }
 
-            log.info("SIZE : {}",periodicTotalRates.size());
             for (int i = 0; i < periodicTotalRates.size(); i++) {
                 periodicTotalRates.get(i).setTotalEvaluationRate(priceService.calcTotalEvaluationRate(totalBuyAmount, totalPeriodicEvalAmount.get(i)));
             }
 
             section.setPeriodicRates(periodicTotalRates);
+            section.setDividends(dividends);
         }
 
         return sections;
@@ -180,6 +185,7 @@ public class SectionService {
     }
 
     private Evaluation createEvaluation(Long holdingId, Holding holding) {
+        holding.setId(holdingId);
         return Evaluation.builder()
                 .holdingId(holdingId)
                 .evaluationRate(nowEvaluationRate(holding))
@@ -229,7 +235,7 @@ public class SectionService {
     private Integer getNowPrice(Holding holding) {
         return priceService.getNowPrice(
                         listedItemRepository
-                                .findByItemKrId(holding.getItemKrId()))
+                                .findByHoldingId(holding.getId()))
                 .getPriceList()
                 .get(0)
                 .getPrice();

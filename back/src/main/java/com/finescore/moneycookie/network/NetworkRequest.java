@@ -9,8 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
@@ -36,7 +34,7 @@ public class NetworkRequest {
         headers.set("User-Agent", userAgent);
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAcceptCharset(Collections.singletonList(StandardCharsets.UTF_8));
-        headers.set("Accept", "text/json;charset=UTF-8");
+//        headers.set("Accept", "text/json;charset=UTF-8");
         return new HttpEntity<>(headers);
     }
 

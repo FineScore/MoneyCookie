@@ -2,19 +2,14 @@ package com.finescore.moneycookie.network.generator;
 
 import com.finescore.moneycookie.models.Item;
 import com.finescore.moneycookie.models.PriceToDate;
-import com.finescore.moneycookie.network.NetworkRequest;
 import com.finescore.moneycookie.network.parser.Parser;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 

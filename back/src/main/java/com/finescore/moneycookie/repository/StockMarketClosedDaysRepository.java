@@ -13,7 +13,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import javax.sql.DataSource;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public class StockMarketClosedDaysRepository {
     private final NamedParameterJdbcTemplate template;

@@ -3,15 +3,11 @@ package com.finescore.moneycookie.network.generator;
 import com.finescore.moneycookie.models.Item;
 import com.finescore.moneycookie.models.PriceToDate;
 import com.finescore.moneycookie.models.PriceToTicker;
-import com.finescore.moneycookie.network.NetworkRequest;
 import com.finescore.moneycookie.network.parser.Parser;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 @Component

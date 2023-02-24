@@ -7,10 +7,10 @@ import com.finescore.moneycookie.models.PriceToTicker;
 import com.finescore.moneycookie.network.NetworkRequest;
 import com.finescore.moneycookie.network.parser.Parser;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
-import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -18,6 +18,7 @@ import java.util.*;
 
 @Component
 @AllArgsConstructor
+@Slf4j
 public class DividendGenerator implements PriceGenerator {
     private final String URL = "https://query2.finance.yahoo.com/v8/finance/chart/%s.%s?period1={period1}&period2={period2}&interval={interval}&includePrePost={includePrePost}&events={events}";
     private final NetworkRequest networkRequest;
@@ -33,22 +34,30 @@ public class DividendGenerator implements PriceGenerator {
     }
 
     private JsonNode getDividendNode(JsonNode body) {
-        return body
+        Optional<JsonNode> node = Optional.ofNullable(body
                 .get("chart")
                 .get("result")
                 .get(0)
-                .get("events")
-                .get("dividends");
+                .get("events"));
+
+        if (node.isPresent()) {
+            return node.get().get("dividends");
+        } else {
+            return null;
+        }
     }
 
     private List<PriceToDate> getDividendList(JsonNode dividends) {
         List<PriceToDate> list = new ArrayList<>();
 
-        for (JsonNode objectNode : dividends) {
-            Date date = convertDate(objectNode);
-            Integer price = objectNode.get("amount").asInt();
-            list.add(new PriceToDate(date, price));
+        if (dividends != null) {
+            for (JsonNode objectNode : dividends) {
+                Date date = convertDate(objectNode);
+                Integer price = objectNode.get("amount").asInt();
+                list.add(new PriceToDate(date, price));
+            }
         }
+
         return list;
     }
 
@@ -57,8 +66,12 @@ public class DividendGenerator implements PriceGenerator {
                 .atZone(ZoneOffset.UTC).toInstant());
     }
 
-    private String setURL(String url, Object object) {
-        return String.format(url, object);
+    private String setURL(String url, Item item) {
+        if (item.getMarket().equals("KOSPI")) {
+            return String.format(url, item.getTicker(), "KS");
+        } else {
+            return String.format(url, item.getTicker(), "KQ");
+        }
     }
 
     private Map<String, String> setParams() {
