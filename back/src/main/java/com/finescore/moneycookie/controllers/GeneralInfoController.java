@@ -31,12 +31,12 @@ public class GeneralInfoController {
         }
     }
 
-    @GetMapping("/closed")
+    @GetMapping("/holiday")
     public ResponseEntity<?> closedDay() {
         List<ClosedDay> day = infoStoreService.findClosedDay(LocalDate.now());
 
         if (day.isEmpty()) {
-            return new ResponseEntity<>("오늘은 공휴일이 아닙니다.", HttpStatus.OK);
+            return new ResponseEntity<>("공휴일 아님", HttpStatus.OK);
         } else {
             return new ResponseEntity<>(day.get(0), HttpStatus.OK);
         }

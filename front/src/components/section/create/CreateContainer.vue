@@ -1,56 +1,56 @@
 <template>
   <form class="w-2/3 mx-auto mt-32 space-y-6">
     <div class="space-y-2">
-      <label for="p-name">포트폴리오명</label>
+      <label for="title">포트폴리오명</label>
       <input
         type="text"
-        name="p-name"
-        id="p-name"
+        name="title"
+        id="title"
         autocomplete="off"
         class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-200 rounded focus:outline-none focus:border-yellow-400 transition ease-in duration-200"
         v-model="title"
       />
     </div>
     <div class="space-y-2">
-      <label for="hold-stocks">나의 보유 종목</label>
+      <label for="holdings">나의 보유 종목</label>
       <div class="bg-gray-300 py-6 px-6 rounded">
-        <div class="">
+        <div>
           <div class="relative sm:flex items-center">
             <input
               type="text"
-              name="p-name"
-              id="p-name"
+              name="search"
+              id="search"
               placeholder="종목코드 또는 종목명을 입력하세요."
               autocomplete="off"
               class="w-1/4 peer text-sm px-4 py-3 focus:bg-white bg-gray-100 border border-gray-200 rounded focus:outline-none focus:border-yellow-400 transition ease-in duration-200"
               :value="itemName"
-              @input="setItemName"
+              @input="searchItem"
             />
             <tr
               v-show="isVisible"
               class="absolute top-11 rounded drop-shadow bg-white overflow-hidden w-1/4 mt-1 border border-gray-200"
             >
               <td
-                v-for="searchItem in filteredItemList"
-                :key="searchItem.id"
+                v-for="item in limitSearchList"
+                :key="item.id"
                 class="flex flex-col"
               >
                 <div class="cursor-pointer group">
                   <button
                     type="button"
                     class="w-full px-4 py-2 border-transparent border-l-4 group-hover:border-yellow-400 group-hover:bg-gray-100"
-                    :value="searchItem.id"
-                    @click="insertItemBtn(searchItem)"
+                    :value="item.id"
+                    @click="insertItem(item)"
                   >
                     <div class="flex items-center justify-between">
                       <p>
-                        {{ searchItem.ticker }}
+                        {{ item.ticker }}
                       </p>
                       <p>
-                        {{ searchItem.itemName }}
+                        {{ item.itemName }}
                       </p>
                       <p>
-                        {{ searchItem.market }}
+                        {{ item.market }}
                       </p>
                     </div>
                   </button>
@@ -95,8 +95,8 @@
                       <input
                         type="number"
                         min="0"
-                        name="amount"
-                        id="amount"
+                        name="quantity"
+                        id="quantity"
                         placeholder="보유수량"
                         autocomplete="off"
                         class="w-32 text-sm text-center py-3 focus:bg-white bg-gray-100 border border-gray-200 rounded focus:outline-none focus:border-yellow-400 transition ease-in duration-200"
@@ -108,8 +108,8 @@
                     <div class="flex justify-center">
                       <input
                         type="text"
-                        name="avg-buy"
-                        id="avg-buy"
+                        name="buy-avg-price"
+                        id="buy-avg-price"
                         placeholder="매수평균가"
                         autocomplete="off"
                         class="w-40 text-sm text-center py-3 focus:bg-white bg-gray-100 border border-gray-200 rounded focus:outline-none focus:border-yellow-400 transition ease-in duration-200"
@@ -147,24 +147,26 @@
       </div>
     </div>
     <div class="h-px bg-gray-200"></div>
-    <div>
-      <button
-        type="button"
-        @click="submitSection"
-        class="w-full flex justify-center bg-yellow-600 text-black text-opacity-70 p-3 rounded-full tracking-wide font-semibold cursor-pointer transition ease-in duration-200 disabled:bg-opacity-50"
-      >
-        포트폴리오 추가
-      </button>
-    </div>
-    <div>
-      <button
-        type="button"
-        @click="requestSaveItemList"
-        class="w-full flex justify-center bg-yellow-600 text-black text-opacity-70 p-3 rounded-full tracking-wide font-semibold cursor-pointer transition ease-in duration-200 disabled:bg-opacity-50"
-      >
-        테스트용 아이템 목록 저장
-      </button>
-    </div>
+    <strong
+      class="flex justify-center text-sm text-red-600 font-semibold my-4"
+      v-if="!isValidate"
+    >
+      미입력된 정보가 있습니다.
+    </strong>
+    <button
+      type="button"
+      @click="submit"
+      class="w-full flex justify-center bg-yellow-600 text-black text-opacity-70 p-3 rounded-full tracking-wide font-semibold cursor-pointer transition ease-in duration-200 disabled:bg-opacity-50"
+    >
+      포트폴리오 추가
+    </button>
+    <button
+      type="button"
+      @click="requestSaveItemList"
+      class="w-full flex justify-center bg-yellow-600 text-black text-opacity-70 p-3 rounded-full tracking-wide font-semibold cursor-pointer transition ease-in duration-200 disabled:bg-opacity-50"
+    >
+      테스트용 아이템 목록 저장
+    </button>
   </form>
 </template>
 
@@ -173,9 +175,15 @@ import Datepicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import axios from "axios";
 import moment from "moment";
+import { useVuelidate } from "@vuelidate/core";
+import { required, numeric, helpers } from "@vuelidate/validators";
 
 export default {
-  components: { Datepicker },
+  setup() {
+    return {
+      v$: useVuelidate(),
+    };
+  },
   data() {
     return {
       title: "나의 포트폴리오",
@@ -183,15 +191,37 @@ export default {
       searchItemList: [],
       items: [],
       isVisible: false,
+      isValidate: true,
     };
   },
   computed: {
-    filteredItemList() {
+    limitSearchList() {
       return this.searchItemList.slice(0, 10);
     },
   },
+  validations() {
+    return {
+      title: { required },
+      items: {
+        required,
+        $each: helpers.forEach({
+          quantity: {
+            required,
+          },
+          buyAvgPrice: {
+            required,
+            numeric,
+          },
+          buyDate: {
+            required,
+          },
+        }),
+      },
+    };
+  },
+  components: { Datepicker },
   methods: {
-    setItemName(event) {
+    searchItem(event) {
       this.itemName = event.target.value;
       const url = "/api/search";
 
@@ -210,66 +240,60 @@ export default {
         });
       this.isVisible = true;
     },
-    insertItemBtn(itemInfo) {
-      // console.log(event.target.value);
+    insertItem(itemInfo) {
       const item = {
         itemKrId: itemInfo.id,
         ticker: itemInfo.ticker,
         itemName: itemInfo.itemName,
+        quantity: undefined,
+        buyAvgPrice: undefined,
+        buyDate: undefined,
       };
       this.items.push(item);
-      this.closeItemList();
+      this.closeSearchList();
       this.itemName = "";
     },
-    toggleItemList() {
-      this.isVisible = !this.isVisible;
-    },
-    closeItemList() {
+    closeSearchList() {
       this.isVisible = false;
     },
     deleteItem(index) {
       this.items.splice(index, 1);
     },
-    requestSaveItemList() {
-      const url = "/test-item";
+    async submit() {
+      const isValidate = await this.v$.$validate();
 
-      axios
-        .post(url)
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    submitSection() {
-      const holdingList = [];
-      for (const item of this.items) {
-        const holding = {
-          itemKrId: item.itemKrId,
-          quantity: item.quantity,
-          buyAvgPrice: item.buyAvgPrice,
-          buyDate: moment(item.buyDate).format("YYYY-MM-DD"),
+      if (isValidate) {
+        const holdingList = [];
+        for (const item of this.items) {
+          const holding = {
+            itemKrId: item.itemKrId,
+            quantity: item.quantity,
+            buyAvgPrice: item.buyAvgPrice,
+            buyDate: moment(item.buyDate).format("YYYY-MM-DD"),
+          };
+          holdingList.push(holding);
+        }
+
+        const url = "/api/section";
+
+        const data = {
+          title: this.title,
+          holdingList: holdingList,
         };
-        holdingList.push(holding);
+        console.log(data);
+
+        axios
+          .post(url, data)
+          .then((response) => {
+            console.log(response.data);
+            this.$router.push("/section");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        this.isValidate = false;
       }
-      const url = "/api/section";
-
-      const data = {
-        title: this.title,
-        holdingList: holdingList,
-      };
-      console.log(data);
-
-      axios
-        .post(url, data)
-        .then((response) => {
-          console.log(response.data);
-          this.$router.push("/section");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
     },
   },
 };

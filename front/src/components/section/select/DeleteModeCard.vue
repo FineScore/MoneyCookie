@@ -10,7 +10,7 @@
     <button
       type="button"
       class="w-full py-3 text-sm text-center text-gray-500 bg-white border border-gray-200 rounded-lg"
-      @click.stop="cancelDelete"
+      @click.stop="cancel"
     >
       취소
     </button>
@@ -23,8 +23,8 @@ import axios from "axios";
 export default {
   props: ["id"],
   methods: {
-    cancelDelete() {
-      this.$emit("cancel-delete");
+    cancel() {
+      this.$emit("cancel");
     },
     deleteSection(id) {
       const url = "/api/section";

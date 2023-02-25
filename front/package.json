@@ -8,6 +8,8 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@vuelidate/core": "^2.0.0",
+    "@vuelidate/validators": "^2.0.0",
     "@vuepic/vue-datepicker": "^3.6.3",
     "autoprefixer": "^10.4.13",
     "axios": "^1.3.3",
@@ -20,11 +22,11 @@
     "postcss": "^8.4.19",
     "sockjs": "^0.3.24",
     "sockjs-client": "^1.6.1",
-    "v-click-outside": "^3.2.0",
     "vue": "^3.2.45",
     "vue-loader": "^17.0.1",
     "vue-router": "^4.1.6",
     "vuex": "^4.1.0",
+    "vuex-persist": "^3.1.3",
     "webstomp-client": "^1.2.6"
   },
   "devDependencies": {

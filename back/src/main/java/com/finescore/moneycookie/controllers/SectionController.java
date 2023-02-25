@@ -19,7 +19,7 @@ import java.util.List;
 public class SectionController {
     private final SectionService service;
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<Section>> findAll(HttpServletRequest request) {
         HttpSession session = request.getSession();
         List<Section> sectionList = service.findByUsername(

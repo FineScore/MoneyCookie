@@ -41,7 +41,7 @@ public class MemberRepository {
         try {
             return template.queryForObject(sql, param, memberRowMapper());
         } catch (EmptyResultDataAccessException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "미등록된 회원입니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "미등록된 회원");
         }
     }
 

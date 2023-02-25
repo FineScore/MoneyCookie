@@ -1,5 +1,6 @@
 package com.finescore.moneycookie.controllers;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.finescore.moneycookie.models.MemberInfo;
 import com.finescore.moneycookie.services.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,7 +29,7 @@ public class UserController {
         return new ResponseEntity<>("로그인 완료", HttpStatus.OK);
     }
 
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request) {
         HttpSession session = request.getSession();
 
@@ -48,12 +50,12 @@ public class UserController {
         return new ResponseEntity<>("회원가입 완료", HttpStatus.OK);
     }
 
-    @PostMapping("/password")
-    public ResponseEntity<String> updatePassword(@RequestBody String password, HttpServletRequest request) {
+    @PutMapping("/password")
+    public ResponseEntity<String> updatePassword(@RequestBody Map<String, String> body, HttpServletRequest request) {
         HttpSession session = request.getSession();
         String username = (String) session.getAttribute("username");
 
-        memberService.updatePassword(username, password);
+        memberService.updatePassword(username, body.get("password"));
 
         return new ResponseEntity<>("비밀번호 변경 완료", HttpStatus.OK);
     }

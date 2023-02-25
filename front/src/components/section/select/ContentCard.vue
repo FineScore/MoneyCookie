@@ -2,16 +2,12 @@
   <div
     class="relative w-64 h-80 border-4 border-gray-400 border-solid rounded-xl cursor-pointer"
   >
-    <DeleteCard
-      v-if="deleteMode"
-      @cancel-delete="cancelDeleteMode"
-      :id="id"
-    />
+    <DeleteModeCard v-if="isDeleteMode" @cancel="cancel" :id="id" />
     <div v-else>
       <button
         type="button"
         class="absolute top-0 right-0 w-7 m-3 origin-right opacity-20"
-        @click="execDeleteMode"
+        @click="setDeleteModeTrue"
       >
         <img src="@/assets/images/delete_icon.png" alt="삭제" />
       </button>
@@ -23,26 +19,26 @@
 </template>
 
 <script>
-import DeleteCard from "./DeleteCard.vue";
+import DeleteModeCard from "./DeleteModeCard.vue";
 
 export default {
   data() {
     return {
-      deleteMode: false,
+      isDeleteMode: false,
     };
   },
   props: ["title", "id"],
   components: {
-    DeleteCard,
+    DeleteModeCard,
   },
   methods: {
-    execDeleteMode() {
-      this.deleteMode = true;
+    setDeleteModeTrue() {
+      this.isDeleteMode = true;
       this.$emit("delete-mode");
     },
-    cancelDeleteMode() {
-      this.deleteMode = false;
-      this.$emit("cancel-delete");
+    cancel() {
+      this.isDeleteMode = false;
+      this.$emit("cancel");
     },
   },
 };
