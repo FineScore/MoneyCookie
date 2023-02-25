@@ -3,6 +3,7 @@ import { createStore } from "vuex";
 import App from "./App.vue";
 import router from "@/router/index";
 import HighchartsVue from "highcharts-vue";
+import axios from "axios";
 
 import "./style.css";
 
@@ -12,6 +13,7 @@ const store = createStore({
       sectionList: [],
       index: 0,
       status: true,
+      isLoading: false,
     };
   },
   mutations: {
@@ -26,6 +28,9 @@ const store = createStore({
     },
     setStatus(state, data) {
       state.status = data;
+    },
+    setIsLoading(state, data) {
+      state.isLoading = data;
     },
   },
   getters: {
@@ -55,8 +60,23 @@ const store = createStore({
     },
     getPeriodicRates(_, getters) {
       return getters.getSection.periodicRates;
-    }
+    },
+    getIsLoading(state) {
+      return state.isLoading;
+    },
   },
+});
+
+axios.interceptors.request.use((config) => {
+  store.commit("setIsLoading", true);
+
+  return config;
+});
+
+axios.interceptors.response.use((config) => {
+  store.commit("setIsLoading", false);
+
+  return config;
 });
 
 const app = createApp(App);
