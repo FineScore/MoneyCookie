@@ -1,6 +1,8 @@
 package com.finescore.moneycookie.repository;
 
 import com.finescore.moneycookie.models.*;
+import com.finescore.moneycookie.services.Evaluation;
+import com.finescore.moneycookie.services.TotalRating;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -12,7 +14,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class SectionRepository {
     private final NamedParameterJdbcTemplate template;
@@ -21,19 +22,7 @@ public class SectionRepository {
         this.template = new NamedParameterJdbcTemplate(dataSource);
     }
 
-    public Long save(Section section) {
-        String sql = "insert into sections (username, title, create_date) " +
-                "values (:username, :title, :createDate)";
-
-        SqlParameterSource param = new BeanPropertySqlParameterSource(section);
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        template.update(sql, param, keyHolder);
-
-        return keyHolder.getKey().longValue();
-    }
-
-    public Optional<List<Section>> findByUsername(String username) {
+    public List<Section> findByUsername(String username) {
         String find_section_sql = "select s.id, s.username, s.title, " +
                 "tr.id tr_id, tr.section_id, tr.total_asset, tr.total_evaluation_rate, tr.total_evaluation_amount " +
                 "from sections s join total_ratings tr on s.id = tr.section_id " +
@@ -48,16 +37,31 @@ public class SectionRepository {
 
         List<Section> sectionList = template.query(find_section_sql, sectionParam, sectionRowMapper());
 
-        for (Section section : sectionList) {
-            Map<String, Long> holdingParam = Map.of("sectionId", section.getId());
+        if (!sectionList.isEmpty()) {
+            for (Section section : sectionList) {
+                Map<String, Long> holdingParam = Map.of("sectionId", section.getId());
 
-            List<Holding> holdingList = template.query(find_holding_sql, holdingParam, holdingRowMapper());
+                List<Holding> holdingList = template.query(find_holding_sql, holdingParam, holdingRowMapper());
 
-            section.setHoldingList(holdingList);
+                section.setHoldingList(holdingList);
+            }
         }
 
-        return Optional.of(sectionList);
+        return sectionList;
     }
+
+    public Long save(Section section) {
+        String sql = "insert into sections (username, title, create_date) " +
+                "values (:username, :title, :createDate)";
+
+        SqlParameterSource param = new BeanPropertySqlParameterSource(section);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        template.update(sql, param, keyHolder);
+
+        return keyHolder.getKey().longValue();
+    }
+
 
     public void delete(Long sectionId) {
         String sql = "delete from sections where id = :id";
@@ -97,7 +101,8 @@ public class SectionRepository {
     }
 
     private RowMapper<Holding> holdingRowMapper() {
-        return (rs, rowNum) -> Holding.builder()
+        return (rs, rowNum) ->
+                Holding.builder()
                 .id(rs.getLong("h_id"))
                 .sectionId(rs.getLong("section_id"))
                 .itemKrId(rs.getLong("item_kr_id"))

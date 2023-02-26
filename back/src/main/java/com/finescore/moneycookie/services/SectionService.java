@@ -4,10 +4,8 @@ import com.finescore.moneycookie.models.*;
 import com.finescore.moneycookie.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -25,8 +23,11 @@ public class SectionService {
 
     public List<Section> findByUsername(String username) {
         List<Section> sections = sectionRepository
-                .findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.OK, "등록된 섹션이 없습니다."));
+                .findByUsername(username);
+
+        if (sections.isEmpty()) {
+            return sections;
+        }
 
         for (Section section : sections) {
             Long totalBuyAmount = 0L;
@@ -38,29 +39,47 @@ public class SectionService {
                 dividends.put(i, 0);
             }
 
-            for (int i = 0; i < section.getHoldingList().size(); i++) {
-                totalBuyAmount += section.getHoldingList().get(i).getBuyTotalAmount();
+            List<Holding> holdingList = section.getHoldingList();
 
-                Item item = listedItemRepository.findByHoldingId(section.getHoldingList().get(i).getId());
-                PriceToTicker periodPrice = priceService.getPeriodPrice(item);
-                PriceToTicker dividend = priceService.getDividend(item);
+            for (int i = 0; i < holdingList.size(); i++) {
+                totalBuyAmount += holdingList.get(i).getBuyTotalAmount();
 
-                for (int j = 0; j < dividend.getPriceList().size(); j++) {
-                    dividends.put(dividend.getPriceList().get(j).getDate().getMonth() + 1, dividends.get(dividend.getPriceList().get(j).getDate().getMonth() + 1) + dividend.getPriceList().get(j).getPrice() * section.getHoldingList().get(i).getQuantity());
+                Item item = listedItemRepository.findByHoldingId(holdingList.get(i).getId());
+
+                List<PriceToDate> dividendList = priceService.getDividend(item).getPriceList();
+
+                if (!dividendList.isEmpty()) {
+                    for (PriceToDate priceToDate : dividendList) {
+                        int dividendMonth = priceToDate.getDate().getMonth() + 1;
+                        int totalDividendForMonth = priceToDate.getPrice() * holdingList.get(i).getQuantity();
+
+                        dividends.put(dividendMonth, dividends.get(dividendMonth) + totalDividendForMonth);
+                    }
                 }
 
-                for (int j = 0; j < periodPrice.getPriceList().size(); j++) {
+                List<PriceToDate> periodPriceList = priceService.getPeriodPrice(item).getPriceList();
+
+                for (int j = 0; j < periodPriceList.size(); j++) {
+                    Long periodicEvaluationAmount = priceService.calcEvaluationPrice(
+                            holdingList.get(i).getQuantity(),
+                            periodPriceList.get(j).getPrice()
+                    );
+
                     if (i == 0) {
-                        totalPeriodicEvalAmount.add(priceService.calcEvaluationPrice(section.getHoldingList().get(i).getQuantity(), periodPrice.getPriceList().get(j).getPrice()));
-                        periodicTotalRates.add(new PeriodicTotalRate(periodPrice.getPriceList().get(j).getDate()));
+                        totalPeriodicEvalAmount.add(periodicEvaluationAmount);
+                        periodicTotalRates.add(new PeriodicTotalRate(periodPriceList.get(j).getDate()));
                     } else {
-                        totalPeriodicEvalAmount.set(j, totalPeriodicEvalAmount.get(j) + priceService.calcEvaluationPrice(section.getHoldingList().get(i).getQuantity(), periodPrice.getPriceList().get(j).getPrice()));
+                        totalPeriodicEvalAmount.set(j, totalPeriodicEvalAmount.get(j) + periodicEvaluationAmount);
                     }
                 }
             }
 
             for (int i = 0; i < periodicTotalRates.size(); i++) {
-                periodicTotalRates.get(i).setTotalEvaluationRate(priceService.calcTotalEvaluationRate(totalBuyAmount, totalPeriodicEvalAmount.get(i)));
+                periodicTotalRates
+                        .get(i)
+                        .setTotalEvaluationRate(
+                                priceService.calcTotalEvaluationRate(totalBuyAmount, totalPeriodicEvalAmount.get(i))
+                        );
             }
 
             section.setPeriodicRates(periodicTotalRates);
@@ -98,7 +117,7 @@ public class SectionService {
 
                 Long savedHoldingId = holdingRepository.save(holding);
 
-                Evaluation evaluation = createEvaluation(savedHoldingId, holding);
+                Evaluation evaluation = buildEvaluation(savedHoldingId, holding);
 
                 evaluationRepository.save(evaluation);
 
@@ -106,11 +125,11 @@ public class SectionService {
                 totalEvaluationAmount += priceService.calcEvaluationPrice(holding.getQuantity(), getNowPrice(holding));
             }
 
-            TotalRating totalRating = createTotalRating(savedSectionId, totalBuyAmount, totalEvaluationAmount);
+            TotalRating totalRating = buildTotalRating(savedSectionId, totalBuyAmount, totalEvaluationAmount);
 
             totalRatingRepository.save(totalRating);
         } else {
-            TotalRating totalRating = createTotalRating(savedSectionId, 0L, 0L);
+            TotalRating totalRating = buildTotalRating(savedSectionId, 0L, 0L);
 
             totalRatingRepository.save(totalRating);
         }
@@ -131,20 +150,20 @@ public class SectionService {
                     continue;
                 }
 
-                Holding holding = createHolding(newHolding);
+                Holding holding = buildHolding(newHolding);
 
                 // 추가
                 if (newHolding.getUpdateStatus() == UpdateStatus.INSERT) {
                     Long savedId = holdingRepository.save(holding);
-                    Evaluation evaluation = createEvaluation(savedId, holding);
+                    Evaluation evaluation = buildEvaluation(savedId, holding);
                     evaluationRepository.save(evaluation);
-
+                    continue;
                 }
 
                 // 수정
                 if (newHolding.getUpdateStatus() == UpdateStatus.UPDATE) {
                     holdingRepository.update(holding);
-                    Evaluation evaluation = createEvaluation(holding.getId(), holding);
+                    Evaluation evaluation = buildEvaluation(holding.getId(), holding);
                     evaluationRepository.update(evaluation);
                 }
             }
@@ -159,7 +178,7 @@ public class SectionService {
                 totalEvaluationAmount += priceService.calcEvaluationPrice(holding.getQuantity(), getNowPrice(holding));
             }
 
-            TotalRating totalRating = createTotalRating(section.getId(), totalBuyAmount, totalEvaluationAmount);
+            TotalRating totalRating = buildTotalRating(section.getId(), totalBuyAmount, totalEvaluationAmount);
 
             totalRatingRepository.update(totalRating);
         }
@@ -169,7 +188,7 @@ public class SectionService {
         sectionRepository.delete(sectionId);
     }
 
-    private Holding createHolding(Holding holding) {
+    private Holding buildHolding(Holding holding) {
         return Holding.builder()
                 .id(holding.getId())
                 .sectionId(holding.getSectionId())
@@ -184,7 +203,7 @@ public class SectionService {
                 .build();
     }
 
-    private Evaluation createEvaluation(Long holdingId, Holding holding) {
+    private Evaluation buildEvaluation(Long holdingId, Holding holding) {
         holding.setId(holdingId);
         return Evaluation.builder()
                 .holdingId(holdingId)
@@ -193,7 +212,7 @@ public class SectionService {
                 .build();
     }
 
-    private TotalRating createTotalRating(Long sectionId, Long totalBuyAmount, Long totalEvaluationAmount) {
+    private TotalRating buildTotalRating(Long sectionId, Long totalBuyAmount, Long totalEvaluationAmount) {
         return TotalRating.builder()
                 .sectionId(sectionId)
                 .totalAsset(totalBuyAmount)

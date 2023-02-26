@@ -13,6 +13,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import javax.sql.DataSource;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public class StockMarketClosedDaysRepository {
     private final NamedParameterJdbcTemplate template;
@@ -27,13 +28,13 @@ public class StockMarketClosedDaysRepository {
         return template.query(sql, closedDayRowMapper());
     }
 
-    public List<ClosedDay> findByDate(LocalDate date) {
+    public Optional<ClosedDay> findByDate(LocalDate date) {
         String sql = "select date, name, type from closed_days where date = :date";
 
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("date", date);
 
-        return template.query(sql, param, closedDayRowMapper());
+        return Optional.ofNullable(template.queryForObject(sql, param, closedDayRowMapper()));
     }
 
     public void save(List<ClosedDay> dayList) {
@@ -60,6 +61,10 @@ public class StockMarketClosedDaysRepository {
         return changeDay.getName().equals(lastDay.getName());
     }
 
+    private boolean isChangeableDay(ClosedDay changeDay) {
+        return changeDay.getName().equals("대체공휴일") || changeDay.getName().contains("선거");
+    }
+
     private void updateDateOfClosedDay(ClosedDay changeDay) {
         String update_sql = "update closed_days set date = :date where name = :name";
 
@@ -68,10 +73,6 @@ public class StockMarketClosedDaysRepository {
                 .addValue("name", changeDay.getName());
 
         template.update(update_sql, param);
-    }
-
-    private boolean isChangeableDay(ClosedDay changeDay) {
-        return changeDay.getName().equals("대체공휴일") || changeDay.getName().contains("선거");
     }
 
     private void saveChangeableDays(ClosedDay changeDay) {

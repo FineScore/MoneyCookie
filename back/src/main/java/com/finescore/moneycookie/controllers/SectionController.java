@@ -20,39 +20,45 @@ public class SectionController {
     private final SectionService service;
 
     @GetMapping
-    public ResponseEntity<List<Section>> findAll(HttpServletRequest request) {
+    public ResponseEntity<DataResponse> findAll(HttpServletRequest request) {
         HttpSession session = request.getSession();
         List<Section> sectionList = service.findByUsername(
                 String.valueOf(session.getAttribute("username"))
         );
 
-        return new ResponseEntity<>(sectionList, HttpStatus.OK);
+        DataResponse dataResponse = new DataResponse("SUCCESS", "조회 성공", sectionList);
+
+        return new ResponseEntity<>(dataResponse, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<String> save(
-            @RequestBody Section section,
-            HttpServletRequest request
-    ) {
+    public ResponseEntity<MessageResponse> save(@RequestBody Section section, HttpServletRequest request) {
         HttpSession session = request.getSession();
         String username = String.valueOf(session.getAttribute("username"));
+
         service.save(username, section.getTitle(), section.getHoldingList());
 
-        return new ResponseEntity<>("보유종목 저장 완료", HttpStatus.OK);
+        MessageResponse messageResponse = new MessageResponse("SUCCESS", "저장 완료");
+
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
     @PutMapping
-    public ResponseEntity<String> update(@RequestBody Section section) {
+    public ResponseEntity<MessageResponse> update(@RequestBody Section section) {
         log.info(section.getHoldingList().toString());
         service.updateSection(section);
 
-        return new ResponseEntity<>("보유종목 수정 완료", HttpStatus.OK);
+        MessageResponse messageResponse = new MessageResponse("SUCCESS", "수정 완료");
+
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
     @DeleteMapping
-    public ResponseEntity<String> delete(Long sectionId) {
+    public ResponseEntity<MessageResponse> delete(Long sectionId) {
         service.delete(sectionId);
 
-        return new ResponseEntity<>("보유종목 삭제 완료", HttpStatus.OK);
+        MessageResponse messageResponse = new MessageResponse("SUCCESS", "삭제 완료");
+
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 }

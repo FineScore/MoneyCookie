@@ -1,4 +1,4 @@
-package com.finescore.moneycookie.models;
+package com.finescore.moneycookie.services;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

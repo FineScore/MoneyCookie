@@ -1,6 +1,6 @@
 package com.finescore.moneycookie.repository;
 
-import com.finescore.moneycookie.models.Evaluation;
+import com.finescore.moneycookie.services.Evaluation;
 import com.finescore.moneycookie.models.Holding;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;

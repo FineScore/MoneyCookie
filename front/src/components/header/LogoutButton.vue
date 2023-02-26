@@ -17,7 +17,7 @@ export default {
       const url = "/api/logout";
 
       axios
-        .get(url)
+        .post(url)
         .then((response) => {
           console.log(response.data);
           this.$router.push("/");

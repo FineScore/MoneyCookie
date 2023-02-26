@@ -1,6 +1,8 @@
 package com.finescore.moneycookie.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.finescore.moneycookie.services.PeriodicTotalRate;
+import com.finescore.moneycookie.services.TotalRating;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

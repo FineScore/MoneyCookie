@@ -1,7 +1,7 @@
 package com.finescore.moneycookie.network.generator;
 
 import com.finescore.moneycookie.models.Item;
-import com.finescore.moneycookie.models.PriceToDate;
+import com.finescore.moneycookie.services.PriceToDate;
 import com.finescore.moneycookie.network.parser.Parser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

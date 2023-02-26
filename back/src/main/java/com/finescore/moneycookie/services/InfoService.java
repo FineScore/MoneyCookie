@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class InfoStoreService {
+public class InfoService {
     private final InfoGenerator<List<ClosedDay>> stockMarketClosedDaysGenerator;
     private final InfoGenerator<List<Item>> listedItemsGenerator;
     private final StockMarketClosedDaysRepository stockMarketClosedDaysRepository;
@@ -47,7 +47,7 @@ public class InfoStoreService {
         return listedItemRepository.findByKeyword(keyword);
     }
 
-    public List<ClosedDay> findClosedDay(LocalDate date) {
+    public Optional<ClosedDay> findClosedDay(LocalDate date) {
         return stockMarketClosedDaysRepository.findByDate(date);
     }
 }

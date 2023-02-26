@@ -7,14 +7,14 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class MemberInfo {
+public class User {
     private String username;
     private String password;
 
-    public MemberInfo() {
+    public User() {
     }
 
-    public MemberInfo(String username, String password) {
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
     }

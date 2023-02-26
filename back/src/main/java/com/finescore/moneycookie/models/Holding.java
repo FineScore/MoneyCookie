@@ -1,5 +1,6 @@
 package com.finescore.moneycookie.models;
 
+import com.finescore.moneycookie.services.Evaluation;
 import lombok.*;
 
 import java.util.Date;

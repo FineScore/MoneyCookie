@@ -26,8 +26,8 @@ public class GeneralConfig {
     }
 
     @Bean
-    public MemberRepository memberRepository() {
-        return new MemberRepository(dataSource);
+    public UserRepository memberRepository() {
+        return new UserRepository(dataSource);
     }
 
     @Bean

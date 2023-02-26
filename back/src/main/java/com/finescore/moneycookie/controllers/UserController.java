@@ -1,8 +1,7 @@
 package com.finescore.moneycookie.controllers;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.finescore.moneycookie.models.MemberInfo;
-import com.finescore.moneycookie.services.MemberService;
+import com.finescore.moneycookie.models.User;
+import com.finescore.moneycookie.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -12,74 +11,104 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
-    private final MemberService memberService;
+    private final UserService userService;
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody MemberInfo member, HttpServletRequest request) {
-        MemberInfo memberInfo = memberService.checkInfo(member);
-        log.info(member.getUsername());
-        HttpSession session = request.getSession();
-        session.setAttribute("username", memberInfo.getUsername());
+    @GetMapping("/check")
+    public ResponseEntity<MessageResponse> checkDuplicateUsername(String username) {
+        Optional<String> savedUsername = userService.findForDuplicateCheck(username);
 
-        return new ResponseEntity<>("로그인 완료", HttpStatus.OK);
+        if (savedUsername.isPresent()) {
+            MessageResponse messageResponse = new MessageResponse("BAD REQUEST", "이미 존재하는 아이디");
+
+            return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+        } else {
+            MessageResponse messageResponse = new MessageResponse("SUCCESS", "사용 가능한 아이디");
+
+            return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+        }
     }
 
-    @GetMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
+    @PostMapping("/login")
+    public ResponseEntity<MessageResponse> login(@RequestBody User tryUser, HttpServletRequest request) {
+        log.info(tryUser.getUsername());
+        Optional<User> savedUser = userService.findByUsername(tryUser.getUsername());
+
+        if (savedUser.isPresent()) {
+            HttpSession session = request.getSession();
+            session.setAttribute("username", savedUser.get().getUsername());
+
+            Boolean isEqualsPassword = userService.isEqualsPassword(tryUser, savedUser.get());
+
+            if (!isEqualsPassword) {
+                MessageResponse messageResponse = new MessageResponse("BAD REQUEST", "비밀번호 불일치");
+
+                return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+            }
+
+            MessageResponse messageResponse = new MessageResponse("SUCCESS", "로그인 완료");
+
+            return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+        } else {
+            MessageResponse messageResponse = new MessageResponse("BAD REQUEST", "존재하지 않는 회원");
+
+            return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<MessageResponse> logout(HttpServletRequest request) {
         HttpSession session = request.getSession();
 
         if (session != null) {
             session.invalidate();
         }
 
-        return new ResponseEntity<>("로그아웃 완료", HttpStatus.OK);
+        MessageResponse messageResponse = new MessageResponse("SUCCESS", "로그아웃 완료");
+
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody MemberInfo member) {
+    public ResponseEntity<MessageResponse> register(@RequestBody User user) {
         log.info("회원가입 시작");
-        log.info("아이디: {}, 비밀번호: {}", member.getUsername(), member.getPassword());
+        log.info("아이디: {}, 비밀번호: {}", user.getUsername(), user.getPassword());
 
-        memberService.save(member);
+        userService.save(user);
 
-        return new ResponseEntity<>("회원가입 완료", HttpStatus.OK);
+        MessageResponse messageResponse = new MessageResponse("SUCCESS", "회원가입 완료");
+
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
     @PutMapping("/password")
-    public ResponseEntity<String> updatePassword(@RequestBody Map<String, String> body, HttpServletRequest request) {
+    public ResponseEntity<MessageResponse> updatePassword(@RequestBody Map<String, String> body, HttpServletRequest request) {
         HttpSession session = request.getSession();
         String username = (String) session.getAttribute("username");
 
-        memberService.updatePassword(username, body.get("password"));
+        userService.updatePassword(username, body.get("password"));
 
-        return new ResponseEntity<>("비밀번호 변경 완료", HttpStatus.OK);
+        MessageResponse messageResponse = new MessageResponse("SUCCESS", "비밀번호 변경 완료");
+
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
     @DeleteMapping("/user")
-    public ResponseEntity<String> deleteUser(HttpServletRequest request) {
+    public ResponseEntity<MessageResponse> deleteUser(HttpServletRequest request) {
         HttpSession session = request.getSession();
         String username = (String) session.getAttribute("username");
 
         session.invalidate();
 
-        memberService.delete(username);
+        userService.delete(username);
 
-        return new ResponseEntity<>("회원 탈퇴 완료", HttpStatus.OK);
-    }
+        MessageResponse messageResponse = new MessageResponse("SUCCESS", "회원 탈퇴 완료");
 
-    @GetMapping("/check")
-    public ResponseEntity<String> check(String username) {
-        Boolean aBoolean = memberService.checkUsername(username);
-
-        if (!aBoolean) {
-            return new ResponseEntity<>("이미 존재하는 아이디입니다.", HttpStatus.BAD_REQUEST);
-        } else {
-            throw new RuntimeException();
-        }
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 }
