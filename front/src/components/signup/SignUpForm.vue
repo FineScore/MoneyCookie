@@ -167,12 +167,12 @@ export default {
             },
           })
           .then((response) => {
-            console.log(response);
+            console.log(response.data);
             this.isDuplicate = false;
             this.isUnique = true;
           })
           .catch((error) => {
-            console.log(error);
+            console.log(error.response.data);
             this.isDuplicate = true;
             this.isUnique = false;
           });
@@ -188,15 +188,14 @@ export default {
           password: this.password,
         };
 
-        console.log(this.username + " " + this.password);
         axios
           .post(url, data)
           .then((response) => {
-            console.log(response);
+            console.log(response.data);
             this.$router.push("/");
           })
           .catch((error) => {
-            console.log(error);
+            console.log(error.response.data);
           });
       }
     },

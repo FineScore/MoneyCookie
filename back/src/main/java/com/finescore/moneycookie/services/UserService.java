@@ -5,18 +5,18 @@ import com.finescore.moneycookie.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
 
-    public Optional<User> findByUsername(String username) {
+    public List<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
-    public Optional<String> findForDuplicateCheck(String username) {
+    public List<String> findForDuplicateCheck(String username) {
         return userRepository.findForDuplicateCheck(username);
     }
 

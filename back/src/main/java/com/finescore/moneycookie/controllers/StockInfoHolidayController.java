@@ -26,10 +26,12 @@ public class StockInfoHolidayController {
 
         if (itemList.isEmpty()) {
             DataResponse dataResponse = new DataResponse("NO CONTENT", "검색 결과 없음");
+            log.info("검색 결과 없음, 검색어: {}", keyword);
 
             return new ResponseEntity<>(dataResponse, HttpStatus.NO_CONTENT);
         } else {
-            DataResponse dataResponse = new DataResponse("SUCCESS", "검색 성공", itemList);
+            DataResponse dataResponse = new DataResponse("SUCCESS", "검색 성공", itemList.get());
+            log.info("검색 성공, 검색어: {}", keyword);
 
             return new ResponseEntity<>(dataResponse, HttpStatus.OK);
         }
@@ -41,10 +43,12 @@ public class StockInfoHolidayController {
 
         if (day.isEmpty()) {
             DataResponse dataResponse = new DataResponse("NO CONTENT", "오늘은 공휴일이 아닙니다.");
+            log.info("공휴일 아님, 오늘 날짜: {}", LocalDate.now());
 
             return new ResponseEntity<>(dataResponse, HttpStatus.NO_CONTENT);
         } else {
-            DataResponse dataResponse = new DataResponse("SUCCESS", "오늘은 공휴일입니다.", day);
+            DataResponse dataResponse = new DataResponse("SUCCESS", "오늘은 공휴일입니다.", day.get());
+            log.info("공휴일, 오늘 날짜: {}", LocalDate.now());
 
             return new ResponseEntity<>(dataResponse, HttpStatus.OK);
         }

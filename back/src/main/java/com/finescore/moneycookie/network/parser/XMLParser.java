@@ -20,7 +20,7 @@ public class XMLParser implements Parser<Document> {
 
         try {
             builder = builderFactory.newDocumentBuilder();
-            log.info(responseBody);
+
             return builder.parse(responseBody);
         } catch (ParserConfigurationException | IOException | SAXException e) {
             throw new RuntimeException(e);

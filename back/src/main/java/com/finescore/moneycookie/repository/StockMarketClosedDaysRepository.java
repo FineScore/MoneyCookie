@@ -48,7 +48,7 @@ public class StockMarketClosedDaysRepository {
                 continue;
             }
 
-            for (ClosedDay lastDay: lastClosedList) {
+            for (ClosedDay lastDay : lastClosedList) {
                 if (isSameName(changeDay, lastDay)) {
                     updateDateOfClosedDay(changeDay);
                     break;

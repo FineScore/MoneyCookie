@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,41 +21,45 @@ public class UserController {
 
     @GetMapping("/check")
     public ResponseEntity<MessageResponse> checkDuplicateUsername(String username) {
-        Optional<String> savedUsername = userService.findForDuplicateCheck(username);
+        List<String> savedUsername = userService.findForDuplicateCheck(username);
 
-        if (savedUsername.isPresent()) {
-            MessageResponse messageResponse = new MessageResponse("BAD REQUEST", "이미 존재하는 아이디");
-
-            return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
-        } else {
+        if (savedUsername.isEmpty()) {
             MessageResponse messageResponse = new MessageResponse("SUCCESS", "사용 가능한 아이디");
+            log.info("사용 가능한 아이디, 아이디: {}", username);
 
             return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+        } else {
+            MessageResponse messageResponse = new MessageResponse("BAD REQUEST", "이미 존재하는 아이디");
+            log.info("이미 존재하는 아이디, 아이디: {}", username);
+
+            return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/login")
     public ResponseEntity<MessageResponse> login(@RequestBody User tryUser, HttpServletRequest request) {
-        log.info(tryUser.getUsername());
-        Optional<User> savedUser = userService.findByUsername(tryUser.getUsername());
+        List<User> savedUser = userService.findByUsername(tryUser.getUsername());
 
-        if (savedUser.isPresent()) {
+        if (!savedUser.isEmpty()) {
             HttpSession session = request.getSession();
-            session.setAttribute("username", savedUser.get().getUsername());
+            session.setAttribute("username", savedUser.get(0).getUsername());
 
-            Boolean isEqualsPassword = userService.isEqualsPassword(tryUser, savedUser.get());
+            Boolean isEqualsPassword = userService.isEqualsPassword(tryUser, savedUser.get(0));
 
             if (!isEqualsPassword) {
                 MessageResponse messageResponse = new MessageResponse("BAD REQUEST", "비밀번호 불일치");
+                log.info("비밀번호 불일치");
 
                 return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
             }
 
-            MessageResponse messageResponse = new MessageResponse("SUCCESS", "로그인 완료");
+            MessageResponse messageResponse = new MessageResponse("SUCCESS", "로그인 성공");
+            log.info("로그인 성공");
 
             return new ResponseEntity<>(messageResponse, HttpStatus.OK);
         } else {
             MessageResponse messageResponse = new MessageResponse("BAD REQUEST", "존재하지 않는 회원");
+            log.info("존재하지 않는 회원, 요청 아이디: {}", tryUser.getUsername());
 
             return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
         }
@@ -69,19 +73,18 @@ public class UserController {
             session.invalidate();
         }
 
-        MessageResponse messageResponse = new MessageResponse("SUCCESS", "로그아웃 완료");
+        MessageResponse messageResponse = new MessageResponse("SUCCESS", "로그아웃 성공");
+        log.info("로그아웃 성공");
 
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
     @PostMapping("/register")
     public ResponseEntity<MessageResponse> register(@RequestBody User user) {
-        log.info("회원가입 시작");
-        log.info("아이디: {}, 비밀번호: {}", user.getUsername(), user.getPassword());
-
         userService.save(user);
 
         MessageResponse messageResponse = new MessageResponse("SUCCESS", "회원가입 완료");
+        log.info("회원가입 완료, 아이디: {}", user.getUsername());
 
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
@@ -94,6 +97,7 @@ public class UserController {
         userService.updatePassword(username, body.get("password"));
 
         MessageResponse messageResponse = new MessageResponse("SUCCESS", "비밀번호 변경 완료");
+        log.info("비밀번호 변경 완료");
 
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
@@ -108,6 +112,7 @@ public class UserController {
         userService.delete(username);
 
         MessageResponse messageResponse = new MessageResponse("SUCCESS", "회원 탈퇴 완료");
+        log.info("회원 탈퇴 완료");
 
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }

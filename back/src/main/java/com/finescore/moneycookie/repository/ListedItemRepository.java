@@ -35,7 +35,6 @@ public class ListedItemRepository {
     }
 
     public Item findByHoldingId(Long holdingId) {
-        log.info("holdingid : {}", holdingId);
         String sql = "select i.id, i.ticker, i.item_name, i.market, h.buy_date from items_kr i join holdings h on i.id = h.item_kr_id where h.id = :holdingId";
 
         SqlParameterSource param = new MapSqlParameterSource()
@@ -53,12 +52,10 @@ public class ListedItemRepository {
         }
 
         if (keyword.matches("\\d+")) {
-            log.info("숫자");
             builder.append("where ticker like '")
                     .append(keyword)
                     .append("%'");
         } else {
-            log.info("문자");
             builder.append("where item_name like '")
                     .append(keyword)
                     .append("%'");

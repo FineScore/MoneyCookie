@@ -9,8 +9,8 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class UserRepository {
     private final NamedParameterJdbcTemplate template;
@@ -19,20 +19,20 @@ public class UserRepository {
         this.template = new NamedParameterJdbcTemplate(dataSource);
     }
 
-    public Optional<User> findByUsername(String username) {
+    public List<User> findByUsername(String username) {
         String sql = "select username, password from users where username = :username";
 
         Map<String, String> param = Map.of("username", username);
 
-        return Optional.ofNullable(template.queryForObject(sql, param, userRowMapper()));
+        return template.query(sql, param, userRowMapper());
     }
 
-    public Optional<String> findForDuplicateCheck(String username) {
+    public List<String> findForDuplicateCheck(String username) {
         String sql = "select username from users where username = :username";
 
         Map<String, String> param = Map.of("username", username);
 
-        return Optional.ofNullable(template.queryForObject(sql, param, String.class));
+        return template.queryForList(sql, param, String.class);
     }
 
     public void save(User member) {

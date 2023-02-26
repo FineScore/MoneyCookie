@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ExceptionController {
 
-    @ExceptionHandler
+    @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<MessageResponse> exceptionHandle(RuntimeException e) {
         MessageResponse messageResponse = new MessageResponse("ERROR", "서버 내부 에러");
 

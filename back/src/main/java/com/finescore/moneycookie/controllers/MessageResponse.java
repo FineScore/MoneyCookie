@@ -1,5 +1,8 @@
 package com.finescore.moneycookie.controllers;
 
+import lombok.Getter;
+
+@Getter
 public class MessageResponse {
     private String status;
     private String message;

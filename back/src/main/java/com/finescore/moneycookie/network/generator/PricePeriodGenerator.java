@@ -23,7 +23,6 @@ public class PricePeriodGenerator extends PriceAllGenerator {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 
         for (int i = list.size() - 1; i >= 0; i--) {
-            log.info("구매 일자: {}, {}", info.getBuyDate(), list.get(i).getDate());
             if (dateFormat.format(info.getBuyDate()).equals(dateFormat.format(list.get(i).getDate()))) {
                 list = list.subList(i, list.size());
                 break;

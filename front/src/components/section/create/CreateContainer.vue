@@ -203,7 +203,6 @@ export default {
     return {
       title: { required },
       items: {
-        required,
         $each: helpers.forEach({
           quantity: {
             required,
@@ -233,10 +232,10 @@ export default {
         })
         .then((response) => {
           console.log(response.data);
-          this.searchItemList = response.data;
+          this.searchItemList = response.data.data;
         })
         .catch((error) => {
-          console.log(error);
+          console.log(error.response.data);
         });
       this.isVisible = true;
     },
@@ -289,7 +288,7 @@ export default {
             this.$router.push("/section");
           })
           .catch((error) => {
-            console.log(error);
+            console.log(error.response.data);
           });
       } else {
         this.isValidate = false;

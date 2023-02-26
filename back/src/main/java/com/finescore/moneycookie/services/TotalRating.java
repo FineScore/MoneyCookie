@@ -3,10 +3,12 @@ package com.finescore.moneycookie.services;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @Builder
+@ToString
 public class TotalRating {
     private Long id;
     private Long sectionId;

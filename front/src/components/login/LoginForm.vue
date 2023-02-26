@@ -101,12 +101,12 @@ export default {
         axios
           .post(url, data)
           .then((response) => {
-            console.log(response);
+            console.log(response.data);
             this.$store.commit("setIsLogin", true);
             this.$router.push("/section");
           })
           .catch((error) => {
-            console.log(error);
+            console.log(error.response.data);
           });
       }
     },

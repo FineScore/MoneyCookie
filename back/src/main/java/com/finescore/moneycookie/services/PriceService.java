@@ -42,6 +42,9 @@ public class PriceService {
     }
 
     public Double calcTotalEvaluationRate(Long totalBuyAmount, Long totalEvaluationAmount) {
+        if (totalBuyAmount == 0L) {
+            return 0D;
+        }
         // (총 평가금액 - 총 매수금액) / 총 매수금액 * 100 (%)
         return (double) (totalEvaluationAmount - totalBuyAmount) / totalBuyAmount * 100;
     }

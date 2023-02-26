@@ -15,11 +15,18 @@ axios.interceptors.request.use((config) => {
   return config;
 });
 
-axios.interceptors.response.use((config) => {
-  store.commit("setIsLoading", false);
+axios.interceptors.response.use(
+  (response) => {
+    store.commit("setIsLoading", false);
 
-  return config;
-});
+    return response;
+  },
+  (error) => {
+    store.commit("setIsLoading", false);
+
+    return Promise.reject(error);
+  }
+);
 
 app.use(router);
 app.use(HighchartsVue);

@@ -27,6 +27,7 @@ public class SectionController {
         );
 
         DataResponse dataResponse = new DataResponse("SUCCESS", "조회 성공", sectionList);
+        log.info("섹션 조회 성공");
 
         return new ResponseEntity<>(dataResponse, HttpStatus.OK);
     }
@@ -39,16 +40,17 @@ public class SectionController {
         service.save(username, section.getTitle(), section.getHoldingList());
 
         MessageResponse messageResponse = new MessageResponse("SUCCESS", "저장 완료");
+        log.info("섹션 저장 완료");
 
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
     @PutMapping
     public ResponseEntity<MessageResponse> update(@RequestBody Section section) {
-        log.info(section.getHoldingList().toString());
         service.updateSection(section);
 
         MessageResponse messageResponse = new MessageResponse("SUCCESS", "수정 완료");
+        log.info("섹션 수정 완료");
 
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
@@ -58,6 +60,7 @@ public class SectionController {
         service.delete(sectionId);
 
         MessageResponse messageResponse = new MessageResponse("SUCCESS", "삭제 완료");
+        log.info("섹션 삭제 완료");
 
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }

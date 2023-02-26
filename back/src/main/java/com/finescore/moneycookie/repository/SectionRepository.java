@@ -103,23 +103,23 @@ public class SectionRepository {
     private RowMapper<Holding> holdingRowMapper() {
         return (rs, rowNum) ->
                 Holding.builder()
-                .id(rs.getLong("h_id"))
-                .sectionId(rs.getLong("section_id"))
-                .itemKrId(rs.getLong("item_kr_id"))
-                .ticker(rs.getString("ticker"))
-                .itemName(rs.getString("item_name"))
-                .quantity(rs.getInt("quantity"))
-                .buyAvgPrice(rs.getInt("buy_avg_price"))
-                .buyTotalAmount(rs.getLong("buy_total_amount"))
-                .buyDate(rs.getDate("buy_date"))
-                .evaluation(
-                        Evaluation.builder()
-                                .id(rs.getLong("e_id"))
-                                .holdingId(rs.getLong("holding_id"))
-                                .evaluationRate(rs.getDouble("evaluation_rate"))
-                                .evaluationAmount(rs.getLong("evaluation_amount"))
-                                .build()
-                )
-                .build();
+                        .id(rs.getLong("h_id"))
+                        .sectionId(rs.getLong("section_id"))
+                        .itemKrId(rs.getLong("item_kr_id"))
+                        .ticker(rs.getString("ticker"))
+                        .itemName(rs.getString("item_name"))
+                        .quantity(rs.getInt("quantity"))
+                        .buyAvgPrice(rs.getInt("buy_avg_price"))
+                        .buyTotalAmount(rs.getLong("buy_total_amount"))
+                        .buyDate(rs.getDate("buy_date"))
+                        .evaluation(
+                                Evaluation.builder()
+                                        .id(rs.getLong("e_id"))
+                                        .holdingId(rs.getLong("holding_id"))
+                                        .evaluationRate(rs.getDouble("evaluation_rate"))
+                                        .evaluationAmount(rs.getLong("evaluation_amount"))
+                                        .build()
+                        )
+                        .build();
     }
 }

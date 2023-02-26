@@ -55,7 +55,7 @@ export default {
         .get(url)
         .then((response) => {
           console.log(response.data);
-          const responseData = response.data;
+          const responseData = response.data.data;
 
           if (responseData === "공휴일 아님") {
             return false;
@@ -64,7 +64,7 @@ export default {
           }
         })
         .catch((error) => {
-          console.log(error);
+          console.log(error.response.data);
         });
     },
   },

@@ -66,7 +66,7 @@ export default {
         .get(url)
         .then((response) => {
           console.log(response.data);
-          this.sectionList = response.data;
+          this.sectionList = response.data.data;
           for (let i = 0; i < this.sectionList.length; i++) {
             this.sectionList[i].sequence = i + 1;
           }
@@ -74,7 +74,7 @@ export default {
           this.$store.commit("setSectionList", this.sectionList);
         })
         .catch((error) => {
-          console.log(error);
+          console.log(error.response.data);
         });
     },
   },
