@@ -3,8 +3,8 @@ package com.finescore.moneycookie.services;
 import com.finescore.moneycookie.models.ClosedDay;
 import com.finescore.moneycookie.models.Item;
 import com.finescore.moneycookie.network.generator.InfoGenerator;
-import com.finescore.moneycookie.repository.StockMarketClosedDaysRepository;
-import com.finescore.moneycookie.repository.ListedItemRepository;
+import com.finescore.moneycookie.repository.StockMarketClosedDaysRepositoryJdbc;
+import com.finescore.moneycookie.repository.ListedItemRepositoryJdbc;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -18,8 +18,8 @@ import java.util.Optional;
 public class InfoService {
     private final InfoGenerator<List<ClosedDay>> stockMarketClosedDaysGenerator;
     private final InfoGenerator<List<Item>> listedItemsGenerator;
-    private final StockMarketClosedDaysRepository stockMarketClosedDaysRepository;
-    private final ListedItemRepository listedItemRepository;
+    private final StockMarketClosedDaysRepositoryJdbc stockMarketClosedDaysRepositoryJdbc;
+    private final ListedItemRepositoryJdbc listedItemRepositoryJdbc;
 
     public List<ClosedDay> generateStockMarketClosedDays() {
         return stockMarketClosedDaysGenerator.get();
@@ -33,21 +33,21 @@ public class InfoService {
     public void saveStockMarketClosedDays() {
         List<ClosedDay> closedDays = generateStockMarketClosedDays();
 
-        stockMarketClosedDaysRepository.save(closedDays);
+        stockMarketClosedDaysRepositoryJdbc.save(closedDays);
     }
 
     @Scheduled(cron = "0 0 1 * * ?")
     public void saveListedItemsInfo() {
         List<Item> listedItems = generateListedItemsInfo();
 
-        listedItemRepository.save(listedItems);
+        listedItemRepositoryJdbc.save(listedItems);
     }
 
     public Optional<List<Item>> searchItem(String keyword) {
-        return listedItemRepository.findByKeyword(keyword);
+        return listedItemRepositoryJdbc.findByKeyword(keyword);
     }
 
     public List<ClosedDay> findClosedDay(LocalDate date) {
-        return stockMarketClosedDaysRepository.findByDate(date);
+        return stockMarketClosedDaysRepositoryJdbc.findByDate(date);
     }
 }

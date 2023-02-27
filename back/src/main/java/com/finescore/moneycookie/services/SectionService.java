@@ -14,15 +14,15 @@ import java.util.*;
 @RequiredArgsConstructor
 @Slf4j
 public class SectionService {
-    private final SectionRepository sectionRepository;
-    private final HoldingRepository holdingRepository;
-    private final TotalRatingRepository totalRatingRepository;
-    private final EvaluationRepository evaluationRepository;
-    private final ListedItemRepository listedItemRepository;
+    private final SectionRepositoryJdbc sectionRepositoryJdbc;
+    private final HoldingRepositoryJdbc holdingRepositoryJdbc;
+    private final TotalRatingRepositoryJdbc totalRatingRepositoryJdbc;
+    private final EvaluationRepositoryJdbc evaluationRepositoryJdbc;
+    private final ListedItemRepositoryJdbc listedItemRepositoryJdbc;
     private final PriceService priceService;
 
     public List<Section> findByUsername(String username) {
-        List<Section> sections = sectionRepository
+        List<Section> sections = sectionRepositoryJdbc
                 .findByUsername(username);
 
         if (sections.isEmpty()) {
@@ -44,7 +44,7 @@ public class SectionService {
             for (int i = 0; i < holdingList.size(); i++) {
                 totalBuyAmount += holdingList.get(i).getBuyTotalAmount();
 
-                Item item = listedItemRepository.findByHoldingId(holdingList.get(i).getId());
+                Item item = listedItemRepositoryJdbc.findByHoldingId(holdingList.get(i).getId());
 
                 List<PriceToDate> dividendList = priceService.getDividend(item).getPriceList();
 
@@ -90,11 +90,11 @@ public class SectionService {
     }
 
     public List<Holding> findHoldingBySectionId(Long sectionId) {
-        return holdingRepository.findBySectionId(sectionId);
+        return holdingRepositoryJdbc.findBySectionId(sectionId);
     }
 
     public TotalRating findTotalBySectionId(Long sectionId) {
-        return totalRatingRepository.findBySectionId(sectionId);
+        return totalRatingRepositoryJdbc.findBySectionId(sectionId);
     }
 
     @Transactional
@@ -105,7 +105,7 @@ public class SectionService {
                 .createDate(LocalDateTime.now())
                 .build();
 
-        Long savedSectionId = sectionRepository.save(section);
+        Long savedSectionId = sectionRepositoryJdbc.save(section);
 
         if (!holdingList.isEmpty()) {
             Long totalBuyAmount = 0L;
@@ -115,11 +115,11 @@ public class SectionService {
                 holding.setSectionId(savedSectionId);
                 holding.setBuyTotalAmount(calcTotalAmount(holding));
 
-                Long savedHoldingId = holdingRepository.save(holding);
+                Long savedHoldingId = holdingRepositoryJdbc.save(holding);
 
                 Evaluation evaluation = buildEvaluation(savedHoldingId, holding);
 
-                evaluationRepository.save(evaluation);
+                evaluationRepositoryJdbc.save(evaluation);
 
                 totalBuyAmount += holding.getBuyTotalAmount();
                 totalEvaluationAmount += priceService.calcEvaluationPrice(holding.getQuantity(), getNowPrice(holding));
@@ -127,11 +127,11 @@ public class SectionService {
 
             TotalRating totalRating = buildTotalRating(savedSectionId, totalBuyAmount, totalEvaluationAmount);
 
-            totalRatingRepository.save(totalRating);
+            totalRatingRepositoryJdbc.save(totalRating);
         } else {
             TotalRating totalRating = buildTotalRating(savedSectionId, 0L, 0L);
 
-            totalRatingRepository.save(totalRating);
+            totalRatingRepositoryJdbc.save(totalRating);
         }
 
     }
@@ -139,14 +139,14 @@ public class SectionService {
     @Transactional
     public void updateSection(Section section) {
         if (section.getTitle() != null) {
-            sectionRepository.update(section.getId(), section.getTitle());
+            sectionRepositoryJdbc.update(section.getId(), section.getTitle());
         }
 
         if (section.getHoldingList() != null) {
             for (Holding newHolding : section.getHoldingList()) {
                 // 삭제
                 if (newHolding.getUpdateStatus() == UpdateStatus.DELETE) {
-                    holdingRepository.delete(newHolding.getId());
+                    holdingRepositoryJdbc.delete(newHolding.getId());
                     continue;
                 }
 
@@ -154,21 +154,21 @@ public class SectionService {
 
                 // 추가
                 if (newHolding.getUpdateStatus() == UpdateStatus.INSERT) {
-                    Long savedId = holdingRepository.save(holding);
+                    Long savedId = holdingRepositoryJdbc.save(holding);
                     Evaluation evaluation = buildEvaluation(savedId, holding);
-                    evaluationRepository.save(evaluation);
+                    evaluationRepositoryJdbc.save(evaluation);
                     continue;
                 }
 
                 // 수정
                 if (newHolding.getUpdateStatus() == UpdateStatus.UPDATE) {
-                    holdingRepository.update(holding);
+                    holdingRepositoryJdbc.update(holding);
                     Evaluation evaluation = buildEvaluation(holding.getId(), holding);
-                    evaluationRepository.update(evaluation);
+                    evaluationRepositoryJdbc.update(evaluation);
                 }
             }
 
-            List<Holding> holdingList = holdingRepository.findBySectionId(section.getId());
+            List<Holding> holdingList = holdingRepositoryJdbc.findBySectionId(section.getId());
 
             Long totalBuyAmount = 0L;
             Long totalEvaluationAmount = 0L;
@@ -180,12 +180,12 @@ public class SectionService {
 
             TotalRating totalRating = buildTotalRating(section.getId(), totalBuyAmount, totalEvaluationAmount);
 
-            totalRatingRepository.update(totalRating);
+            totalRatingRepositoryJdbc.update(totalRating);
         }
     }
 
     public void delete(Long sectionId) {
-        sectionRepository.delete(sectionId);
+        sectionRepositoryJdbc.delete(sectionId);
     }
 
     private Holding buildHolding(Holding holding) {
@@ -253,7 +253,7 @@ public class SectionService {
 
     private Integer getNowPrice(Holding holding) {
         return priceService.getNowPrice(
-                        listedItemRepository
+                        listedItemRepositoryJdbc
                                 .findByHoldingId(holding.getId()))
                 .getPriceList()
                 .get(0)

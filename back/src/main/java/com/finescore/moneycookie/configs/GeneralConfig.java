@@ -26,37 +26,37 @@ public class GeneralConfig {
     }
 
     @Bean
-    public UserRepository memberRepository() {
-        return new UserRepository(dataSource);
+    public UserRepositoryJdbc memberRepository() {
+        return new UserRepositoryJdbc(dataSource);
     }
 
     @Bean
-    public SectionRepository sectionRepository() {
-        return new SectionRepository(dataSource);
+    public SectionRepositoryJdbc sectionRepository() {
+        return new SectionRepositoryJdbc(dataSource);
     }
 
     @Bean
-    public ListedItemRepository listedItemRepository() {
-        return new ListedItemRepository(dataSource);
+    public ListedItemRepositoryJdbc listedItemRepository() {
+        return new ListedItemRepositoryJdbc(dataSource);
     }
 
     @Bean
-    public StockMarketClosedDaysRepository stockMarketClosedDaysRepository() {
-        return new StockMarketClosedDaysRepository(dataSource);
+    public StockMarketClosedDaysRepositoryJdbc stockMarketClosedDaysRepository() {
+        return new StockMarketClosedDaysRepositoryJdbc(dataSource);
     }
 
     @Bean
-    public HoldingRepository holdingRepository() {
-        return new HoldingRepository(dataSource);
+    public HoldingRepositoryJdbc holdingRepository() {
+        return new HoldingRepositoryJdbc(dataSource);
     }
 
     @Bean
-    public TotalRatingRepository totalRatingRepository() {
-        return new TotalRatingRepository(dataSource);
+    public TotalRatingRepositoryJdbc totalRatingRepository() {
+        return new TotalRatingRepositoryJdbc(dataSource);
     }
 
     @Bean
-    public EvaluationRepository evaluationRepository() {
-        return new EvaluationRepository(dataSource);
+    public EvaluationRepositoryJdbc evaluationRepository() {
+        return new EvaluationRepositoryJdbc(dataSource);
     }
 }

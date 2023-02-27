@@ -1,7 +1,7 @@
 package com.finescore.moneycookie.services;
 
 import com.finescore.moneycookie.models.User;
-import com.finescore.moneycookie.repository.UserRepository;
+import com.finescore.moneycookie.repository.UserRepositoryJdbc;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,14 +10,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UserRepository userRepository;
+    private final UserRepositoryJdbc userRepositoryJdbc;
 
     public List<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
+        return userRepositoryJdbc.findByUsername(username);
     }
 
     public List<String> findForDuplicateCheck(String username) {
-        return userRepository.findForDuplicateCheck(username);
+        return userRepositoryJdbc.findForDuplicateCheck(username);
     }
 
     public Boolean isEqualsPassword(User tryUser, User savedUser) {
@@ -25,14 +25,14 @@ public class UserService {
     }
 
     public void updatePassword(String username, String password) {
-        userRepository.update(username, password);
+        userRepositoryJdbc.update(username, password);
     }
 
     public void save(User member) {
-        userRepository.save(member);
+        userRepositoryJdbc.save(member);
     }
 
     public void delete(String username) {
-        userRepository.delete(username);
+        userRepositoryJdbc.delete(username);
     }
 }
