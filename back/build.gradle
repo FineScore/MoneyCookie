@@ -23,6 +23,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 	runtimeOnly 'com.h2database:h2'
 	implementation 'com.mysql:mysql-connector-j:8.0.31'
 	compileOnly 'org.projectlombok:lombok:1.18.24'

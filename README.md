@@ -24,6 +24,10 @@
 
 <img src="./images/mc_er.png">
 
+## 🧮 API 명세
+
+<img src="./images/api.png">
+
 ## 📑 주요 기능
 
 - 로그인

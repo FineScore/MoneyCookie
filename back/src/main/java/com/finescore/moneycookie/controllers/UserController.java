@@ -2,6 +2,8 @@ package com.finescore.moneycookie.controllers;
 
 import com.finescore.moneycookie.models.User;
 import com.finescore.moneycookie.services.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,9 +18,11 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@Api(tags = "회원 관련 API")
 public class UserController {
     private final UserService userService;
 
+    @Operation(summary = "아이디 중복 체크")
     @GetMapping("/check")
     public ResponseEntity<MessageResponse> checkDuplicateUsername(String username) {
         List<String> savedUsername = userService.findForDuplicateCheck(username);
@@ -36,6 +40,7 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "로그인")
     @PostMapping("/login")
     public ResponseEntity<MessageResponse> login(@RequestBody User tryUser, HttpServletRequest request) {
         List<User> savedUser = userService.findByUsername(tryUser.getUsername());
@@ -65,6 +70,7 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "로그아웃")
     @PostMapping("/logout")
     public ResponseEntity<MessageResponse> logout(HttpServletRequest request) {
         HttpSession session = request.getSession();
@@ -79,6 +85,7 @@ public class UserController {
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
+    @Operation(summary = "회원 등록")
     @PostMapping("/register")
     public ResponseEntity<MessageResponse> register(@RequestBody User user) {
         userService.save(user);
@@ -89,6 +96,7 @@ public class UserController {
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
+    @Operation(summary = "비밀번호 변경")
     @PutMapping("/password")
     public ResponseEntity<MessageResponse> updatePassword(@RequestBody Map<String, String> body, HttpServletRequest request) {
         HttpSession session = request.getSession();
@@ -102,6 +110,7 @@ public class UserController {
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
+    @Operation(summary = "회원 탈퇴")
     @DeleteMapping("/user")
     public ResponseEntity<MessageResponse> deleteUser(HttpServletRequest request) {
         HttpSession session = request.getSession();

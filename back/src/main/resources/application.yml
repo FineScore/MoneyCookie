@@ -3,3 +3,6 @@ spring:
     url: jdbc:mysql://localhost:3306/moneycookie-test
     username: moneycookie
     password: 1234
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher

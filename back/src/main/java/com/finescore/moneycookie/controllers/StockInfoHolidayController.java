@@ -3,6 +3,8 @@ package com.finescore.moneycookie.controllers;
 import com.finescore.moneycookie.models.ClosedDay;
 import com.finescore.moneycookie.models.Item;
 import com.finescore.moneycookie.services.InfoService;
+import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,9 +19,11 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@Api(tags = "종목 검색 및 공휴일 조회 API")
 public class StockInfoHolidayController {
     private final InfoService infoService;
 
+    @Operation(summary = "종목 검색")
     @GetMapping("/search")
     public ResponseEntity<DataResponse> searchItem(String keyword) {
         Optional<List<Item>> itemList = infoService.searchItem(keyword);
@@ -37,6 +41,7 @@ public class StockInfoHolidayController {
         }
     }
 
+    @Operation(summary = "오늘 공휴일 여부 조회")
     @GetMapping("/holiday")
     public ResponseEntity<DataResponse> closedDay() {
         List<ClosedDay> day = infoService.findClosedDay(LocalDate.now());
