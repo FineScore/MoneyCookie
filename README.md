@@ -20,7 +20,7 @@
 
 **Build Tool** : Gradle
 
-## 📊 ER Diagram
+## 📊 ER 다이어그램
 
 <img src="./images/mc_er.png">
 
@@ -28,7 +28,88 @@
 
 <img src="./images/api.png">
 
-## 📑 주요 기능
+## 🔄 API 시퀀스 다이어그램
+
+<details>
+<summary>로그인</summary>
+<div markdown="1">
+<img src="./images/UserController_login.png">
+</div>
+</details>
+<details>
+<summary>아이디 중복 체크</summary>
+<div markdown="1">
+<img src="./images/UserController_checkDuplicateUsername.png">
+</div>
+</details>
+<details>
+<summary>로그아웃</summary>
+<div markdown="1">
+<img src="./images/UserController_logout.png">
+</div>
+</details>
+<details>
+<summary>회원 가입</summary>
+<div markdown="1">
+<img src="./images/UserController_register.png">
+</div>
+</details>
+<details>
+<summary>비밀번호 변경</summary>
+<div markdown="1">
+<img src="./images/UserController_updatePassword.png">
+</div>
+</details>
+<details>
+<summary>회원 탈퇴</summary>
+<div markdown="1">
+<img src="./images/UserController_deleteUser.png">
+</div>
+</details>
+<details>
+<summary>전체 보유종목 조회</summary>
+<div markdown="1">
+<img src="./images/SectionController_findAll.png">
+</div>
+</details>
+<details>
+<summary>보유종목 저장</summary>
+<div markdown="1">
+<img src="./images/SectionController_save.png">
+</div>
+</details>
+<details>
+<summary>보유종목 수정</summary>
+<div markdown="1">
+<img src="./images/SectionController_update.png">
+</div>
+</details>
+<details>
+<summary>보유종목 삭제</summary>
+<div markdown="1">
+<img src="./images/SectionController_delete.png">
+</div>
+</details>
+<details>
+<summary>공휴일 조회</summary>
+<div markdown="1">
+<img src="./images/StockInfoHolidayController_closedDay.png">
+</div>
+</details>
+<details>
+<summary>종목 검색</summary>
+<div markdown="1">
+<img src="./images/StockInfoHolidayController_searchItem.png">
+</div>
+</details>
+<details>
+<summary>실시간 보유종목 정보 조회</summary>
+<div markdown="1">
+<img src="./images/StockWebSocketController_getNowPrice.png">
+</div>
+</details>
+
+## 📑 화면 구성
 
 - 로그인
 
