@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class MoneycookieApplication {
+public class MoneycookieApplication{
 	public static void main(String[] args) {
 		SpringApplication.run(MoneycookieApplication.class, args);
 	}

@@ -1,9 +1,9 @@
 package com.finescore.moneycookie.repository;
 
 import com.finescore.moneycookie.models.ClosedDay;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 public class StockMarketClosedDaysRepository {
     private final NamedParameterJdbcTemplate template;
 
@@ -28,13 +29,13 @@ public class StockMarketClosedDaysRepository {
         return template.query(sql, closedDayRowMapper());
     }
 
-    public Optional<ClosedDay> findByDate(LocalDate date) {
+    public List<ClosedDay> findByDate(LocalDate date) {
         String sql = "select date, name, type from closed_days where date = :date";
 
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("date", date);
 
-        return Optional.ofNullable(template.queryForObject(sql, param, closedDayRowMapper()));
+        return template.queryForList(sql, param, ClosedDay.class);
     }
 
     public void save(List<ClosedDay> dayList) {
@@ -77,14 +78,18 @@ public class StockMarketClosedDaysRepository {
 
     private void saveChangeableDays(ClosedDay changeDay) {
         String insert_sql = "insert into closed_days(date, name, type) values (:date, :name, :type)";
-        SqlParameterSource param = new BeanPropertySqlParameterSource(changeDay);
+
+        SqlParameterSource param = new MapSqlParameterSource()
+                .addValue("date", changeDay.getDate())
+                .addValue("name", changeDay.getName())
+                .addValue("type", changeDay.getType().toString());
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         template.update(insert_sql, param, keyHolder);
     }
 
     private void deleteChangeableDays() {
-        String delete_sql = "delete from closed_days where name = :substitute and name like :election";
+        String delete_sql = "delete from closed_days where name = :substitute or name like :election";
 
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("substitute", "대체공휴일")

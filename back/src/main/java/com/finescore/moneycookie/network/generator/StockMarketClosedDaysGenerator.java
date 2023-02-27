@@ -6,6 +6,7 @@ import com.finescore.moneycookie.models.ClosedType;
 import com.finescore.moneycookie.network.NetworkRequest;
 import com.finescore.moneycookie.network.parser.Parser;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +24,7 @@ import java.util.Map;
 
 @Component
 @AllArgsConstructor
+@Slf4j
 public class StockMarketClosedDaysGenerator implements InfoGenerator<List<ClosedDay>> {
     private final String URL = "http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo?solYear={year}&serviceKey=%2FS3lvmOXDstcmEQBFyBCOuEAbFWuWx68Rm5XUeF5iWVtNNGWgdzArkw6Y7vu1miYgXHvN52i8LK8PyCuIEyuOA%3D%3D&_type=json&numOfRows=20";
     private final NetworkRequest networkRequest;

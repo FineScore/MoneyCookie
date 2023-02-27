@@ -1,6 +1,7 @@
 package com.finescore.moneycookie.controllers;
 
 import com.finescore.moneycookie.models.Section;
+import com.finescore.moneycookie.services.InfoService;
 import com.finescore.moneycookie.services.SectionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import java.util.List;
 @RequestMapping("/section")
 public class SectionController {
     private final SectionService service;
+    private final InfoService infoService;
 
     @GetMapping
     public ResponseEntity<DataResponse> findAll(HttpServletRequest request) {
@@ -41,6 +43,7 @@ public class SectionController {
 
         MessageResponse messageResponse = new MessageResponse("SUCCESS", "저장 완료");
         log.info("섹션 저장 완료");
+        infoService.saveStockMarketClosedDays();
 
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }

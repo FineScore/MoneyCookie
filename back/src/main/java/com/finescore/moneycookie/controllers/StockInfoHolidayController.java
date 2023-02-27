@@ -39,7 +39,7 @@ public class StockInfoHolidayController {
 
     @GetMapping("/holiday")
     public ResponseEntity<DataResponse> closedDay() {
-        Optional<ClosedDay> day = infoService.findClosedDay(LocalDate.now());
+        List<ClosedDay> day = infoService.findClosedDay(LocalDate.now());
 
         if (day.isEmpty()) {
             DataResponse dataResponse = new DataResponse("NO CONTENT", "오늘은 공휴일이 아닙니다.");
@@ -47,7 +47,7 @@ public class StockInfoHolidayController {
 
             return new ResponseEntity<>(dataResponse, HttpStatus.NO_CONTENT);
         } else {
-            DataResponse dataResponse = new DataResponse("SUCCESS", "오늘은 공휴일입니다.", day.get());
+            DataResponse dataResponse = new DataResponse("SUCCESS", "오늘은 공휴일입니다.", day.get(0));
             log.info("공휴일, 오늘 날짜: {}", LocalDate.now());
 
             return new ResponseEntity<>(dataResponse, HttpStatus.OK);

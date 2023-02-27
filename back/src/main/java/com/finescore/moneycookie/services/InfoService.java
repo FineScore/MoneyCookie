@@ -47,7 +47,7 @@ public class InfoService {
         return listedItemRepository.findByKeyword(keyword);
     }
 
-    public Optional<ClosedDay> findClosedDay(LocalDate date) {
+    public List<ClosedDay> findClosedDay(LocalDate date) {
         return stockMarketClosedDaysRepository.findByDate(date);
     }
 }

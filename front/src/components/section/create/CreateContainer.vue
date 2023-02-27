@@ -160,13 +160,6 @@
     >
       포트폴리오 추가
     </button>
-    <button
-      type="button"
-      @click="requestSaveItemList"
-      class="w-full flex justify-center bg-yellow-600 text-black text-opacity-70 p-3 rounded-full tracking-wide font-semibold cursor-pointer transition ease-in duration-200 disabled:bg-opacity-50"
-    >
-      테스트용 아이템 목록 저장
-    </button>
   </form>
 </template>
 

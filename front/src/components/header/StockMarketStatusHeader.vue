@@ -18,7 +18,7 @@ export default {
       if (
         this.isOpenTimeNow(this.currentTime) &&
         !this.isTodayIsWeekend(this.todayDate) &&
-        !this.isTodayIsHoliday
+        !this.isTodayIsHoliday()
       ) {
         return true;
       } else {
@@ -49,23 +49,24 @@ export default {
       const todayDayOfWeek = moment(todayDate, "YYYY년 M월 D일").format("d");
       return todayDayOfWeek === 0 || todayDayOfWeek === 6;
     },
-    isTodayIsHoliday() {
-      const url = "/api/holiday";
-      axios
-        .get(url)
-        .then((response) => {
-          console.log(response.data);
-          const responseData = response.data.data;
+    isTodayIsHoliday(currentTime) {
+      if (moment(currentTime, "HH:mm:ss") === "00:00:00") {
+        const url = "/api/holiday";
+        axios
+          .get(url)
+          .then((response) => {
+            const status = response.status;
 
-          if (responseData === "공휴일 아님") {
-            return false;
-          } else {
-            return true;
-          }
-        })
-        .catch((error) => {
-          console.log(error.response.data);
-        });
+            if (status === 204) {
+              return true;
+            } else {
+              return false;
+            }
+          })
+          .catch((error) => {
+            console.log(error.response.data);
+          });
+      }
     },
   },
 };
