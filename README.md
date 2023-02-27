@@ -10,7 +10,7 @@
 
 **Frontend** : HTML, CSS, Tailwind CSS, Vue.js 3
 
-**Backend** : JAVA 11, Spring Boot 2
+**Backend** : JAVA 11, Spring Boot 2.7
 
 **Database** : MySQL 8
 
