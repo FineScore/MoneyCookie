@@ -159,7 +159,7 @@
     <div>
       <strong
         class="flex justify-center my-4 text-sm text-red-600 font-semibold"
-        v-if="isValidate"
+        v-if="!isValidate"
         >미입력된 정보가 있습니다.</strong
       >
       <div></div>
