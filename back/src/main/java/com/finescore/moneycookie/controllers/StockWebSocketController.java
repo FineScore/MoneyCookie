@@ -9,6 +9,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -16,11 +18,11 @@ public class StockWebSocketController {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final SectionService sectionService;
     private boolean running;
-    private static Section holdingList;
+    private static UpdateSection section;
 
     @MessageMapping("/now")
-    public void getNowPrice(Section section) {
-        holdingList = section;
+    public void getNowPrice(UpdateSection updateSection) {
+        section = updateSection;
         running = true;
         send();
     }
@@ -35,16 +37,21 @@ public class StockWebSocketController {
     @Scheduled(fixedRate = 1000)
     private void send() {
         if (running) {
-            for (Holding holding : holdingList.getHoldingList()) {
-                holding.setUpdateStatus(UpdateStatus.UPDATE);
+            for (UpdateHolding updateHolding : section.getHoldingList()) {
+                updateHolding.setUpdateStatus(UpdateStatus.UPDATE);
             }
 
-            sectionService.updateSection(holdingList);
+            sectionService.updateSection(section);
 
-            holdingList.setHoldingList(sectionService.findHoldingBySectionId(holdingList.getId()));
-            holdingList.setTotalRating(sectionService.findTotalBySectionId(holdingList.getId()));
+            List<Holding> holdingList = sectionService.findHoldingBySectionId(section.getId());
 
-            simpMessagingTemplate.convertAndSend("/sub/now", holdingList);
+            Section newSection = Section.builder()
+                    .id(section.getId())
+                    .totalRating(sectionService.findTotalBySectionId(section.getId()))
+                    .holdingList(holdingList)
+                    .build();
+
+            simpMessagingTemplate.convertAndSend("/sub/now", newSection);
         }
     }
 }

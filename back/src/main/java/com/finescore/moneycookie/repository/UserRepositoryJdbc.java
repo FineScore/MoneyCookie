@@ -1,6 +1,8 @@
 package com.finescore.moneycookie.repository;
 
-import com.finescore.moneycookie.models.User;
+import com.finescore.moneycookie.models.LoginUser;
+import com.finescore.moneycookie.models.RegisterUser;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class UserRepositoryJdbc implements UserRepository {
     private final NamedParameterJdbcTemplate template;
 
@@ -19,7 +22,7 @@ public class UserRepositoryJdbc implements UserRepository {
         this.template = new NamedParameterJdbcTemplate(dataSource);
     }
 
-    public List<User> findByUsername(String username) {
+    public List<LoginUser> findByUsername(String username) {
         String sql = "select username, password from users where username = :username";
 
         Map<String, String> param = Map.of("username", username);
@@ -35,13 +38,13 @@ public class UserRepositoryJdbc implements UserRepository {
         return template.queryForList(sql, param, String.class);
     }
 
-    public void save(User member) {
+    public void save(RegisterUser registerUser) {
         String sql = "insert into users (username, password, create_date) " +
                 "values (:username, :password, :createDate)";
 
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("username", member.getUsername())
-                .addValue("password", member.getPassword())
+                .addValue("username", registerUser.getUsername())
+                .addValue("password", registerUser.getPassword())
                 .addValue("createDate", LocalDateTime.now());
 
         template.update(sql, param);
@@ -66,7 +69,7 @@ public class UserRepositoryJdbc implements UserRepository {
         template.update(sql, param);
     }
 
-    private RowMapper<User> userRowMapper() {
-        return BeanPropertyRowMapper.newInstance(User.class);
+    private RowMapper<LoginUser> userRowMapper() {
+        return BeanPropertyRowMapper.newInstance(LoginUser.class);
     }
 }

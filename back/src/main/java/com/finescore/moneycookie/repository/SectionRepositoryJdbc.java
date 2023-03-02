@@ -1,10 +1,9 @@
 package com.finescore.moneycookie.repository;
 
 import com.finescore.moneycookie.models.*;
-import com.finescore.moneycookie.services.Evaluation;
-import com.finescore.moneycookie.services.TotalRating;
+import com.finescore.moneycookie.models.Evaluation;
+import com.finescore.moneycookie.models.TotalRating;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -12,6 +11,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import javax.sql.DataSource;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +23,7 @@ public class SectionRepositoryJdbc implements SectionRepository {
     }
 
     public List<Section> findByUsername(String username) {
-        String find_section_sql = "select s.id, s.username, s.title, " +
+        String find_section_sql = "select s.id, s.title, " +
                 "tr.id tr_id, tr.section_id, tr.total_asset, tr.total_evaluation_rate, tr.total_evaluation_amount " +
                 "from sections s join total_ratings tr on s.id = tr.section_id " +
                 "where username = :username";
@@ -50,11 +50,14 @@ public class SectionRepositoryJdbc implements SectionRepository {
         return sectionList;
     }
 
-    public Long save(Section section) {
+    public Long save(String username, String title, LocalDateTime savedTime) {
         String sql = "insert into sections (username, title, create_date) " +
                 "values (:username, :title, :createDate)";
 
-        SqlParameterSource param = new BeanPropertySqlParameterSource(section);
+        SqlParameterSource param = new MapSqlParameterSource()
+                .addValue("username", username)
+                .addValue("title", title)
+                .addValue("create_date", savedTime);
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         template.update(sql, param, keyHolder);
@@ -85,7 +88,6 @@ public class SectionRepositoryJdbc implements SectionRepository {
         return (rs, rowNum) ->
                 Section.builder()
                         .id(rs.getLong("id"))
-                        .username(rs.getString("username"))
                         .title(rs.getString("title"))
                         .totalRating(
                                 TotalRating.builder()

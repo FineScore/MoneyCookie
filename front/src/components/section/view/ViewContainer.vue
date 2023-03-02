@@ -185,7 +185,7 @@ export default {
     },
     dividends() {
       return this.section.dividends;
-    }
+    },
   },
   mounted() {
     const serverUrl = "http://localhost:8080/ws";
@@ -204,7 +204,7 @@ export default {
           this.stompClient.subscribe("/sub/now", (event) => {
             let messages = JSON.parse(event.body);
             console.log(messages);
-            this.$store.commit("setSection", messages);
+            this.$store.commit("updateSection", messages);
             this.section = this.$store.getters.getSection;
           });
         }

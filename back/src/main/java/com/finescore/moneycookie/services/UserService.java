@@ -1,18 +1,21 @@
 package com.finescore.moneycookie.services;
 
-import com.finescore.moneycookie.models.User;
+import com.finescore.moneycookie.models.LoginUser;
+import com.finescore.moneycookie.models.RegisterUser;
 import com.finescore.moneycookie.repository.UserRepositoryJdbc;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
     private final UserRepositoryJdbc userRepositoryJdbc;
 
-    public List<User> findByUsername(String username) {
+    public List<LoginUser> findByUsername(String username) {
         return userRepositoryJdbc.findByUsername(username);
     }
 
@@ -20,15 +23,15 @@ public class UserService {
         return userRepositoryJdbc.findForDuplicateCheck(username);
     }
 
-    public Boolean isEqualsPassword(User tryUser, User savedUser) {
-        return tryUser.getPassword().equals(savedUser.getPassword());
+    public Boolean isEqualsPassword(LoginUser tryLoginUser, LoginUser savedLoginUser) {
+        return tryLoginUser.getPassword().equals(savedLoginUser.getPassword());
     }
 
     public void updatePassword(String username, String password) {
         userRepositoryJdbc.update(username, password);
     }
 
-    public void save(User member) {
+    public void save(RegisterUser member) {
         userRepositoryJdbc.save(member);
     }
 

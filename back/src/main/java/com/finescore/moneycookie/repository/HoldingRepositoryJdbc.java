@@ -1,7 +1,6 @@
 package com.finescore.moneycookie.repository;
 
-import com.finescore.moneycookie.services.Evaluation;
-import com.finescore.moneycookie.models.Holding;
+import com.finescore.moneycookie.models.*;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -32,17 +31,17 @@ public class HoldingRepositoryJdbc implements HoldingRepository {
         return template.query(sql, holdingParam, holdingRowMapper());
     }
 
-    public Long save(Holding holding) {
+    public Long save(InsertHolding insertHolding, Long totalAmount) {
         String sql = "insert into holdings(section_id, item_kr_id, quantity, buy_avg_price, buy_total_amount, buy_date) " +
                 "values(:sectionId, :itemKrId, :quantity, :buyAvgPrice, :buyTotalAmount, :buyDate)";
 
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("sectionId", holding.getSectionId())
-                .addValue("itemKrId", holding.getItemKrId())
-                .addValue("quantity", holding.getQuantity())
-                .addValue("buyAvgPrice", holding.getBuyAvgPrice())
-                .addValue("buyTotalAmount", holding.getBuyTotalAmount())
-                .addValue("buyDate", holding.getBuyDate());
+                .addValue("sectionId", insertHolding.getSectionId())
+                .addValue("itemKrId", insertHolding.getItemKrId())
+                .addValue("quantity", insertHolding.getQuantity())
+                .addValue("buyAvgPrice", insertHolding.getBuyAvgPrice())
+                .addValue("buyTotalAmount", totalAmount)
+                .addValue("buyDate", insertHolding.getBuyDate());
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         template.update(sql, param, keyHolder);
@@ -50,23 +49,23 @@ public class HoldingRepositoryJdbc implements HoldingRepository {
         return keyHolder.getKey().longValue();
     }
 
-    public void update(Holding newHolding) {
+    public void update(UpdateHolding updateHolding, Long totalAmount) {
         StringBuilder builder = new StringBuilder("update holdings set ");
         MapSqlParameterSource param = new MapSqlParameterSource();
 
-        if (newHolding.getQuantity() != null) {
+        if (updateHolding.getQuantity() != null) {
             builder.append("quantity = :quantity, ");
-            param.addValue("quantity", newHolding.getQuantity());
+            param.addValue("quantity", updateHolding.getQuantity());
         }
 
-        if (newHolding.getBuyAvgPrice() != null) {
+        if (updateHolding.getBuyAvgPrice() != null) {
             builder.append("buy_avg_price = :buyAvgPrice, buy_total_amount = :buyTotalAmount ");
-            param.addValue("buyAvgPrice", newHolding.getBuyAvgPrice())
-                    .addValue("buyTotalAmount", newHolding.getBuyTotalAmount());
+            param.addValue("buyAvgPrice", updateHolding.getBuyAvgPrice())
+                    .addValue("buyTotalAmount", totalAmount);
         }
 
         builder.append("where id = :id");
-        param.addValue("id", newHolding.getId());
+        param.addValue("id", updateHolding.getId());
 
         template.update(builder.toString(), param);
     }

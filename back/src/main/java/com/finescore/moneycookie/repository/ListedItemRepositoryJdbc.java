@@ -12,8 +12,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 public class ListedItemRepositoryJdbc implements ListedItemRepository {
@@ -43,12 +43,12 @@ public class ListedItemRepositoryJdbc implements ListedItemRepository {
         return template.queryForObject(sql, param, itemRowMapper());
     }
 
-    public Optional<List<Item>> findByKeyword(String keyword) {
+    public List<Item> findByKeyword(String keyword) {
         String sql = "select id, ticker, item_name, market from items_kr ";
         StringBuilder builder = new StringBuilder(sql);
 
         if (keyword.isBlank()) {
-            return Optional.empty();
+            return new ArrayList<>();
         }
 
         if (keyword.matches("\\d+")) {
@@ -61,7 +61,7 @@ public class ListedItemRepositoryJdbc implements ListedItemRepository {
                     .append("%'");
         }
 
-        return Optional.of(template.query(builder.toString(), itemRowMapper()));
+        return template.query(builder.toString(), itemRowMapper());
     }
 
     private RowMapper<Item> itemRowMapper() {

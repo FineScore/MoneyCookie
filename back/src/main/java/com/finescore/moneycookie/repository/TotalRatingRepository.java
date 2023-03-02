@@ -1,6 +1,6 @@
 package com.finescore.moneycookie.repository;
 
-import com.finescore.moneycookie.services.TotalRating;
+import com.finescore.moneycookie.models.TotalRating;
 
 public interface TotalRatingRepository {
     TotalRating findBySectionId(Long sectionId);

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -43,7 +42,7 @@ public class InfoService {
         listedItemRepositoryJdbc.save(listedItems);
     }
 
-    public Optional<List<Item>> searchItem(String keyword) {
+    public List<Item> searchItem(String keyword) {
         return listedItemRepositoryJdbc.findByKeyword(keyword);
     }
 

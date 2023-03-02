@@ -1,12 +1,11 @@
 package com.finescore.moneycookie.models;
 
-import com.finescore.moneycookie.services.Evaluation;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 
 import java.util.Date;
 
 @Getter
-@Setter
 @Builder
 public class Holding {
     private Long id;
@@ -19,22 +18,4 @@ public class Holding {
     private Long buyTotalAmount;
     private Date buyDate;
     private Evaluation evaluation;
-    private UpdateStatus updateStatus;
-
-    public Holding() {
-    }
-
-    public Holding(Long id, Long sectionId, Long itemKrId, String ticker, String itemName, Integer quantity, Integer buyAvgPrice, Long buyTotalAmount, Date buyDate, Evaluation evaluation, UpdateStatus updateStatus) {
-        this.id = id;
-        this.sectionId = sectionId;
-        this.itemKrId = itemKrId;
-        this.ticker = ticker;
-        this.itemName = itemName;
-        this.quantity = quantity;
-        this.buyAvgPrice = buyAvgPrice;
-        this.buyTotalAmount = buyTotalAmount;
-        this.buyDate = buyDate;
-        this.evaluation = evaluation;
-        this.updateStatus = updateStatus;
-    }
 }

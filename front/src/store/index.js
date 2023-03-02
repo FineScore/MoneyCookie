@@ -26,6 +26,14 @@ const store = createStore({
     setSection(state, data) {
       state.sectionList[state.index] = data;
     },
+    updateSection(state, data) {
+      const currentSection = state.sectionList[state.index];
+      currentSection.totalRating = data.totalRating;
+      const currentHoldingList = currentSection.holdingList;
+      for (let i = 0; i < currentHoldingList.length; i++) {
+        currentHoldingList[i].evaluation = data.holdingList[i].evaluation;
+      }
+    },
     setIsLoading(state, data) {
       state.isLoading = data;
     },

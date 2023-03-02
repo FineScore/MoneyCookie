@@ -10,5 +10,5 @@ public interface ListedItemRepository {
 
     Item findByHoldingId(Long holdingId);
 
-    Optional<List<Item>> findByKeyword(String keyword);
+    List<Item> findByKeyword(String keyword);
 }
