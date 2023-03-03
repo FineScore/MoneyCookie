@@ -1,5 +1,6 @@
 package com.finescore.moneycookie.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -7,6 +8,7 @@ import java.util.Date;
 
 @Getter
 @Builder
+@JsonIgnoreProperties({"ticker", "itemName", "buyTotalAmount", "evaluation"})
 public class UpdateHolding {
     private Long id;
     private Long sectionId;

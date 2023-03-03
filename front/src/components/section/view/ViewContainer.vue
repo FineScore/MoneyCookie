@@ -196,11 +196,15 @@ export default {
       {},
       (frame) => {
         console.log("Connected: " + frame);
+        console.log(this.$store.getters.getStatus);
         if (this.$store.getters.getStatus) {
-          this.stompClient.send(
-            "/pub/now",
-            JSON.stringify(this.$store.getters.getSection)
-          );
+          const section = this.$store.getters.getSection;
+          const nowInfo = {
+            id: section.id,
+            title: section.title,
+            holdingList: section.holdingList,
+          };
+          this.stompClient.send("/pub/now", JSON.stringify(nowInfo));
           this.stompClient.subscribe("/sub/now", (event) => {
             let messages = JSON.parse(event.body);
             console.log(messages);

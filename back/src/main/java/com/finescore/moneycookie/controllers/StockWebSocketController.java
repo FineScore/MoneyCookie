@@ -22,6 +22,7 @@ public class StockWebSocketController {
 
     @MessageMapping("/now")
     public void getNowPrice(UpdateSection updateSection) {
+        log.info("작동");
         section = updateSection;
         running = true;
         send();

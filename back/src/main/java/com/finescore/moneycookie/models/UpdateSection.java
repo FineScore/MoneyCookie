@@ -11,4 +11,7 @@ public class UpdateSection {
     private Long id;
     private String title;
     private List<UpdateHolding> holdingList;
+
+    public UpdateSection() {
+    }
 }

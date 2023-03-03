@@ -20,8 +20,10 @@ export default {
         !this.isTodayIsWeekend(this.todayDate) &&
         !this.isTodayIsHoliday()
       ) {
+        this.$store.commit("setStatus", true);
         return true;
       } else {
+        this.$store.commit("setStatus", false);
         return false;
       }
     },

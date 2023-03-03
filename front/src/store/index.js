@@ -14,6 +14,7 @@ const store = createStore({
       isLogin: false,
       currentTime: "",
       todayDate: "",
+      status: true,
     };
   },
   mutations: {
@@ -46,6 +47,9 @@ const store = createStore({
     setTodayDate(state, data) {
       state.todayDate = data;
     },
+    setStatus(state, data) {
+      state.status = data;
+    },
   },
   getters: {
     getSection(state) {
@@ -62,6 +66,9 @@ const store = createStore({
     },
     getIsLogin(state) {
       return state.isLogin;
+    },
+    getStatus(state) {
+      return state.status;
     },
   },
   plugins: [vuexLocal.plugin],
