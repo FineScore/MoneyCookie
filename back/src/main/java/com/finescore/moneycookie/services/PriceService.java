@@ -49,7 +49,7 @@ class PriceService {
         return (double) (totalEvaluationAmount - totalBuyAmount) / totalBuyAmount * 100;
     }
 
-    Long calcEvaluationPrice(Integer quantity, Integer nowPrice) {
+    Long calcEvaluationAmount(Integer quantity, Integer nowPrice) {
         // 매수수량 * 현재가
         return (long) quantity * nowPrice;
     }

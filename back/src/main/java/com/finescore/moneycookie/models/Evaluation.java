@@ -10,7 +10,9 @@ import lombok.Setter;
 public class Evaluation {
     private Long id;
     private Long holdingId;
+    // 평가수익률
     private Double evaluationRate;
+    // 평가금액
     private Long evaluationAmount;
 
     public Evaluation() {

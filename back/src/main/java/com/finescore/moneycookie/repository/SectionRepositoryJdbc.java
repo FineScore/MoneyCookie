@@ -57,7 +57,7 @@ public class SectionRepositoryJdbc implements SectionRepository {
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("username", username)
                 .addValue("title", title)
-                .addValue("create_date", savedTime);
+                .addValue("createDate", savedTime);
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         template.update(sql, param, keyHolder);

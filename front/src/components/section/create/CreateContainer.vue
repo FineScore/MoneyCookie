@@ -189,7 +189,10 @@ export default {
   },
   computed: {
     limitSearchList() {
-      return this.searchItemList.slice(0, 10);
+      if (this.searchItemList !== undefined) {
+        return this.searchItemList.slice(0, 10);
+      }
+      return undefined;
     },
   },
   validations() {

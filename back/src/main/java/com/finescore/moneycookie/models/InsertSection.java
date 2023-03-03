@@ -18,5 +18,14 @@ public class InsertSection {
     @NotBlank(message = "제목이 입력되지 않았습니다.")
     private String title;
     private TotalRating totalRating;
-    private List<InsertHolding> insertHoldingList;
+    private List<InsertHolding> holdingList;
+
+    public InsertSection() {
+    }
+
+    public InsertSection(String title, TotalRating totalRating, List<InsertHolding> holdingList) {
+        this.title = title;
+        this.totalRating = totalRating;
+        this.holdingList = holdingList;
+    }
 }

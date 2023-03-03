@@ -15,7 +15,7 @@ export default {
     return {
       chartOptionsLine: {
         title: {
-          text: "<b>일간 누적 수익률</b>",
+          text: "<b>일간 수익률</b>",
         },
 
         credits: {

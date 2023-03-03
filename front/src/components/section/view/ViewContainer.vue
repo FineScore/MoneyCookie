@@ -18,17 +18,33 @@
       </div>
       <div class="flex items-center">
         <h3 class="font-bold">총 보유자산</h3>
-        <p class="text-end w-32 ml-5">{{ totalAsset }}</p>
+        <p class="text-end w-32 ml-5">{{ currencyFormat(totalAsset) }}</p>
       </div>
     </div>
     <div class="flex justify-end mb-10 mx-10">
       <div class="flex items-center">
         <h3 class="font-bold">총 평가수익률</h3>
-        <p class="ml-5 w-10 text-end">{{ totalEvaluationRate }}%</p>
+        <p
+          class="ml-5 w-10 text-end"
+          :class="{
+            'text-blue-600': totalEvaluationRate < 0,
+            'text-red-600': totalEvaluationRate > 0,
+          }"
+        >
+          {{ totalEvaluationRate }}%
+        </p>
       </div>
       <div class="flex items-center">
         <h3 class="font-bold ml-8">총 평가손익</h3>
-        <p class="ml-5 w-32 text-end">{{ totalEvaluationAmount }}</p>
+        <p
+          class="ml-5 w-32 text-end"
+          :class="{
+            'text-blue-600': totalEvaluationAmount < totalAsset,
+            'text-red-600': totalEvaluationAmount > totalAsset,
+          }"
+        >
+          {{ currencyFormat(totalEvaluationAmount) }}
+        </p>
       </div>
     </div>
     <div class="flex justify-around mb-10">
@@ -82,12 +98,12 @@
                 </th>
                 <th class="pl-4">
                   <div class="flex items-center justify-center">
-                    <p class="text-base font-bold leading-none">수익률</p>
+                    <p class="text-base font-bold leading-none">평가수익률</p>
                   </div>
                 </th>
                 <th class="pl-4">
                   <div class="flex items-center justify-center">
-                    <p class="text-base font-bold leading-none">평가손익</p>
+                    <p class="text-base font-bold leading-none">평가금액</p>
                   </div>
                 </th>
               </tr>
@@ -122,14 +138,29 @@
                 </td>
                 <td class="pl-4">
                   <div class="flex items-center justify-center">
-                    <p class="text-base leading-none">
+                    <p
+                      class="text-base leading-none"
+                      :class="{
+                        'text-blue-600':
+                          round(holding.evaluation.evaluationRate) < 0,
+                        'text-red-600':
+                          round(holding.evaluation.evaluationRate) > 0,
+                      }"
+                    >
                       {{ round(holding.evaluation.evaluationRate) }}%
                     </p>
                   </div>
                 </td>
                 <td class="pl-4">
                   <div class="flex items-center justify-center">
-                    <p class="text-base leading-none">
+                    <p
+                      class="text-base leading-none"
+                      :class="{
+                        'text-blue-600':
+                          holding.evaluation.evaluationAmount < 0,
+                        'text-red-600': holding.evaluation.evaluationAmount > 0,
+                      }"
+                    >
                       {{ currencyFormat(holding.evaluation.evaluationAmount) }}
                     </p>
                   </div>
@@ -167,15 +198,13 @@ export default {
       return this.section.title;
     },
     totalAsset() {
-      return this.currencyFormat(this.section.totalRating.totalAsset);
+      return this.section.totalRating.totalAsset;
     },
     totalEvaluationRate() {
       return this.round(this.section.totalRating.totalEvaluationRate);
     },
     totalEvaluationAmount() {
-      return this.currencyFormat(
-        this.section.totalRating.totalEvaluationAmount
-      );
+      return this.section.totalRating.totalEvaluationAmount;
     },
     holdingList() {
       return this.section.holdingList;
