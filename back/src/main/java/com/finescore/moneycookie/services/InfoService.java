@@ -3,8 +3,8 @@ package com.finescore.moneycookie.services;
 import com.finescore.moneycookie.models.ClosedDay;
 import com.finescore.moneycookie.models.Item;
 import com.finescore.moneycookie.network.generator.InfoGenerator;
-import com.finescore.moneycookie.repository.StockMarketClosedDaysRepositoryJdbc;
-import com.finescore.moneycookie.repository.ListedItemRepositoryJdbc;
+import com.finescore.moneycookie.repository.ListedItemRepository;
+import com.finescore.moneycookie.repository.StockMarketClosedDaysRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -17,8 +17,8 @@ import java.util.List;
 public class InfoService {
     private final InfoGenerator<List<ClosedDay>> stockMarketClosedDaysGenerator;
     private final InfoGenerator<List<Item>> listedItemsGenerator;
-    private final StockMarketClosedDaysRepositoryJdbc stockMarketClosedDaysRepositoryJdbc;
-    private final ListedItemRepositoryJdbc listedItemRepositoryJdbc;
+    private final StockMarketClosedDaysRepository stockMarketClosedDaysRepositoryJdbc;
+    private final ListedItemRepository listedItemRepositoryJdbc;
 
     public List<ClosedDay> generateStockMarketClosedDays() {
         return stockMarketClosedDaysGenerator.get();

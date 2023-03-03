@@ -2,7 +2,7 @@ package com.finescore.moneycookie.services;
 
 import com.finescore.moneycookie.models.LoginUser;
 import com.finescore.moneycookie.models.RegisterUser;
-import com.finescore.moneycookie.repository.UserRepositoryJdbc;
+import com.finescore.moneycookie.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
-    private final UserRepositoryJdbc userRepositoryJdbc;
+    private final UserRepository userRepositoryJdbc;
 
     public List<LoginUser> findByUsername(String username) {
         return userRepositoryJdbc.findByUsername(username);

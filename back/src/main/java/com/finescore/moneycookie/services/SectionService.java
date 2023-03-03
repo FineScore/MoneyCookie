@@ -14,11 +14,11 @@ import java.util.*;
 @RequiredArgsConstructor
 @Slf4j
 public class SectionService {
-    private final SectionRepositoryJdbc sectionRepositoryJdbc;
-    private final HoldingRepositoryJdbc holdingRepositoryJdbc;
-    private final TotalRatingRepositoryJdbc totalRatingRepositoryJdbc;
-    private final EvaluationRepositoryJdbc evaluationRepositoryJdbc;
-    private final ListedItemRepositoryJdbc listedItemRepositoryJdbc;
+    private final SectionRepository sectionRepositoryJdbc;
+    private final HoldingRepository holdingRepositoryJdbc;
+    private final TotalRatingRepository totalRatingRepositoryJdbc;
+    private final EvaluationRepository evaluationRepositoryJdbc;
+    private final ListedItemRepository listedItemRepositoryJdbc;
     private final PriceService priceService;
 
     public List<Section> findByUsername(String username) {
