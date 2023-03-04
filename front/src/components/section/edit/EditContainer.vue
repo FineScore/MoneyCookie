@@ -132,6 +132,7 @@
                         format="yyyy/MM/dd"
                         placeholder="매수일자"
                         class="w-44 text-center"
+                        @update:model-value="setUpdateMode(index)"
                       />
                     </div>
                   </td>

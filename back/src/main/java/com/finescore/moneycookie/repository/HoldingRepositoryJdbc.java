@@ -58,6 +58,11 @@ public class HoldingRepositoryJdbc implements HoldingRepository {
             param.addValue("quantity", updateHolding.getQuantity());
         }
 
+        if (updateHolding.getBuyDate() != null) {
+            builder.append("buy_date = :buyDate, ");
+            param.addValue("buyDate", updateHolding.getBuyDate());
+        }
+
         if (updateHolding.getBuyAvgPrice() != null) {
             builder.append("buy_avg_price = :buyAvgPrice, buy_total_amount = :buyTotalAmount ");
             param.addValue("buyAvgPrice", updateHolding.getBuyAvgPrice())
