@@ -71,7 +71,7 @@ public class UserController {
             Boolean isEqualsPassword = userService.isEqualsPassword(tryLoginUser, savedLoginUser.get(0));
 
             if (!isEqualsPassword) {
-                MessageResponse messageResponse = new MessageResponse("BAD REQUEST", "비밀번호 불일치");
+                MessageResponse messageResponse = new MessageResponse("BAD REQUEST", "잘못된 비밀번호입니다.");
                 log.info("비밀번호 불일치");
 
                 return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
@@ -82,7 +82,7 @@ public class UserController {
 
             return new ResponseEntity<>(messageResponse, HttpStatus.OK);
         } else {
-            MessageResponse messageResponse = new MessageResponse("BAD REQUEST", "존재하지 않는 회원");
+            MessageResponse messageResponse = new MessageResponse("BAD REQUEST", "존재하지 않는 회원입니다.");
             log.info("존재하지 않는 회원, 요청 아이디: {}", tryLoginUser.getUsername());
 
             return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);

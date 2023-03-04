@@ -15,6 +15,8 @@ const store = createStore({
       currentTime: "",
       todayDate: "",
       status: true,
+      isError: false,
+      errorMessage: {},
     };
   },
   mutations: {
@@ -50,6 +52,12 @@ const store = createStore({
     setStatus(state, data) {
       state.status = data;
     },
+    setIsError(state, data) {
+      state.isError = data;
+    },
+    setErrorMessage(state, data) {
+      state.errorMessage = data;
+    },
   },
   getters: {
     getSection(state) {
@@ -69,6 +77,12 @@ const store = createStore({
     },
     getStatus(state) {
       return state.status;
+    },
+    getIsError(state) {
+      return state.isError;
+    },
+    getErrorMessage(state) {
+      return state.errorMessage;
     },
   },
   plugins: [vuexLocal.plugin],

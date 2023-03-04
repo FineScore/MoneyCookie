@@ -121,7 +121,8 @@ export default {
             this.$router.push("/section");
           })
           .catch((error) => {
-            console.log(error);
+            console.log(error.response.data);
+            this.$store.commit("setError", error.response.data);
           });
       }
     },
@@ -135,6 +136,7 @@ export default {
         })
         .catch((error) => {
           console.log(error);
+          this.$store.commit("setError", error.response.data);
         });
     },
   },

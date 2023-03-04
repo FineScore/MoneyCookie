@@ -173,6 +173,7 @@ export default {
           })
           .catch((error) => {
             console.log(error.response.data);
+            this.$store.commit("setError", error.response.data);
             this.isDuplicate = true;
             this.isUnique = false;
           });
@@ -196,6 +197,7 @@ export default {
           })
           .catch((error) => {
             console.log(error.response.data);
+            this.$store.commit("setError", error.response.data);
           });
       }
     },

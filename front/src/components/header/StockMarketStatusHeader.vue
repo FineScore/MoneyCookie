@@ -49,7 +49,7 @@ export default {
     },
     isTodayIsWeekend(todayDate) {
       const todayDayOfWeek = moment(todayDate, "YYYY년 M월 D일").format("d");
-      return todayDayOfWeek === 0 || todayDayOfWeek === 6;
+      return todayDayOfWeek == 0 || todayDayOfWeek == 6;
     },
     isTodayIsHoliday(currentTime) {
       if (moment(currentTime, "HH:mm:ss") === "00:00:00") {
@@ -67,6 +67,7 @@ export default {
           })
           .catch((error) => {
             console.log(error.response.data);
+            this.$store.commit("setError", error.response.data);
           });
       }
     },

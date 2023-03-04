@@ -107,6 +107,8 @@ export default {
           })
           .catch((error) => {
             console.log(error.response.data);
+            this.$store.commit("setIsError", true);
+            this.$store.commit("setErrorMessage", error.response.data);
           });
       }
     },
