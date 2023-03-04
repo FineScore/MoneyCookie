@@ -122,6 +122,7 @@
                       <Datepicker
                         v-model="items[index].buyDate"
                         :enable-time-picker="false"
+                        :disabled-week-days="[0, 6]"
                         auto-apply
                         locale="ko"
                         format="yyyy/MM/dd"
