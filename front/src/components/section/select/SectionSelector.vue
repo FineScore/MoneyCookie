@@ -1,5 +1,5 @@
 <template>
-  <div class="absolute w-2/3 left-1/2 top-2/4 -translate-x-1/2 -translate-y-80">
+  <div class="absolute w-2/3 left-1/2 top-2/4 -translate-x-1/2 -translate-y-40">
     <div class="flex flex-wrap gap-x-32 gap-y-20 justify-around">
       <ContentCard
         v-for="section in sectionList"
