@@ -123,6 +123,15 @@
                         v-model="items[index].buyDate"
                         :enable-time-picker="false"
                         :disabled-week-days="[0, 6]"
+                        :day-names-short="[
+                          '일',
+                          '월',
+                          '화',
+                          '수',
+                          '목',
+                          '금',
+                          '토',
+                        ]"
                         auto-apply
                         locale="ko"
                         format="yyyy/MM/dd"
